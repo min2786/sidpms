@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>SID – Project Calendar</title>
+<script src="config.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#f6f8f2;--surf:#fff;--side:#fbfcf8;--ink:#2b2d2f;--ink2:#6f7580;--line:#e4e8dc;--g:#7cb518;--gd:#4f7d0c;--gt:#eef6d8;
@@ -317,11 +318,11 @@ function settingsView(){
  return `<div class="fgrid"><div><div class="lbl">테마 색상</div><div class="swrow">${THEMES.map((t,i)=>`<button class="sw" data-t="${i}" aria-pressed="${(settings.theme||0)===i}" aria-label="${t.n}" title="${t.n}" style="background:${t.g}"></button>`).join("")}</div></div><label>워크스페이스 이름<input class="in" id="sWs" value="${esc(settings.workspace)}"></label>
  <label>한 주의 시작 요일<select class="in" id="sWk"><option value="0">일요일</option><option value="1" ${settings.weekStart===1?"selected":""}>월요일</option></select></label>
  <div><button class="btn" id="sSave">변경사항 저장</button></div>
- <hr style="border:0;border-top:1px solid var(--line);width:100%">
+ ${(sbCfg()||{}).builtin?"":` <hr style="border:0;border-top:1px solid var(--line);width:100%">
  <div><div class="lbl">데이터베이스 연결 (Supabase)</div><small style="color:var(--ink2)">연결하지 않으면 Claude 클라우드 저장을 사용합니다. 입력값은 이 브라우저에만 저장됩니다.</small></div>
  <label>Project URL<input class="in" id="sbUrl" placeholder="https://xxxx.supabase.co" value="${esc((sbCfg()||{}).url||"")}"></label>
  <label>anon public key<input class="in" id="sbKey" type="password" placeholder="eyJ..." value="${esc((sbCfg()||{}).key||"")}"></label>
- <div style="display:flex;gap:8px"><button class="btn" id="sbSave">연결 저장</button><button class="btn sec" id="sbOff">연결 해제</button></div></div>`;
+ <div style="display:flex;gap:8px"><button class="btn" id="sbSave">연결 저장</button><button class="btn sec" id="sbOff">연결 해제</button></div>`}</div>`;
 }
 async function persist(p){
  const {id,...d}=p;d.updatedAt=Date.now();
@@ -425,7 +426,7 @@ document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.id==="eText
 
 /* cloud */
 const SB_KEY="pms_supabase";
-const sbCfg=()=>{try{const c=JSON.parse(localStorage.getItem(SB_KEY)||"null");return c&&c.url&&c.key?{url:c.url.replace(/\/+$/,""),key:c.key}:window.SUPABASE_CONFIG||null}catch(x){return window.SUPABASE_CONFIG||null}};
+const sbCfg=()=>{const b=window.SUPABASE_CONFIG;if(b&&b.url&&b.key)return{url:String(b.url).replace(/\/+$/,""),key:b.key,builtin:true};try{const c=JSON.parse(localStorage.getItem(SB_KEY)||"null");return c&&c.url&&c.key?{url:c.url.replace(/\/+$/,""),key:c.key}:null}catch(x){return null}};
 function makeSupabase(cfg){
  const hdr=async()=>{const t=await freshToken(cfg);if(!t){logout();throw new Error("로그인이 필요합니다.")}return{apikey:cfg.key,Authorization:"Bearer "+t,"Content-Type":"application/json"}},T=cfg.url+"/rest/v1/pms_docs";
  const watchers={},err=async r=>{if(r.status===401){logout();throw new Error("세션이 만료되었습니다.")}if(!r.ok){let m="";try{m=(await r.json()).message}catch(x){}throw Object.assign(new Error(m||r.statusText),{code:r.status})}};
