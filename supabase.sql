@@ -14,3 +14,6 @@ alter table public.pms_docs enable row level security;
 drop policy if exists "pms_all" on public.pms_docs;
 create policy "pms_all" on public.pms_docs
   for all to anon using (true) with check (true);
+
+-- 테이블을 API가 바로 인식하도록 스키마 캐시를 새로고침합니다.
+notify pgrst, 'reload schema';
