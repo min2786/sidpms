@@ -9,11 +9,11 @@ create table if not exists public.pms_docs (
 
 alter table public.pms_docs enable row level security;
 
--- 주의: anon key를 아는 누구나 읽고 쓸 수 있는 정책입니다.
--- 로그인 기능을 붙이기 전까지는 URL을 공개하지 마세요.
+-- 로그인한 사용자만 읽고 쓸 수 있습니다. (이전의 anon 공개 정책은 제거)
 drop policy if exists "pms_all" on public.pms_docs;
-create policy "pms_all" on public.pms_docs
-  for all to anon using (true) with check (true);
+drop policy if exists "pms_auth" on public.pms_docs;
+create policy "pms_auth" on public.pms_docs
+  for all to authenticated using (true) with check (true);
 
 -- 테이블을 API가 바로 인식하도록 스키마 캐시를 새로고침합니다.
 notify pgrst, 'reload schema';

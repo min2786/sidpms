@@ -153,6 +153,10 @@ input[type=range]{width:100%;accent-color:#9aa0a6}
 .jitem{display:flex;gap:8px;align-items:flex-start;background:var(--side);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:6px}
 .jitem p{margin:0;flex:1;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px}
 .pill.sm{font-size:13px;font-weight:600;margin-left:12px;vertical-align:middle}
+#login{position:fixed;inset:0;z-index:100;background:var(--bg);display:grid;place-items:center;padding:20px;overflow:auto}#login[hidden]{display:none}
+.lcard{width:min(400px,100%);background:var(--surf);border:1px solid var(--line);border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:14px;box-shadow:0 20px 50px -20px rgba(20,40,10,.25)}
+.lcard h1{margin:6px 0 0;font-size:24px}.lcard p{margin:0;color:var(--ink2);font-size:13px}
+.lnk{border:0;background:none;color:var(--gd);font-weight:600;font-size:12px;padding:6px 0;text-align:left}
 .fab{display:none}
 @media(max-width:820px){
  .app{grid-template-columns:1fr}
@@ -185,6 +189,7 @@ input[type=range]{width:100%;accent-color:#9aa0a6}
   </nav>
   <button class="create" data-new><span>Create<br>new project</span><b>+</b></button>
   <div class="cloud" id="cloud"><i></i><span>Connecting…</span></div>
+  <button class="lnk" id="lo" hidden>로그아웃</button>
  </aside>
  <main id="main"></main>
 </div>
@@ -206,6 +211,7 @@ input[type=range]{width:100%;accent-color:#9aa0a6}
 <dialog id="dlgE"><h2 id="eTitle">일정 추가</h2><label>제목<input class="in" id="eText" maxlength="100" placeholder="예: 클라이언트 미팅"></label><div class="acts"><button class="btn sec" id="eNo">취소</button><button class="btn" id="eYes">저장</button></div></dialog>
 <dialog id="dlgC"><h2>이 프로젝트를 삭제할까요?</h2><p id="cMsg" style="margin:0;color:var(--ink2)"></p><div class="acts"><button class="btn sec" id="cNo">취소</button><button class="btn" id="cYes" style="background:#b3402a">삭제</button></div></dialog>
 <div id="toast" role="status"></div>
+<div id="login" hidden></div>
 
 <script>
 const PAL=[["#b9d435","#2b2d2f"],["#8cc63f","#1d2a0a"],["#2e8b3d","#fff"],["#1f7a5a","#fff"],["#24512a","#fff"],["#2563eb","#fff"],["#9333ea","#fff"],["#f5a623","#2b2d2f"]];
@@ -421,22 +427,64 @@ document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.id==="eText
 const SB_KEY="pms_supabase";
 const sbCfg=()=>{try{const c=JSON.parse(localStorage.getItem(SB_KEY)||"null");return c&&c.url&&c.key?{url:c.url.replace(/\/+$/,""),key:c.key}:window.SUPABASE_CONFIG||null}catch(x){return window.SUPABASE_CONFIG||null}};
 function makeSupabase(cfg){
- const H={apikey:cfg.key,Authorization:"Bearer "+cfg.key,"Content-Type":"application/json"},T=cfg.url+"/rest/v1/pms_docs";
- const watchers={},err=async r=>{if(!r.ok){let m="";try{m=(await r.json()).message}catch(x){}throw Object.assign(new Error(m||r.statusText),{code:r.status})}};
+ const hdr=async()=>{const t=await freshToken(cfg);if(!t){logout();throw new Error("로그인이 필요합니다.")}return{apikey:cfg.key,Authorization:"Bearer "+t,"Content-Type":"application/json"}},T=cfg.url+"/rest/v1/pms_docs";
+ const watchers={},err=async r=>{if(r.status===401){logout();throw new Error("세션이 만료되었습니다.")}if(!r.ok){let m="";try{m=(await r.json()).message}catch(x){}throw Object.assign(new Error(m||r.statusText),{code:r.status})}};
  const refresh=col=>(watchers[col]||[]).forEach(w=>w.run());
  function watch(col,cb,fail,single){
   let last=null,dead=false;
-  const w={run:async()=>{if(dead)return;try{const r=await fetch(`${T}?col=eq.${encodeURIComponent(col)}&select=id,data`,{headers:H});await err(r);const rows=await r.json(),sig=JSON.stringify(rows);if(sig===last)return;last=sig;
+  const w={run:async()=>{if(dead)return;try{const r=await fetch(`${T}?col=eq.${encodeURIComponent(col)}&select=id,data`,{headers:await hdr()});await err(r);const rows=await r.json(),sig=JSON.stringify(rows);if(sig===last)return;last=sig;
     if(single){const row=rows.find(x=>x.id===single);cb({exists:!!row,data:()=>row?row.data:undefined})}else cb({docs:rows.map(x=>({id:x.id,data:()=>x.data}))})}catch(e){fail&&fail(e)}}};
   (watchers[col]=watchers[col]||[]).push(w);w.run();w.t=setInterval(w.run,4000);
   return()=>{dead=true;clearInterval(w.t)};
  }
  const docRef=(col,id)=>({onSnapshot:(cb,fail)=>watch(col,cb,fail,id),
-  set:async d=>{const r=await fetch(`${T}?on_conflict=col,id`,{method:"POST",headers:{...H,Prefer:"resolution=merge-duplicates,return=minimal"},body:JSON.stringify({col,id,data:d,updated_at:new Date().toISOString()})});await err(r);refresh(col)},
-  delete:async()=>{const r=await fetch(`${T}?col=eq.${encodeURIComponent(col)}&id=eq.${encodeURIComponent(id)}`,{method:"DELETE",headers:H});await err(r);refresh(col)}});
+  set:async d=>{const r=await fetch(`${T}?on_conflict=col,id`,{method:"POST",headers:{...await hdr(),Prefer:"resolution=merge-duplicates,return=minimal"},body:JSON.stringify({col,id,data:d,updated_at:new Date().toISOString()})});await err(r);refresh(col)},
+  delete:async()=>{const r=await fetch(`${T}?col=eq.${encodeURIComponent(col)}&id=eq.${encodeURIComponent(id)}`,{method:"DELETE",headers:await hdr()});await err(r);refresh(col)}});
  return{collection:col=>({onSnapshot:(cb,fail)=>watch(col,cb,fail),doc:id=>docRef(col,id||crypto.randomUUID())}),doc:path=>{const[c,i]=path.split("/");return docRef(c,i)}};
 }
-(async()=>{
+const SS="pms_session",getSession=()=>{try{return JSON.parse(localStorage.getItem(SS)||"null")}catch(x){return null}};
+const clearSession=()=>{try{localStorage.removeItem(SS)}catch(x){}};
+function setSession(r){const s={access_token:r.access_token,refresh_token:r.refresh_token,expires_at:Math.floor(Date.now()/1000)+(+r.expires_in||3600),email:(r.user&&r.user.email)||""};localStorage.setItem(SS,JSON.stringify(s));return s}
+async function authCall(cfg,path,body){
+ const r=await fetch(cfg.url+"/auth/v1/"+path,{method:"POST",headers:{apikey:cfg.key,"Content-Type":"application/json"},body:JSON.stringify(body)});
+ let j={};try{j=await r.json()}catch(x){}
+ if(!r.ok)throw Object.assign(new Error(j.error_description||j.msg||j.message||"요청에 실패했습니다."),{status:r.status});
+ return j;
+}
+async function freshToken(cfg){
+ const s=getSession();if(!s)return null;
+ if(s.expires_at-60>Date.now()/1000)return s.access_token;
+ try{const r=await authCall(cfg,"token?grant_type=refresh_token",{refresh_token:s.refresh_token});return setSession(r).access_token}
+ catch(e){if(e.status>=400&&e.status<500){clearSession();return null}return s.access_token}
+}
+async function logout(){const c=sbCfg(),s=getSession();clearSession();if(c&&s){try{await fetch(c.url+"/auth/v1/logout",{method:"POST",headers:{apikey:c.key,Authorization:"Bearer "+s.access_token}})}catch(x){}}location.reload()}
+function showLogin(cfg){
+ let mode="in";const L=$("#login");L.hidden=false;
+ const draw=(msg,ok)=>{
+  L.innerHTML=`<form class="lcard" id="lform" novalidate><img src="${$(".logo img").src}" alt="SID" style="height:44px;align-self:flex-start"><h1>${mode==="in"?"로그인":"회원가입"}</h1><p>프로젝트 관리 시스템에 접속하려면 로그인이 필요합니다.</p>
+  ${cfg?"":`<label>Supabase Project URL<input class="in" id="lUrl" placeholder="https://xxxx.supabase.co" autocomplete="off"></label><label>anon public key<input class="in" id="lKey" type="password" autocomplete="off"></label>`}
+  <label>이메일<input class="in" id="lMail" type="email" autocomplete="username" required></label>
+  <label>비밀번호<input class="in" id="lPw" type="password" autocomplete="${mode==="in"?"current-password":"new-password"}" minlength="6" required></label>
+  <div class="err" id="lErr" role="alert" style="${ok?"color:var(--gd)":""}">${msg||""}</div>
+  <button class="btn" id="lGo" type="submit">${mode==="in"?"로그인":"가입하기"}</button>
+  <button class="lnk" id="lSw" type="button">${mode==="in"?"계정이 없으신가요? 회원가입":"이미 계정이 있습니다. 로그인"}</button></form>`;
+  $("#lSw").onclick=()=>{mode=mode==="in"?"up":"in";draw()};
+  $("#lform").onsubmit=async e=>{
+   e.preventDefault();const em=$("#lMail").value.trim(),pw=$("#lPw").value,er=$("#lErr");
+   let c=cfg;if(!c){const u=$("#lUrl").value.trim(),k=$("#lKey").value.trim();if(!/^https:\/\/.+/.test(u)||!k){er.textContent="Project URL(https://...)과 anon key를 입력해 주세요.";return}c={url:u.replace(/\/+$/,""),key:k}}
+   if(!em||pw.length<6){er.textContent="이메일과 6자 이상의 비밀번호를 입력해 주세요.";return}
+   $("#lGo").disabled=true;er.textContent="";
+   try{
+    if(mode==="up"){const r=await authCall(c,"signup",{email:em,password:pw});if(!r.access_token){mode="in";draw("가입 요청이 완료되었습니다. 이메일 확인이 필요하면 메일의 링크를 누른 뒤 로그인해 주세요.",true);return}setSession(r)}
+    else setSession(await authCall(c,"token?grant_type=password",{email:em,password:pw}));
+    if(!cfg)localStorage.setItem(SB_KEY,JSON.stringify(c));
+    location.reload();
+   }catch(x){$("#lGo").disabled=false;er.textContent=x.status===400&&mode==="in"?"이메일 또는 비밀번호가 올바르지 않거나, 이메일 확인이 완료되지 않았습니다.":x.message}
+  };
+ };
+ draw();
+}
+async function startCloud(){
  const cfg=sbCfg();
  if(cfg){db=makeSupabase(cfg);window.__sb=true}
  else{try{db=window.claude?await window.claude.use("db"):null}catch(x){db=null}}
@@ -444,6 +492,13 @@ function makeSupabase(cfg){
  const fail=e=>{setCloud("off");if(window.__sb)toast("Supabase 연결 오류: "+(e&&e.message||"확인 필요"))};
  db.collection("projects").onSnapshot(s=>{projects=s.docs.map(d=>({id:d.id,...d.data()}));setCloud("on");if(!$("#dlg").open&&view!=="settings"&&!(detailId&&document.activeElement&&/^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName)))render()},fail);
  db.doc("settings/main").onSnapshot(s=>{if(s.exists){settings={...settings,...s.data()};applyTheme();if(view!=="settings")render()}},fail);
+}
+$("#lo").onclick=logout;
+(async()=>{
+ const cfg=sbCfg();
+ if(cfg){if(await freshToken(cfg)){$("#lo").hidden=false;startCloud()}else showLogin(cfg)}
+ else if(window.claude)startCloud();
+ else showLogin(null);
 })();
 route();
 </script>
