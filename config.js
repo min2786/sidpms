@@ -3,5 +3,5 @@
 // 절대로 service_role / secret 키를 넣지 마세요.
 window.SUPABASE_CONFIG = {
   url: "https://kndfopqaxcsirhthmawb.supabase.co",
-  key: ""   // 예: "eyJ..." 또는 "sb_publishable_..."
+  key: "sb_publishable_HW84ooE_TPE_v8uYRq9zOQ_IL8jO-EQ"
 };
