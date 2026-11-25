@@ -221,7 +221,7 @@ let db=null,projects=[],settings={workspace:"RonasIT",weekStart:0,theme:0},view=
 let mon=new Date(),scope="month",layout="tl";
 
 function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("on"),2800)}
-function setCloud(s){const c=$("#cloud");c.className="cloud "+s;c.lastChild.textContent={on:"Synced to cloud",off:"Offline – not saved",connecting:"Connecting…"}[s]}
+function setCloud(s){const c=$("#cloud");c.className="cloud "+s;c.lastChild.textContent={on:window.__sb?"Supabase 연결됨":"Synced to cloud",off:"Offline – not saved",connecting:"Connecting…"}[s]}
 const head=t=>`<div class="top"><div style="display:flex;align-items:center;gap:12px"><img class="mlogo" style="height:30px" src="${$(".logo img").src}" alt="SID"><h1>${t}</h1></div><div class="ws"><span>${esc(settings.workspace.slice(0,2).toUpperCase())}</span>${esc(settings.workspace)}</div></div>`;
 
 const KN=["일","월","화","수","목","금","토"],dcls=k=>k===0?"sun":k===6?"sat":"";
@@ -310,7 +310,12 @@ function detailView(p){
 function settingsView(){
  return `<div class="fgrid"><div><div class="lbl">테마 색상</div><div class="swrow">${THEMES.map((t,i)=>`<button class="sw" data-t="${i}" aria-pressed="${(settings.theme||0)===i}" aria-label="${t.n}" title="${t.n}" style="background:${t.g}"></button>`).join("")}</div></div><label>워크스페이스 이름<input class="in" id="sWs" value="${esc(settings.workspace)}"></label>
  <label>한 주의 시작 요일<select class="in" id="sWk"><option value="0">일요일</option><option value="1" ${settings.weekStart===1?"selected":""}>월요일</option></select></label>
- <div><button class="btn" id="sSave">변경사항 저장</button></div></div>`;
+ <div><button class="btn" id="sSave">변경사항 저장</button></div>
+ <hr style="border:0;border-top:1px solid var(--line);width:100%">
+ <div><div class="lbl">데이터베이스 연결 (Supabase)</div><small style="color:var(--ink2)">연결하지 않으면 Claude 클라우드 저장을 사용합니다. 입력값은 이 브라우저에만 저장됩니다.</small></div>
+ <label>Project URL<input class="in" id="sbUrl" placeholder="https://xxxx.supabase.co" value="${esc((sbCfg()||{}).url||"")}"></label>
+ <label>anon public key<input class="in" id="sbKey" type="password" placeholder="eyJ..." value="${esc((sbCfg()||{}).key||"")}"></label>
+ <div style="display:flex;gap:8px"><button class="btn" id="sbSave">연결 저장</button><button class="btn sec" id="sbOff">연결 해제</button></div></div>`;
 }
 async function persist(p){
  const {id,...d}=p;d.updatedAt=Date.now();
@@ -397,6 +402,8 @@ document.addEventListener("click",async e=>{
  const c=e.target.closest(".cell");if(c)return openDlg(c.dataset.d);
  const sg=e.target.closest("[data-sc],[data-ly]");if(sg){if(sg.dataset.sc)scope=sg.dataset.sc;else layout=sg.dataset.ly;render();return}
  const mb=e.target.closest("[data-m]");if(mb){const k=+mb.dataset.m,y=mon.getFullYear(),m=mon.getMonth(),d=mon.getDate();mon=k===0?new Date():scope==="month"?new Date(y,m+k,1):new Date(y,m,d+k*(scope==="week"?7:1));render();return}
+ if(e.target.id==="sbSave"){const u=$("#sbUrl").value.trim(),k=$("#sbKey").value.trim();if(!/^https:\/\/.+/.test(u)||!k){toast("Project URL(https://...)과 anon key를 입력해 주세요.");return}localStorage.setItem(SB_KEY,JSON.stringify({url:u,key:k}));toast("연결 정보를 저장했습니다. 새로고침합니다.");setTimeout(()=>location.reload(),600);return}
+ if(e.target.id==="sbOff"){localStorage.removeItem(SB_KEY);toast("연결을 해제했습니다. 새로고침합니다.");setTimeout(()=>location.reload(),600);return}
  if(e.target.id==="sSave"){
   settings={...settings,workspace:$("#sWs").value.trim()||"Workspace",weekStart:+$("#sWk").value};
   try{if(db)await db.doc("settings/main").set(settings);toast(db?"설정이 저장되었습니다":"클라우드에 연결되지 않았습니다. 이번 세션에서만 저장됩니다.")}catch(x){toast("설정을 저장하지 못했습니다.")}
@@ -411,10 +418,30 @@ document.addEventListener("input",e=>{if(e.target.id==="pgR"){$("#pgV").textCont
 document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.id==="eText")addEv();if(e.key==="Enter"&&(e.ctrlKey||e.metaKey)&&e.target.id==="jText")addJ()});
 
 /* cloud */
+const SB_KEY="pms_supabase";
+const sbCfg=()=>{try{const c=JSON.parse(localStorage.getItem(SB_KEY)||"null");return c&&c.url&&c.key?{url:c.url.replace(/\/+$/,""),key:c.key}:window.SUPABASE_CONFIG||null}catch(x){return window.SUPABASE_CONFIG||null}};
+function makeSupabase(cfg){
+ const H={apikey:cfg.key,Authorization:"Bearer "+cfg.key,"Content-Type":"application/json"},T=cfg.url+"/rest/v1/pms_docs";
+ const watchers={},err=async r=>{if(!r.ok){let m="";try{m=(await r.json()).message}catch(x){}throw Object.assign(new Error(m||r.statusText),{code:r.status})}};
+ const refresh=col=>(watchers[col]||[]).forEach(w=>w.run());
+ function watch(col,cb,fail,single){
+  let last=null,dead=false;
+  const w={run:async()=>{if(dead)return;try{const r=await fetch(`${T}?col=eq.${encodeURIComponent(col)}&select=id,data`,{headers:H});await err(r);const rows=await r.json(),sig=JSON.stringify(rows);if(sig===last)return;last=sig;
+    if(single){const row=rows.find(x=>x.id===single);cb({exists:!!row,data:()=>row?row.data:undefined})}else cb({docs:rows.map(x=>({id:x.id,data:()=>x.data}))})}catch(e){fail&&fail(e)}}};
+  (watchers[col]=watchers[col]||[]).push(w);w.run();w.t=setInterval(w.run,4000);
+  return()=>{dead=true;clearInterval(w.t)};
+ }
+ const docRef=(col,id)=>({onSnapshot:(cb,fail)=>watch(col,cb,fail,id),
+  set:async d=>{const r=await fetch(`${T}?on_conflict=col,id`,{method:"POST",headers:{...H,Prefer:"resolution=merge-duplicates,return=minimal"},body:JSON.stringify({col,id,data:d,updated_at:new Date().toISOString()})});await err(r);refresh(col)},
+  delete:async()=>{const r=await fetch(`${T}?col=eq.${encodeURIComponent(col)}&id=eq.${encodeURIComponent(id)}`,{method:"DELETE",headers:H});await err(r);refresh(col)}});
+ return{collection:col=>({onSnapshot:(cb,fail)=>watch(col,cb,fail),doc:id=>docRef(col,id||crypto.randomUUID())}),doc:path=>{const[c,i]=path.split("/");return docRef(c,i)}};
+}
 (async()=>{
- try{db=window.claude?await window.claude.use("db"):null}catch(x){db=null}
+ const cfg=sbCfg();
+ if(cfg){db=makeSupabase(cfg);window.__sb=true}
+ else{try{db=window.claude?await window.claude.use("db"):null}catch(x){db=null}}
  if(!db){setCloud("off");return}
- const fail=()=>{setCloud("off")};
+ const fail=e=>{setCloud("off");if(window.__sb)toast("Supabase 연결 오류: "+(e&&e.message||"확인 필요"))};
  db.collection("projects").onSnapshot(s=>{projects=s.docs.map(d=>({id:d.id,...d.data()}));setCloud("on");if(!$("#dlg").open&&view!=="settings"&&!(detailId&&document.activeElement&&/^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName)))render()},fail);
  db.doc("settings/main").onSnapshot(s=>{if(s.exists){settings={...settings,...s.data()};applyTheme();if(view!=="settings")render()}},fail);
 })();
