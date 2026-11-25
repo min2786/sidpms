@@ -5,3 +5,7 @@ window.SUPABASE_CONFIG = {
   url: "https://kndfopqaxcsirhthmawb.supabase.co",
   key: "sb_publishable_HW84ooE_TPE_v8uYRq9zOQ_IL8jO-EQ"
 };
+
+// 카카오톡 전송용 JavaScript 키 (카카오 개발자 > 내 애플리케이션 > 앱 키 > JavaScript 키).
+// 도메인으로 제한되는 키라 공개되어도 됩니다. 비워 두면 웹에서 카톡 전송이 동작하지 않습니다.
+window.KAKAO_JS_KEY = "";

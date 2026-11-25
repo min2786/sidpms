@@ -362,11 +362,26 @@ async function persist(p){
  try{if(db)await db.collection("projects").doc(id).set(d);else toast("클라우드에 연결되지 않았습니다. 이번 세션에서만 저장됩니다.");return true}
  catch(x){toast("저장하지 못했습니다. 보기 전용 권한일 수 있습니다.");return false}
 }
+const KSDK="https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js";
+function loadKakao(){
+ const key=window.KAKAO_JS_KEY;if(!key)return Promise.resolve(false);
+ if(window.Kakao&&Kakao.isInitialized())return Promise.resolve(true);
+ return new Promise(ok=>{const go=()=>{try{if(!Kakao.isInitialized())Kakao.init(key);ok(true)}catch(x){ok(false)}};
+  if(window.Kakao)return go();const sc=document.createElement("script");sc.src=KSDK;sc.async=true;sc.onload=go;sc.onerror=()=>ok(false);document.head.appendChild(sc)})
+}
+function kakaoShare(msg){
+ if(!window.KAKAO_JS_KEY){toast("config.js에 카카오 JavaScript 키를 입력해 주세요.");return}
+ if(!(window.Kakao&&Kakao.isInitialized()&&Kakao.Share)){toast("카카오 SDK를 불러오는 중입니다. 잠시 후 다시 눌러 주세요.");loadKakao();return}
+ const u=location.href.split("#")[0];
+ try{Kakao.Share.sendDefault({objectType:"text",text:msg,link:{mobileWebUrl:u,webUrl:u}});toast("카카오톡 공유창을 열었습니다. 나와의 채팅을 선택해 보내세요.")}
+ catch(x){toast("카카오톡 공유를 열지 못했습니다. 키와 등록한 도메인을 확인해 주세요.")}
+}
 async function sendKakao(btn){
  const p=cur(),day=btn.dataset.kk,L=(p.journal||[]).filter(x=>x.day===day).sort((a,b)=>a.at-b.at);if(!L.length)return;
  let msg=`[${p.name}]\n`+L.map(x=>x.t).join("\n");if(msg.length>200)msg=msg.slice(0,197)+"...";
- const mcp=await claude.use("mcp").catch(()=>null);
- if(!mcp){toast("이 화면에서는 카카오톡 전송을 사용할 수 없습니다.");return}
+ if(!window.claude)return kakaoShare(msg);
+ const mcp=await window.claude.use("mcp").catch(()=>null);
+ if(!mcp)return kakaoShare(msg);
  btn.disabled=true;
  try{await mcp.callTool("PlayMCP","KakaotalkChat-MemoChat",{message:msg},{cache:false});toast("카카오톡으로 전송했습니다")}
  catch(x){const c=x&&x.code;toast(c==="needs_reauth"||c==="server_not_connected"||c==="server_not_found"?"claude.ai 설정 > 커넥터에서 PlayMCP(카카오톡)를 연결해 주세요.":c==="not_in_manifest"||c==="approval_required"||c==="consent_required"?"카카오톡 연결 허용이 필요합니다.":"카카오톡 전송에 실패했습니다. ("+(c||"unknown")+")")}
@@ -540,6 +555,7 @@ document.addEventListener("input",e=>{if(e.target.id==="memo"){memoV=e.target.va
  if(e.target.id==="pgR"){$("#pgV").textContent=e.target.value+"%";$("#pgB").style.width=e.target.value+"%";e.target.style.setProperty("--v",e.target.value+"%")}});
 document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.id==="eText")addEv();if(e.key==="Enter"&&(e.ctrlKey||e.metaKey)&&e.target.id==="jText")addJ()});
 
+if(window.KAKAO_JS_KEY&&!window.claude)loadKakao();
 /* cloud */
 const SB_KEY="pms_supabase";
 const sbCfg=()=>{const b=window.SUPABASE_CONFIG;if(b&&b.url&&b.key)return{url:String(b.url).replace(/\/+$/,""),key:b.key,builtin:true};try{const c=JSON.parse(localStorage.getItem(SB_KEY)||"null");return c&&c.url&&c.key?{url:c.url.replace(/\/+$/,""),key:c.key}:null}catch(x){return null}};
