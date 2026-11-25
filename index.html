@@ -32,7 +32,9 @@ main{padding:22px 28px 28px;min-width:0;display:flex;flex-direction:column;heigh
 .top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
 .top h1{margin:0;font-size:24px;letter-spacing:-.01em}
 .ws{display:flex;align-items:center;gap:10px;font-weight:700}
-.ws span{width:34px;height:34px;border-radius:50%;background:var(--gd);color:#fff;display:grid;place-items:center;font-size:12px}
+.ws .nm{height:34px;padding:0 16px;border-radius:17px;background:var(--gd);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:13px;white-space:nowrap;max-width:240px;overflow:hidden;text-overflow:ellipsis}
+.ws .lo{height:34px;padding:0 16px;border-radius:17px;border:1px solid var(--line);background:var(--surf);color:var(--ink);display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:600}
+.ws .lo:hover{border-color:var(--g);color:var(--gd)}
 .ctl{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap}
 .ctl h2{margin:0 8px 0 0;font-size:18px;min-width:150px}
 .ib{width:36px;height:36px;border-radius:12px;border:1px solid var(--line);background:var(--surf);font-size:18px;line-height:1}
@@ -132,7 +134,10 @@ dialog h2{margin:0 0 16px}
 .pbar{width:110px;height:6px;border-radius:6px;background:var(--line);overflow:hidden;flex:none}
 .pbar.wide{width:100%;height:10px;border-radius:10px;margin-bottom:12px}
 .pbar i{display:block;height:100%;background:var(--gd);border-radius:inherit}
-input[type=range]{width:100%;accent-color:#9aa0a6}
+input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:8px;border-radius:8px;border:0;padding:0;background:linear-gradient(to right,#9aa0a6 var(--v,0%),#e3e5e8 var(--v,0%))}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:#9aa0a6;border:3px solid #fff;box-shadow:0 0 0 1px #b5b9be;cursor:pointer}
+input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:#9aa0a6;border:3px solid #fff;box-shadow:0 0 0 1px #b5b9be;cursor:pointer}
+input[type=range]::-moz-range-track{background:transparent}
 .board{display:flex;gap:14px;overflow-x:auto;margin-top:12px;padding-bottom:8px;align-items:flex-start}
 .col{flex:0 0 270px;border:1px solid var(--line);border-radius:14px;padding:14px;background:var(--side)}
 .col.now2{background:var(--gt);border-color:var(--g)}
@@ -158,6 +163,25 @@ input[type=range]{width:100%;accent-color:#9aa0a6}
 .lcard{width:min(400px,100%);background:var(--surf);border:1px solid var(--line);border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:14px;box-shadow:0 20px 50px -20px rgba(20,40,10,.25)}
 .lcard p{margin:4px 0 0;color:var(--ink2);font-size:13px}
 .lnk{border:0;background:none;color:var(--gd);font-weight:600;font-size:12px;padding:6px 0;text-align:left}
+.create b svg{width:20px;height:20px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:0 0 16px}
+.tile{background:var(--side);border:1px solid var(--line);border-radius:12px;padding:12px 14px;min-width:0}
+.tile small{display:block;color:var(--ink2);font-size:11px;margin-bottom:2px}.tile strong{font-size:15px;overflow-wrap:anywhere}
+.fab svg{display:block;margin:auto}
+.lcard>*{align-self:stretch}.lcard>img{align-self:center}.lcard p{text-align:center}.lcard .lnk{text-align:center}
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0}
+.split .half{min-width:0}.split .half+.half{border-left:1px solid var(--line);padding-left:18px;margin-left:18px;display:flex;flex-direction:column}
+.split .sg{grid-template-columns:1fr}.split .evl{max-height:240px}
+.paper{flex:1;width:100%;min-height:320px;margin-top:10px;border:1px solid #e6e2c8;border-radius:12px;background-color:#fffef6;background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 31px,#d8dbc6 31px,#d8dbc6 32px);background-attachment:local;line-height:32px;padding:0 14px;font:inherit;font-size:14px;line-height:32px;resize:vertical;color:var(--ink)}
+.paper:focus{outline:2px solid var(--g);outline-offset:1px}
+.msv{font-size:11px;color:var(--ink2)}
+.x.ed{font-size:14px}
+.jitem.edit{flex-direction:column;align-items:stretch}.jitem.edit .in{margin-bottom:6px}.jeb{display:flex;gap:6px;justify-content:flex-end}.btn.sm{padding:6px 14px;font-size:12px}
+.prow{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;margin-bottom:8px;background:var(--surf)}
+.prow .dot{width:10px;height:34px;border-radius:5px;flex:none}.prow .tx{flex:1;min-width:0}.prow b{display:block;font-size:13px;overflow-wrap:anywhere}.prow small{color:var(--ink2);font-size:11px}
+.tag{font-size:11px;font-weight:700;padding:3px 10px;border-radius:10px;background:var(--gt);color:var(--gd);flex:none}
+@media(max-width:1100px){.split{grid-template-columns:1fr}.split .half+.half{border-left:0;padding-left:0;margin-left:0;margin-top:18px;border-top:1px solid var(--line);padding-top:16px}}
+@media(max-width:820px){.ws .nm{max-width:120px}.top{flex-wrap:wrap}}
 .fab{display:none}
 @media(max-width:820px){
  .app{grid-template-columns:1fr}
@@ -186,15 +210,15 @@ input[type=range]{width:100%;accent-color:#9aa0a6}
   <nav aria-label="Main">
    <a href="#dashboard" data-v="dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg>Dashboard</a>
    <a href="#projects" data-v="projects"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 6.5A2.5 2.5 0 0 1 5.5 4H10l2 2.5h6.5A2.5 2.5 0 0 1 21 9v8.5a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5v-11Z"/></svg>Projects</a>
+   <a href="#plan" data-v="plan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M3 10h18M8 3v4M16 3v4M9 15l2 2 4-4"/></svg>Plan</a>
    <a href="#settings" data-v="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>Settings</a>
   </nav>
-  <button class="create" data-new><span>Create<br>new project</span><b>+</b></button>
+  <button class="create" data-new><span>Create<br>new project</span><b><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="3" width="12" height="15" rx="2"/><path d="M5 7v12a2 2 0 0 0 2 2h9"/><path d="M12 8h4M12 12h4"/></svg></b></button>
   <div class="cloud" id="cloud"><i></i><span>Connecting…</span></div>
-  <button class="lnk" id="lo" hidden>로그아웃</button>
  </aside>
  <main id="main"></main>
 </div>
-<button class="fab" data-new aria-label="Create new project">+</button>
+<button class="fab" data-new aria-label="Create new project"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="3" width="12" height="15" rx="2"/><path d="M5 7v12a2 2 0 0 0 2 2h9"/><path d="M12 8h4M12 12h4"/></svg></button>
 
 <dialog id="dlg">
  <h2 id="dTitle">새 프로젝트 만들기</h2>
@@ -209,8 +233,15 @@ input[type=range]{width:100%;accent-color:#9aa0a6}
  <div class="err" id="dErr" role="alert"></div>
  <div class="acts"><button class="btn del" id="del" hidden>삭제</button><button class="btn sec" id="cancel">취소</button><button class="btn" id="save">프로젝트 만들기</button></div>
 </dialog>
-<dialog id="dlgE"><h2 id="eTitle">일정 추가</h2><label>제목<input class="in" id="eText" maxlength="100" placeholder="예: 클라이언트 미팅"></label><div class="acts"><button class="btn sec" id="eNo">취소</button><button class="btn" id="eYes">저장</button></div></dialog>
-<dialog id="dlgC"><h2>이 프로젝트를 삭제할까요?</h2><p id="cMsg" style="margin:0;color:var(--ink2)"></p><div class="acts"><button class="btn sec" id="cNo">취소</button><button class="btn" id="cYes" style="background:#b3402a">삭제</button></div></dialog>
+<dialog id="dlgE"><h2 id="eTitle">일정 추가</h2><div class="fgrid" style="max-width:none"><label>날짜<input class="in" id="eDay" type="date"></label><label>제목<input class="in" id="eText" maxlength="100" placeholder="예: 클라이언트 미팅"></label></div><div class="acts"><button class="btn sec" id="eNo">취소</button><button class="btn" id="eYes">저장</button></div></dialog>
+<dialog id="dlgP"><h2 id="pHead">일정 추가</h2><div class="fgrid" style="max-width:none">
+ <label>제목<input class="in" id="pTitle" maxlength="80"></label>
+ <label>유형<select class="in" id="pType"></select></label>
+ <div class="two"><label>시작일<input class="in" id="pS" type="date"></label><label>종료일<input class="in" id="pE" type="date"></label></div>
+ <label>메모 (선택)<input class="in" id="pN" maxlength="120"></label></div>
+ <div class="err" id="pErr" role="alert"></div>
+ <div class="acts"><button class="btn del" id="pDel" hidden>삭제</button><button class="btn sec" id="pNo">취소</button><button class="btn" id="pYes">저장</button></div></dialog>
+<dialog id="dlgC"><h2 id="cTitle">삭제할까요?</h2><p id="cMsg" style="margin:0;color:var(--ink2)"></p><div class="acts"><button class="btn sec" id="cNo">취소</button><button class="btn" id="cYes" style="background:#b3402a">삭제</button></div></dialog>
 <div id="toast" role="status"></div>
 <div id="login" hidden></div>
 
@@ -228,8 +259,8 @@ let db=null,projects=[],settings={workspace:"RonasIT",weekStart:0,theme:0},view=
 let mon=new Date(),scope="month",layout="tl";
 
 function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("on"),2800)}
-function setCloud(s){const c=$("#cloud");c.className="cloud "+s;c.lastChild.textContent={on:window.__sb?"Supabase 연결됨":"Synced to cloud",off:"Offline – not saved",connecting:"Connecting…"}[s]}
-const head=t=>`<div class="top"><div style="display:flex;align-items:center;gap:12px"><img class="mlogo" style="height:30px" src="${$(".logo img").src}" alt="SID"><h1>${t}</h1></div><div class="ws"><span>${esc(settings.workspace.slice(0,2).toUpperCase())}</span>${esc(settings.workspace)}</div></div>`;
+function setCloud(s){const c=$("#cloud");c.className="cloud "+s;c.lastChild.textContent={on:"데이터베이스 연결됨",off:"연결 안 됨 · 저장되지 않음",connecting:"연결 중…"}[s]}
+const head=t=>`<div class="top"><div style="display:flex;align-items:center;gap:12px"><img class="mlogo" style="height:30px" src="${$(".logo img").src}" alt="SID"><h1>${t}</h1></div><div class="ws"><span class="nm" title="${esc(settings.workspace)}">${esc(settings.workspace)}</span>${window.__sb&&getSession()?'<button class="lo" data-logout>로그아웃</button>':""}</div></div>`;
 
 const KN=["일","월","화","수","목","금","토"],dcls=k=>k===0?"sun":k===6?"sat":"";
 const ws0=()=>new Date(mon.getFullYear(),mon.getMonth(),mon.getDate()-(mon.getDay()-settings.weekStart+7)%7);
@@ -280,16 +311,17 @@ function projectsView(){
  const L=[...projects].sort((a,b)=>(a.start||"").localeCompare(b.start||""));
  return L.length?`<div class="plist">${L.map(p=>{const c=PAL[(p.color||0)%PAL.length],days=pd(p.end)-pd(p.start)+1;return `<button class="pitem" data-id="${esc(p.id)}"><span class="dot" style="background:${c[0]}"></span><div class="n"><strong>${esc(p.name)}</strong><br><small>${fmt(p.start)} – ${fmt(p.end)} · ${days}일</small></div><span class="ddb ${ddOf(p)[1]}">${ddOf(p)[0]}</span><div class="pbar"><i style="width:${pg(p)}%"></i></div><strong>${pg(p)}%</strong></button>`}).join("")}</div>`:`<div class="empty">아직 프로젝트가 없습니다. 왼쪽의 Create new project 버튼으로 추가해 보세요.</div>`;
 }
-let dcal=null,evDay=null;
+let dcal=null,evDay=null,evEdit=null,jEdit=null;
 const wk=["일","월","화","수","목","금","토"];
 function schedCard(p){
  const b=dcal||(dcal=new Date(new Date().getFullYear(),new Date().getMonth(),1)),Y=b.getFullYear(),M=b.getMonth(),E=p.events||[],t=dayKey(0);
  const off=new Date(Y,M,1).getDay(),n=Math.ceil((off+new Date(Y,M+1,0).getDate())/7)*7;
  let cells="";for(let i=0;i<n;i++){const d=new Date(Y,M,1-off+i),k=iso(d),has=E.some(x=>x.day===k);cells+=`<button class="mc ${d.getMonth()!==M?"o":""} ${k===t?"t":""} ${d.getDay()===0?"sun":d.getDay()===6?"sat":""}" data-ed="${k}"><span>${d.getDate()}</span>${has?"<i></i>":""}</button>`}
  const L=[...E].sort((a,b)=>b.day.localeCompare(a.day)||b.at-a.at);
- return `<section class="card"><div class="mh"><h3>일정</h3><div><button class="ib sm" data-dm="-1" aria-label="이전 달">‹</button><button class="ib sm" data-dm="1" aria-label="다음 달">›</button></div></div>
+ return `<section class="card split"><div class="half"><div class="mh"><h3>일정</h3><div><button class="ib sm" data-dm="-1" aria-label="이전 달">‹</button><button class="ib sm" data-dm="1" aria-label="다음 달">›</button></div></div>
  <div class="sg"><div class="mini"><div class="mt">${Y}년 ${M+1}월</div><div class="mw">${wk.map((w,i)=>`<b class="${i===0?"sun":i===6?"sat":""}">${w}</b>`).join("")}</div><div class="mg">${cells}</div></div>
- <div class="evl"><div class="mt">일정 목록 <small>최신순</small></div>${L.length?L.map(x=>{const[a,m,d]=x.day.split("-").map(Number);return `<div class="ev2"><div class="dt"><strong>${d}</strong><small>${m}월</small></div><div class="tx"><b>${esc(x.t)}</b><small>${a}.${String(m).padStart(2,"0")}.${String(d).padStart(2,"0")} (${wk[new Date(a,m-1,d).getDay()]})</small></div><button class="x" data-ex="${x.id}" aria-label="삭제">×</button></div>`}).join(""):'<div class="empty" style="padding:24px 0">날짜를 눌러 일정을 추가하세요.</div>'}</div></div></section>`;
+ <div class="evl"><div class="mt">일정 목록 <small>최신순</small></div>${L.length?L.map(x=>{const[a,m,d]=x.day.split("-").map(Number);return `<div class="ev2"><div class="dt"><strong>${d}</strong><small>${m}월</small></div><div class="tx"><b>${esc(x.t)}</b><small>${a}.${String(m).padStart(2,"0")}.${String(d).padStart(2,"0")} (${wk[new Date(a,m-1,d).getDay()]})</small></div><button class="x ed" data-eedit="${x.id}" aria-label="수정" title="수정">✎</button><button class="x" data-ex="${x.id}" aria-label="삭제" title="삭제">×</button></div>`}).join(""):'<div class="empty" style="padding:24px 0">날짜를 눌러 일정을 추가하세요.</div>'}</div></div></div>
+ <div class="half"><div class="mh"><h3>메모</h3><span class="msv" id="memoSt"></span></div><textarea class="paper" id="memo" maxlength="5000" placeholder="자유롭게 메모하세요" aria-label="메모">${esc(p.memo||"")}</textarea></div></section>`;
 }
 function ddOf(p){const l=pd(p.end)-dn(new Date());return l>0?[`D-${l}`,l<=7?"soon":"ok"]:l===0?["D-DAY","soon"]:[`D+${-l}`,"late"]}
 function detailView(p){
@@ -304,18 +336,18 @@ function detailView(p){
    <div class="dday ${ddOf(p)[1]}"><small>마감까지 남은 기간</small><strong>${ddOf(p)[0]}</strong><span>${fmt(p.end)} 마감</span></div>
    <div class="big"><strong id="pgV">${P}%</strong><span class="st ${st[1]}">${st[0]}</span></div>
    <div class="pbar wide"><i id="pgB" style="width:${P}%"></i></div>
-   <input type="range" id="pgR" min="0" max="100" step="5" value="${P}" aria-label="진행도">
+   <input type="range" id="pgR" min="0" max="100" step="5" value="${P}" style="--v:${P}%" aria-label="진행도">
    <div class="kvs">${row("시작일",fmt(p.start))}${row("마감일",fmt(p.end))}${row("전체 기간",`${e-s+1}일`)}${row("남은 기간",dd)}${row("진행 일지",`${J.length}건`)}</div></section>
   ${schedCard(p)}
  
   </div>
   <section class="card jcard"><h3>일일 진행일지</h3>
    <div class="jform"><input class="in" id="jDay" type="date" value="${t}" aria-label="날짜"><textarea class="in" id="jText" rows="3" maxlength="1000" placeholder="이날 진행한 내용을 기록하세요 (Ctrl+Enter로 저장)"></textarea><button class="btn" id="jAdd">기록 추가</button></div>
-   ${days.length?days.map(k=>`<div class="jday"><h4>${lab(k)}<button class="kk" data-kk="${k}" title="카카오톡 나에게 보내기">카톡 전송</button></h4>${J.filter(x=>x.day===k).map(x=>`<div class="jitem"><p>${esc(x.t)}</p><button class="x" data-jd="${x.id}" aria-label="삭제">×</button></div>`).join("")}</div>`).join(""):'<div class="empty">아직 기록이 없습니다. 오늘의 진행 상황을 남겨 보세요.</div>'}
+   ${days.length?days.map(k=>`<div class="jday"><h4>${lab(k)}<button class="kk" data-kk="${k}" title="카카오톡 나에게 보내기">카톡 전송</button></h4>${J.filter(x=>x.day===k).map(x=>x.id===jEdit?`<div class="jitem edit"><input class="in" id="jEditD" type="date" value="${x.day}"><textarea class="in" id="jEditT" rows="3" maxlength="1000">${esc(x.t)}</textarea><div class="jeb"><button class="btn sec sm" data-jcancel>취소</button><button class="btn sm" data-jsave="${x.id}">저장</button></div></div>`:`<div class="jitem"><p>${esc(x.t)}</p><button class="x ed" data-je="${x.id}" aria-label="수정" title="수정">✎</button><button class="x" data-jd="${x.id}" aria-label="삭제" title="삭제">×</button></div>`).join("")}</div>`).join(""):'<div class="empty">아직 기록이 없습니다. 오늘의 진행 상황을 남겨 보세요.</div>'}
   </section>`;
 }
 function settingsView(){
- return `<div class="fgrid"><div><div class="lbl">테마 색상</div><div class="swrow">${THEMES.map((t,i)=>`<button class="sw" data-t="${i}" aria-pressed="${(settings.theme||0)===i}" aria-label="${t.n}" title="${t.n}" style="background:${t.g}"></button>`).join("")}</div></div><label>워크스페이스 이름<input class="in" id="sWs" value="${esc(settings.workspace)}"></label>
+ return `<div class="fgrid"><div><div class="lbl">테마 색상</div><div class="swrow">${THEMES.map((t,i)=>`<button class="sw" data-t="${i}" aria-pressed="${(settings.theme||0)===i}" aria-label="${t.n}" title="${t.n}" style="background:${t.g}"></button>`).join("")}</div></div><label>사용자 이름<input class="in" id="sWs" value="${esc(settings.workspace)}"></label>
  <label>한 주의 시작 요일<select class="in" id="sWk"><option value="0">일요일</option><option value="1" ${settings.weekStart===1?"selected":""}>월요일</option></select></label>
  <div><button class="btn" id="sSave">변경사항 저장</button></div>
  ${(sbCfg()||{}).builtin?"":` <hr style="border:0;border-top:1px solid var(--line);width:100%">
@@ -324,6 +356,7 @@ function settingsView(){
  <label>anon public key<input class="in" id="sbKey" type="password" placeholder="eyJ..." value="${esc((sbCfg()||{}).key||"")}"></label>
  <div style="display:flex;gap:8px"><button class="btn" id="sbSave">연결 저장</button><button class="btn sec" id="sbOff">연결 해제</button></div>`}</div>`;
 }
+async function saveMemo(){const p=cur();if(!p)return;p.memo=memoV;const ok=await persist(p);const st=$("#memoSt");if(st)st.textContent=ok?"저장됨":"저장 실패"}
 async function persist(p){
  const {id,...d}=p;d.updatedAt=Date.now();
  try{if(db)await db.collection("projects").doc(id).set(d);else toast("클라우드에 연결되지 않았습니다. 이번 세션에서만 저장됩니다.");return true}
@@ -340,8 +373,9 @@ async function sendKakao(btn){
  btn.disabled=false;
 }
 function addEv(){
- const t=$("#eText").value.trim();if(!t){$("#eText").focus();return}
- const p=cur();p.events=[...(p.events||[]),{id:Math.random().toString(36).slice(2,9),day:evDay,t,at:Date.now()}];
+ const t=$("#eText").value.trim(),day=$("#eDay").value;if(!t){$("#eText").focus();return}if(!day){$("#eDay").focus();return}
+ const p=cur(),L=p.events||[];
+ p.events=evEdit?L.map(x=>x.id===evEdit?{...x,t,day}:x):[...L,{id:Math.random().toString(36).slice(2,9),day,t,at:Date.now()}];
  $("#dlgE").close();render();persist(p);
 }
 function addJ(){
@@ -350,14 +384,87 @@ function addJ(){
  render();persist(p);
 }
 function openDetail(id){const p=projects.find(x=>x.id===id);if(!p)return;detailId=id;if(location.hash==="#projects"){view="projects";render()}else location.hash="projects"}
+/* plan */
+const PT={work:{"회의":5,"마감":7,"출장":6,"교육":2,"기타":4},vacation:{"연차":0,"반차":1,"병가":7,"경조사":6,"기타":4}};
+const PK={work:"회사 업무 스케줄",vacation:"개인 휴가 스케줄"};
+let planTab="work",pmon=new Date(),plans=[],planEdit=null;
+const newId=()=>(window.crypto&&crypto.randomUUID)?crypto.randomUUID():"p"+Date.now()+Math.random().toString(36).slice(2,7);
+const pcol=x=>PAL[((PT[x.kind]||{})[x.type])??4];
+function workdays(s,e){let n=0;for(let d=pd(s);d<=pd(e);d++){const w=new Date(d*864e5).getUTCDay();if(w!==0&&w!==6)n++}return n}
+const pdays=x=>x.kind==="vacation"?(x.type==="반차"&&x.start===x.end?0.5:workdays(x.start,x.end)):pd(x.end)-pd(x.start)+1;
+const fmtD=n=>String(+n.toFixed(1)).replace(/\.0$/,"");
+function planView(){
+ const k=planTab,ws=settings.weekStart,Y=pmon.getFullYear(),M=pmon.getMonth(),today=dn(new Date());
+ const items=plans.filter(x=>x.kind===k&&x.start&&x.end).sort((a,b)=>a.start.localeCompare(b.start)||a.end.localeCompare(b.end));
+ const mF=dn(new Date(Y,M,1)),mL=dn(new Date(Y,M+1,0)),inM=items.filter(x=>pd(x.end)>=mF&&pd(x.start)<=mL),up=items.find(x=>pd(x.end)>=today);
+ const upT=up?`${esc(up.title)} · ${fmt(up.start)}`:"없음";
+ const tiles=k==="work"?[["이번 달 일정",`${inM.length}건`],["다가오는 일정",upT]]:[[`${Y}년 사용 연차`,fmtD(items.filter(x=>x.start.slice(0,4)===String(Y)&&(x.type==="연차"||x.type==="반차")).reduce((a,x)=>a+pdays(x),0))+"일"],["이번 달 휴가",fmtD(inM.reduce((a,x)=>a+pdays(x),0))+"일"],["다가오는 휴가",upT]];
+ const off=(new Date(Y,M,1).getDay()-ws+7)%7,n=Math.ceil((off+new Date(Y,M+1,0).getDate())/7);
+ let g=`<div class="cal" style="--cols:7"><div class="dow">${Array.from({length:7},(_,i)=>{const d=(i+ws)%7;return `<div class="${dcls(d)}">${KN[d]}</div>`}).join("")}</div><div class="weeks">`;
+ for(let w=0;w<n;w++){
+  const base=dn(new Date(Y,M,1-off+w*7)),lanes=[],bars=[];
+  items.forEach(x=>{const s0=pd(x.start),e0=pd(x.end);if(e0<base||s0>base+6)return;const a=Math.max(s0,base)-base,b=Math.min(e0,base+6)-base;let l=lanes.findIndex(z=>z<a);if(l<0){l=lanes.length;lanes.push(-1)}lanes[l]=b;
+   const c=pcol(x),L=s0>=base?20:0,R=e0<=base+6?20:0;
+   bars.push(`<button class="bar" data-pid="${esc(x.id)}" title="${esc(x.title)} (${fmt(x.start)} – ${fmt(x.end)})" style="grid-column:${a+1}/${b+2};grid-row:${l+1};background:${c[0]};color:${c[1]};border-radius:${L}px ${R}px ${R}px ${L}px">${esc(x.title)}</button>`)});
+  let cells="";for(let c=0;c<7;c++){const d=new Date(Y,M,1-off+w*7+c);cells+=`<div class="cell ${d.getMonth()!==M?"o":""} ${dn(d)===today?"t":""} ${dcls(d.getDay())}" data-d="${iso(d)}"><em>${d.getDate()===1?(d.getMonth()+1)+"월 1일":d.getDate()}</em></div>`}
+  g+=`<div class="wk" style="min-height:${Math.max(96,42+lanes.length*30)}px">${cells}<div class="ev">${bars.join("")}</div></div>`;
+ }
+ g+="</div></div>";
+ const rows=inM.length?inM.map(x=>{const c=pcol(x),dd=pdays(x);return `<div class="prow"><span class="dot" style="background:${c[0]}"></span><div class="tx"><b>${esc(x.title)}</b><small>${fmt(x.start)}${x.start!==x.end?" – "+fmt(x.end):""} · ${k==="vacation"?fmtD(dd)+"일":dd+"일"}${x.note?" · "+esc(x.note):""}</small></div><span class="tag">${esc(x.type)}</span><button class="x ed" data-pedit="${esc(x.id)}" aria-label="수정" title="수정">✎</button><button class="x" data-pdel="${esc(x.id)}" aria-label="삭제" title="삭제">×</button></div>`}).join(""):`<div class="empty">이 달에 등록된 일정이 없습니다. 날짜를 누르거나 “일정 추가”를 눌러 등록하세요.</div>`;
+ return `<div id="planwrap"><div class="ctl"><div class="seg">${["work","vacation"].map(t=>`<button data-ptab="${t}" aria-pressed="${k===t}">${PK[t]}</button>`).join("")}</div><span style="flex:1"></span><button class="ib" data-pm="-1" aria-label="이전 달">‹</button><h2 style="min-width:110px;text-align:center">${Y}년 ${M+1}월</h2><button class="ib" data-pm="1" aria-label="다음 달">›</button><button class="pill" data-pm="0">오늘</button><button class="btn" data-padd>+ 일정 추가</button></div>
+ <div class="tiles">${tiles.map(([a,b])=>`<div class="tile"><small>${a}</small><strong>${b}</strong></div>`).join("")}</div>${g}
+ <div class="row-ctl"><h2>${M+1}월 ${k==="work"?"업무 일정":"휴가 일정"}</h2></div>${rows}</div>`;
+}
+function fillTypes(k,sel){$("#pType").innerHTML=Object.keys(PT[k]).map(t=>`<option ${t===sel?"selected":""}>${t}</option>`).join("")}
+function openPlan(id,date){
+ const x=id?plans.find(p=>p.id===id):null;planEdit=x?x.id:null;const k=x?x.kind:planTab;
+ $("#pHead").textContent=(x?"수정 · ":"추가 · ")+PK[k];$("#pErr").textContent="";fillTypes(k,x&&x.type);
+ $("#pTitle").value=x?x.title:"";$("#pTitle").placeholder=k==="vacation"?"비워 두면 유형이 제목이 됩니다":"예: 분기 결산 회의";
+ const s=x?x.start:date||iso(new Date());$("#pS").value=s;$("#pE").value=x?x.end:s;$("#pN").value=x?x.note||"":"";
+ $("#pDel").hidden=!x;$("#dlgP").dataset.kind=k;$("#dlgP").showModal();$("#pTitle").focus();
+}
+async function savePlan(x){
+ const {id,...d}=x;d.updatedAt=Date.now();
+ try{if(db)await db.collection("plans").doc(id).set(d);else toast("데이터베이스에 연결되지 않았습니다. 이번 세션에서만 저장됩니다.");return true}
+ catch(e){toast("저장하지 못했습니다. 보기 전용 권한일 수 있습니다.");return false}
+}
+function delPlan(id){
+ const x=plans.find(p=>p.id===id);if(!x)return;
+ confirmDel("일정을 삭제할까요?",`“${x.title}” 일정이 삭제됩니다.`,async()=>{
+  try{if(db)await db.collection("plans").doc(id).delete()}catch(e){toast("삭제하지 못했습니다. 보기 전용 권한일 수 있습니다.");return}
+  plans=plans.filter(p=>p.id!==id);if($("#dlgP").open)$("#dlgP").close();render();toast("일정이 삭제되었습니다");
+ });
+}
+async function planClick(e){
+ const t=e.target;let m;
+ if(m=t.closest("[data-pid]")){openPlan(m.dataset.pid);return true}
+ if(m=t.closest("[data-pedit]")){openPlan(m.dataset.pedit);return true}
+ if(m=t.closest("[data-pdel]")){delPlan(m.dataset.pdel);return true}
+ if(m=t.closest("[data-ptab]")){planTab=m.dataset.ptab;render();return true}
+ if(m=t.closest("[data-pm]")){const k=+m.dataset.pm;pmon=k===0?new Date():new Date(pmon.getFullYear(),pmon.getMonth()+k,1);render();return true}
+ if(t.closest("[data-padd]")){openPlan(null);return true}
+ if(m=t.closest(".cell")){openPlan(null,m.dataset.d);return true}
+ return false;
+}
+$("#pNo").onclick=()=>$("#dlgP").close();
+$("#pDel").onclick=()=>delPlan(planEdit);
+$("#pYes").onclick=async()=>{
+ const k=$("#dlgP").dataset.kind,type=$("#pType").value,s=$("#pS").value,e=$("#pE").value,er=$("#pErr");let title=$("#pTitle").value.trim();
+ if(!title&&k==="vacation")title=type;
+ if(!title||!s||!e){er.textContent="제목과 기간을 입력해 주세요.";return}
+ if(e<s){er.textContent="종료일은 시작일 이후여야 합니다.";return}
+ const old=plans.find(p=>p.id===planEdit),item={...(old||{}),id:planEdit||newId(),kind:k,title,type,start:s,end:e,note:$("#pN").value.trim(),at:old?old.at:Date.now()};
+ if(await savePlan(item)){plans=plans.some(p=>p.id===item.id)?plans.map(p=>p.id===item.id?item:p):[...plans,item];$("#dlgP").close();pmon=new Date(+s.slice(0,4),+s.slice(5,7)-1,1);render();toast(old?"일정이 수정되었습니다":"일정이 등록되었습니다")}
+};
+
 function render(){
  document.querySelectorAll("nav a").forEach(a=>a.dataset.v===view?a.setAttribute("aria-current","page"):a.removeAttribute("aria-current"));
- let t={dashboard:"Dashboard",projects:"Projects",settings:"Settings"}[view];if(view==="projects"&&detailId&&cur())t=`${esc(cur().name)}<button class="pill sm" id="editP">✎ 수정</button>`;
- $("#main").innerHTML=head(t)+(view==="dashboard"?dashboardView():view==="projects"?projectsView():settingsView());
+ let t={dashboard:"Dashboard",projects:"Projects",plan:"Plan",settings:"Settings"}[view];if(view==="projects"&&detailId&&cur())t=`${esc(cur().name)}<button class="pill sm" id="editP">✎ 수정</button>`;
+ $("#main").innerHTML=head(t)+(view==="dashboard"?dashboardView():view==="projects"?projectsView():view==="plan"?planView():settingsView());
  {const m=$("#main"),pr=view==="projects"&&detailId&&cur();["--g","--gd","--gt"].forEach(v=>m.style.removeProperty(v));if(pr){const c=PAL[(pr.color||0)%PAL.length][0];m.style.setProperty("--g",c);m.style.setProperty("--gd",`color-mix(in srgb,${c} 72%,#000)`);m.style.setProperty("--gt",`color-mix(in srgb,${c} 16%,#fff)`)}}
  const g=$("#gantt");if(g&&scope==="month"){const o=dn(new Date())-dn(new Date(mon.getFullYear(),mon.getMonth(),1));g.scrollLeft=o>=0?Math.max(0,o*52-120):0}
 }
-function route(){const h=location.hash.slice(1);view=["dashboard","projects","settings"].includes(h)?h:"dashboard";if(view!=="projects")detailId=null;render()}
+function route(){const h=location.hash.slice(1);view=["dashboard","projects","plan","settings"].includes(h)?h:"dashboard";if(view!=="projects"){detailId=null;jEdit=null}render()}
 addEventListener("hashchange",route);
 
 /* dialog */
@@ -383,24 +490,31 @@ $("#save").onclick=async()=>{
  $("#dlg").close();mon=new Date(+start.slice(0,4),+start.slice(5,7)-1,+start.slice(8));
  if(view!=="dashboard")location.hash="dashboard";else render();toast("프로젝트가 생성되었습니다");
 };
-$("#del").onclick=()=>{const p=projects.find(x=>x.id===editId);$("#cMsg").textContent=`“${p?p.name:""}” 프로젝트가 영구적으로 삭제됩니다.`;$("#dlgC").showModal()};
-$("#cNo").onclick=()=>$("#dlgC").close();
-$("#cYes").onclick=async()=>{
- try{if(db)await db.collection("projects").doc(editId).delete()}catch(x){$("#dlgC").close();toast("삭제하지 못했습니다. 보기 전용 권한일 수 있습니다.");return}
- projects=projects.filter(x=>x.id!==editId);$("#dlgC").close();$("#dlg").close();detailId=null;render();toast("프로젝트가 삭제되었습니다");
-};
+let pendingDel=null;
+function confirmDel(title,msg,fn){pendingDel=fn;$("#cTitle").textContent=title;$("#cMsg").textContent=msg;$("#dlgC").showModal()}
+$("#cNo").onclick=()=>{pendingDel=null;$("#dlgC").close()};
+$("#cYes").onclick=async()=>{const f=pendingDel;pendingDel=null;$("#dlgC").close();if(f)await f()};
+$("#del").onclick=()=>{const id=editId,p=projects.find(x=>x.id===id);confirmDel("이 프로젝트를 삭제할까요?",`“${p?p.name:""}” 프로젝트가 영구적으로 삭제됩니다.`,async()=>{
+ try{if(db)await db.collection("projects").doc(id).delete()}catch(x){toast("삭제하지 못했습니다. 보기 전용 권한일 수 있습니다.");return}
+ projects=projects.filter(z=>z.id!==id);$("#dlg").close();detailId=null;render();toast("프로젝트가 삭제되었습니다")})};
 
 document.addEventListener("click",async e=>{
- const nv=e.target.closest("nav a[data-v]");if(nv){detailId=null;if(location.hash==="#"+nv.dataset.v)render();return}
+ const lo=e.target.closest("[data-logout]");if(lo){logout();return}
+ const nv=e.target.closest("nav a[data-v]");if(nv){detailId=null;jEdit=null;if(location.hash==="#"+nv.dataset.v)render();return}
+ if(e.target.closest("#planwrap")&&await planClick(e))return;
  const pcs=e.target.closest("[data-pc]");if(pcs){selColor=+pcs.dataset.pc;drawColors();return}
  if(e.target.id==="jAdd")return addJ();
  const kk=e.target.closest("[data-kk]");if(kk)return sendKakao(kk);
  const dm=e.target.closest("[data-dm]");if(dm){dcal=new Date(dcal.getFullYear(),dcal.getMonth()+ +dm.dataset.dm,1);render();return}
- const ed=e.target.closest("[data-ed]");if(ed){evDay=ed.dataset.ed;const[a,m,d]=evDay.split("-").map(Number);$("#eTitle").textContent=`${m}월 ${d}일 일정 추가`;$("#eText").value="";$("#dlgE").showModal();$("#eText").focus();return}
- const ex=e.target.closest("[data-ex]");if(ex){const p=cur();p.events=(p.events||[]).filter(x=>x.id!==ex.dataset.ex);render();persist(p);return}
+ const ed=e.target.closest("[data-ed]");if(ed){evDay=ed.dataset.ed;evEdit=null;const[a,m,d]=evDay.split("-").map(Number);$("#eTitle").textContent=`${m}월 ${d}일 일정 추가`;$("#eDay").value=evDay;$("#eText").value="";$("#dlgE").showModal();$("#eText").focus();return}
+ const ee=e.target.closest("[data-eedit]");if(ee){const x=(cur().events||[]).find(z=>z.id===ee.dataset.eedit);if(!x)return;evEdit=x.id;evDay=x.day;$("#eTitle").textContent="일정 수정";$("#eDay").value=x.day;$("#eText").value=x.t;$("#dlgE").showModal();$("#eText").focus();return}
+ const ex=e.target.closest("[data-ex]");if(ex){const id=ex.dataset.ex,x=(cur().events||[]).find(z=>z.id===id);confirmDel("일정을 삭제할까요?",`“${x?x.t:""}” 일정이 삭제됩니다.`,()=>{const p=cur();p.events=(p.events||[]).filter(z=>z.id!==id);render();persist(p);toast("일정이 삭제되었습니다")});return}
  if(e.target.id==="eNo"){$("#dlgE").close();return}
  if(e.target.id==="eYes")return addEv();
- const jd=e.target.closest("[data-jd]");if(jd){const p=cur();p.journal=(p.journal||[]).filter(x=>x.id!==jd.dataset.jd);render();persist(p);return}
+ const jd=e.target.closest("[data-jd]");if(jd){const id=jd.dataset.jd,x=(cur().journal||[]).find(z=>z.id===id),sn=x?x.t.replace(/\s+/g," ").slice(0,40)+(x.t.length>40?"…":""):"";confirmDel("진행일지를 삭제할까요?",`“${sn}” 기록이 삭제됩니다.`,()=>{const p=cur();p.journal=(p.journal||[]).filter(z=>z.id!==id);render();persist(p);toast("진행일지가 삭제되었습니다")});return}
+ const je=e.target.closest("[data-je]");if(je){jEdit=je.dataset.je;render();const t=$("#jEditT");if(t)t.focus();return}
+ if(e.target.closest("[data-jcancel]")){jEdit=null;render();return}
+ const js=e.target.closest("[data-jsave]");if(js){const t=$("#jEditT").value.trim(),d=$("#jEditD").value;if(!t){$("#jEditT").focus();return}const p=cur();p.journal=(p.journal||[]).map(z=>z.id===js.dataset.jsave?{...z,t,day:d||z.day}:z);jEdit=null;render();persist(p);toast("진행일지가 수정되었습니다");return}
  if(e.target.id==="back"){detailId=null;render();return}
  if(e.target.id==="editP"){openDlg(null,detailId);return}
  const ths=e.target.closest("[data-t]");if(ths){settings.theme=+ths.dataset.t;applyTheme();render();try{if(db)await db.doc("settings/main").set(settings)}catch(x){toast("테마를 저장하지 못했습니다.")}return}
@@ -421,7 +535,9 @@ document.addEventListener("change",e=>{
  const t=e.target;
  if(t.id==="pgR"){const p=cur();p.progress=+t.value;persist(p)}
 });
-document.addEventListener("input",e=>{if(e.target.id==="pgR"){$("#pgV").textContent=e.target.value+"%";$("#pgB").style.width=e.target.value+"%"}});
+let memoT=null,memoV="";
+document.addEventListener("input",e=>{if(e.target.id==="memo"){memoV=e.target.value;$("#memoSt").textContent="저장 중…";clearTimeout(memoT);memoT=setTimeout(saveMemo,900)}
+ if(e.target.id==="pgR"){$("#pgV").textContent=e.target.value+"%";$("#pgB").style.width=e.target.value+"%";e.target.style.setProperty("--v",e.target.value+"%")}});
 document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.id==="eText")addEv();if(e.key==="Enter"&&(e.ctrlKey||e.metaKey)&&e.target.id==="jText")addJ()});
 
 /* cloud */
@@ -462,7 +578,7 @@ async function logout(){const c=sbCfg(),s=getSession();clearSession();if(c&&s){t
 function showLogin(cfg){
  let mode="in";const L=$("#login");L.hidden=false;
  const draw=(msg,ok)=>{
-  L.innerHTML=`<form class="lcard" id="lform" novalidate><img src="${$(".logo img").src}" alt="SID" style="height:44px;align-self:flex-start"><p>프로젝트 관리 시스템에 접속하려면 로그인이 필요합니다.</p>
+  L.innerHTML=`<form class="lcard" id="lform" novalidate><img src="${$(".logo img").src}" alt="SID" style="height:44px;align-self:center"><p>프로젝트 관리 시스템에 접속하려면 로그인이 필요합니다.</p>
   ${cfg?"":`<label>Supabase Project URL<input class="in" id="lUrl" placeholder="https://xxxx.supabase.co" autocomplete="off"></label><label>anon public key<input class="in" id="lKey" type="password" autocomplete="off"></label>`}
   <label>이메일<input class="in" id="lMail" type="email" autocomplete="username" required></label>
   <label>비밀번호<input class="in" id="lPw" type="password" autocomplete="${mode==="in"?"current-password":"new-password"}" minlength="6" required></label>
@@ -490,14 +606,14 @@ async function startCloud(){
  if(cfg){db=makeSupabase(cfg);window.__sb=true}
  else{try{db=window.claude?await window.claude.use("db"):null}catch(x){db=null}}
  if(!db){setCloud("off");return}
- const fail=e=>{setCloud("off");if(window.__sb)toast("Supabase 연결 오류: "+(e&&e.message||"확인 필요"))};
+ const fail=e=>{setCloud("off");if(window.__sb)toast("데이터베이스 연결 오류: "+(e&&e.message||"확인 필요"))};
  db.collection("projects").onSnapshot(s=>{projects=s.docs.map(d=>({id:d.id,...d.data()}));setCloud("on");if(!$("#dlg").open&&view!=="settings"&&!(detailId&&document.activeElement&&/^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName)))render()},fail);
+ db.collection("plans").onSnapshot(s=>{plans=s.docs.map(d=>({id:d.id,...d.data()}));if(view==="plan"&&!$("#dlgP").open&&!(document.activeElement&&/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName)))render()},fail);
  db.doc("settings/main").onSnapshot(s=>{if(s.exists){settings={...settings,...s.data()};applyTheme();if(view!=="settings")render()}},fail);
 }
-$("#lo").onclick=logout;
 (async()=>{
  const cfg=sbCfg();
- if(cfg){if(await freshToken(cfg)){$("#lo").hidden=false;startCloud()}else showLogin(cfg)}
+ if(cfg){if(await freshToken(cfg))startCloud();else showLogin(cfg)}
  else if(window.claude)startCloud();
  else showLogin(null);
 })();
