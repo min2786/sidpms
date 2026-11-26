@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>SID – Project Calendar</title>
 <script src="config.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -155,6 +155,8 @@ dialog h2{margin:0 0 16px}
 .mst{display:inline-flex;align-items:center;gap:7px;padding:5px 14px 5px 11px;border-radius:999px;font-weight:700;font-size:12.5px;background:var(--sb);color:var(--sc)}.mst i{width:8px;height:8px;border-radius:50%;background:var(--sc)}
 .mst[data-s="진행중"]{--sb:#e3f4ea;--sc:#1f8a4d}.mst[data-s="일시멈춤"]{--sb:#fde8e8;--sc:#d23a40}.mst[data-s="완료"]{--sb:#e6f0fd;--sc:#2563c9}
 .psec+.psec{margin-top:28px;padding-top:24px;border-top:1px solid var(--line)}.psh{display:flex;align-items:center;gap:10px;margin:0 0 14px}.psh h3{margin:0;font-size:16px}.psh span{background:var(--gt);color:var(--gd);font-size:12px;font-weight:700;border-radius:10px;padding:2px 9px}.pshint{color:var(--ink2);font-size:13px;padding:18px;border:1px dashed var(--line);border-radius:12px;text-align:center}
+html{touch-action:pan-x pan-y;-webkit-text-size-adjust:100%}
+@media(pointer:coarse){input,select,textarea,.in,.paper,.ugrid .in,.dte .in,.pathrow .in,.usearch .in{font-size:16px!important}}
 .sch{margin-bottom:16px}.uhead{display:flex;align-items:baseline;justify-content:space-between;gap:8px}.uhead small{color:var(--ink2)}
 .jcard{margin-top:16px}.jcard .jform textarea{min-height:90px}
 .top h1 .ib{width:34px;height:34px;font-size:18px;flex:none}
@@ -754,6 +756,9 @@ document.addEventListener("change",e=>{
  if(t.id==="pgR"){const p=cur();p.progress=+t.value;persist(p)}
 });
 let memoT=null,memoV="";
+/* 모바일 핀치 줌 방지 */
+["gesturestart","gesturechange","gestureend"].forEach(t=>document.addEventListener(t,e=>e.preventDefault(),{passive:false}));
+document.addEventListener("touchmove",e=>{if(e.touches&&e.touches.length>1)e.preventDefault()},{passive:false});
 document.addEventListener("focusout",e=>{if(e.target.id==="memo")memoShow(false)});
 document.addEventListener("click",e=>{const v=e.target.closest&&e.target.closest("#memoView");if(v&&!e.target.closest("a"))memoShow(true)});
 document.addEventListener("keydown",e=>{if(e.target.id==="memoView"&&e.key==="Enter")memoShow(true)});
