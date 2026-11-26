@@ -39,7 +39,7 @@ main{padding:22px 28px 28px;min-width:0;display:flex;flex-direction:column;heigh
 .top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
 .top h1{margin:0;font-size:24px;letter-spacing:-.01em}
 .ws{display:flex;align-items:center;gap:10px;font-weight:700}
-.ws .nm{height:34px;padding:0 16px;border-radius:17px;background:var(--g);color:#fff;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:13px;white-space:nowrap;max-width:240px;overflow:hidden;text-overflow:ellipsis}
+.ws .nm{height:34px;padding:0 16px;border-radius:17px;background:var(--tg,#7cb518);color:#fff;text-decoration:none;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:13px;white-space:nowrap;max-width:240px;overflow:hidden;text-overflow:ellipsis}
 .ws .lo{height:34px;padding:0 16px;border-radius:17px;border:1px solid var(--line);background:var(--surf);color:var(--ink);display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:600}
 .ws .lo:hover{border-color:var(--g);color:var(--gd)}
 .ctl{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap}
@@ -318,7 +318,7 @@ input[type=range]::-moz-range-track{background:transparent}
 <script>
 const PAL=[["#b9d435","#2b2d2f"],["#8cc63f","#1d2a0a"],["#2e8b3d","#fff"],["#1f7a5a","#fff"],["#24512a","#fff"],["#2563eb","#fff"],["#9333ea","#fff"],["#f5a623","#2b2d2f"],["#e5484d","#fff"],["#f97316","#fff"],["#facc15","#2b2d2f"],["#ec4899","#fff"],["#be123c","#fff"],["#14a8a0","#fff"],["#06b6d4","#fff"],["#38bdf8","#2b2d2f"],["#1e3a8a","#fff"],["#6366f1","#fff"],["#92603a","#fff"],["#64748b","#fff"]];
 const THEMES=[{n:"라임",g:"#7cb518",gd:"#4f7d0c",gt:"#eef6d8"},{n:"에메랄드",g:"#2e9e6b",gd:"#1f7a5a",gt:"#e0f3ea"},{n:"틸",g:"#14a8a0",gd:"#0d7f79",gt:"#dff3f1"},{n:"블루",g:"#3b82f6",gd:"#1d5fd1",gt:"#e3edfe"},{n:"인디고",g:"#6366f1",gd:"#4338ca",gt:"#e8e9fd"},{n:"퍼플",g:"#a855f7",gd:"#7e22ce",gt:"#f1e5fd"},{n:"핑크",g:"#ec4899",gd:"#be185d",gt:"#fce4f0"},{n:"오렌지",g:"#f97316",gd:"#c2570c",gt:"#fdeadb"}];
-function applyTheme(){const t=THEMES[settings.theme||0]||THEMES[0],s=document.documentElement.style;s.setProperty("--g",t.g);s.setProperty("--gd",t.gd);s.setProperty("--gt",t.gt)}
+function applyTheme(){const t=THEMES[settings.theme||0]||THEMES[0],s=document.documentElement.style;s.setProperty("--g",t.g);s.setProperty("--gd",t.gd);s.setProperty("--gt",t.gt);s.setProperty("--tg",t.g)}
 function drawColors(){$("#pColors").innerHTML=PAL.map((c,i)=>`<button type="button" class="sw" data-pc="${i}" aria-pressed="${selColor===i}" aria-label="색상 ${i+1}" style="background:${c[0]}"></button>`).join("");$("#cHint").textContent=selColor==null?"(선택하지 않으면 무작위)":""}
 const $=s=>document.querySelector(s),esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const pd=s=>{const[a,b,c]=s.split("-").map(Number);return Math.floor(Date.UTC(a,b-1,c)/864e5)};
