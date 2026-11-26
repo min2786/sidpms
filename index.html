@@ -416,8 +416,7 @@ function detailView(p){
    <input type="range" id="pgR" min="0" max="100" step="5" value="${P}" style="--v:${P}%" aria-label="진행도">
    <div class="kvs">${row("유형",M?"유지관리형":"일반")}${row("시작일",dtv("start",p.start))}${M?"":row("마감일",dtv("end",p.end))+row("전체 기간",`${e-s+1}일`)+row("남은 기간",dd)}${row("진행 일지",`${J.length}건`)}</div></section>
   ${schedCard(p)}`}
-  </div>${M?`<div class="sch" style="margin-top:16px">${schedCard(p)}</div>`:""}
-  ${M?versionCard(p):`<section class="card jcard"><h3>일일 진행일지</h3>
+  </div>${M?versionCard(p)+`<div class="sch" style="margin-top:16px">${schedCard(p)}</div>`:`<section class="card jcard"><h3>일일 진행일지</h3>
    <div class="jform"><input class="in" id="jDay" type="date" value="${t}" aria-label="날짜"><textarea class="in" id="jText" rows="3" maxlength="1000" placeholder="이날 진행한 내용을 기록하세요 (Ctrl+Enter로 저장)"></textarea><button class="btn" id="jAdd">기록 추가</button></div>
    ${days.length?days.map(k=>`<div class="jday"><h4>${lab(k)}<button class="kk" data-kk="${k}" title="카카오톡 나에게 보내기">카톡 전송</button></h4>${J.filter(x=>x.day===k).map(x=>x.id===jEdit?`<div class="jitem edit"><input class="in" id="jEditD" type="date" value="${x.day}"><textarea class="in" id="jEditT" rows="3" maxlength="1000">${esc(x.t)}</textarea><div class="jeb"><button class="btn sec sm" data-jcancel>취소</button><button class="btn sm" data-jsave="${x.id}">저장</button></div></div>`:`<div class="jitem"><p>${esc(x.t)}</p><button class="x ed" data-je="${x.id}" aria-label="수정" title="수정">✎</button><button class="x" data-jd="${x.id}" aria-label="삭제" title="삭제">×</button></div>`).join("")}</div>`).join(""):'<div class="empty">아직 기록이 없습니다. 오늘의 진행 상황을 남겨 보세요.</div>'}
   </section>`}`;
@@ -453,8 +452,10 @@ function kakaoShare(msg){
  catch(x){toast("카카오톡 공유를 열지 못했습니다. 키와 등록한 도메인을 확인해 주세요.")}
 }
 async function sendKakao(btn){
- const p=cur(),day=btn.dataset.kk,L=(p.journal||[]).filter(x=>x.day===day).sort((a,b)=>a.at-b.at);if(!L.length)return;
- let msg=`[${p.name}]\n`+L.map(x=>x.t).join("\n");if(msg.length>200)msg=msg.slice(0,197)+"...";
+ const p=cur();let msg;
+ if(btn.dataset.kv){const v=(p.versions||[]).find(x=>x.id===btn.dataset.kv);if(!v)return;msg=`[${p.name}]\n${v.ver} (${fmt(v.day).slice(2)})${v.t?"\n"+v.t:""}`}
+ else{const day=btn.dataset.kk,L=(p.journal||[]).filter(x=>x.day===day).sort((a,b)=>a.at-b.at);if(!L.length)return;msg=`[${p.name}]\n`+L.map(x=>x.t).join("\n")}
+ if(msg.length>200)msg=msg.slice(0,197)+"...";
  if(!window.claude)return kakaoShare(msg);
  const mcp=await window.claude.use("mcp").catch(()=>null);
  if(!mcp)return kakaoShare(msg);
@@ -473,7 +474,7 @@ function versionCard(p){
  const V=[...(p.versions||[])].sort((a,b)=>(b.day||"").localeCompare(a.day||"")||(b.at||0)-(a.at||0));
  return `<section class="card jcard"><h3>버전업 리스트</h3>
   <div class="vf"><input class="in" id="vVer" maxlength="20" placeholder="버전 (예: v1.0)" aria-label="버전"><input class="in" id="vDay" type="date" value="${dayKey(0)}" aria-label="날짜"><span></span><textarea class="in" id="vText" rows="3" maxlength="1000" placeholder="리뉴얼 내용을 기록하세요 (Ctrl+Enter로 저장)"></textarea><button class="btn" id="vAdd">버전 등록</button></div>
-  ${V.length?V.map(x=>x.id===vEdit?`<div class="jitem edit"><input class="in" id="vEditV" maxlength="20" value="${esc(x.ver)}" aria-label="버전"><input class="in" id="vEditD" type="date" value="${esc(x.day)}"><textarea class="in" id="vEditT" rows="3" maxlength="1000">${esc(x.t||"")}</textarea><div class="jeb"><button class="btn sec sm" data-vcancel>취소</button><button class="btn sm" data-vsave="${x.id}">저장</button></div></div>`:`<div class="jitem vi"><span class="vb">${esc(x.ver)}</span><span class="vd">${fmt(x.day).slice(2)}</span><p>${esc(x.t||"")}</p><button class="x ed" data-ve="${x.id}" aria-label="수정" title="수정">✎</button><button class="x" data-vd="${x.id}" aria-label="삭제" title="삭제">×</button></div>`).join(""):'<div class="empty">아직 등록된 버전이 없습니다.</div>'}
+  ${V.length?V.map(x=>x.id===vEdit?`<div class="jitem edit"><input class="in" id="vEditV" maxlength="20" value="${esc(x.ver)}" aria-label="버전"><input class="in" id="vEditD" type="date" value="${esc(x.day)}"><textarea class="in" id="vEditT" rows="3" maxlength="1000">${esc(x.t||"")}</textarea><div class="jeb"><button class="btn sec sm" data-vcancel>취소</button><button class="btn sm" data-vsave="${x.id}">저장</button></div></div>`:`<div class="jitem vi"><span class="vb">${esc(x.ver)}</span><span class="vd">${fmt(x.day).slice(2)}</span><p>${esc(x.t||"")}</p><button class="kk" data-kv="${x.id}" title="카카오톡 전송">카톡 전송</button><button class="x ed" data-ve="${x.id}" aria-label="수정" title="수정">✎</button><button class="x" data-vd="${x.id}" aria-label="삭제" title="삭제">×</button></div>`).join(""):'<div class="empty">아직 등록된 버전이 없습니다.</div>'}
  </section>`;
 }
 function addV(){
@@ -622,7 +623,7 @@ document.addEventListener("click",async e=>{
  if(e.target.closest("[data-vcancel]")){vEdit=null;render();return}
  const vs=e.target.closest("[data-vsave]");if(vs){const ver=$("#vEditV").value.trim(),t=$("#vEditT").value.trim(),d=$("#vEditD").value;if(!ver){$("#vEditV").focus();return}const p=cur();p.versions=(p.versions||[]).map(z=>z.id===vs.dataset.vsave?{...z,ver,t,day:d||z.day}:z);vEdit=null;render();persist(p);toast("버전이 수정되었습니다");return}
  if(e.target.id==="jAdd")return addJ();
- const kk=e.target.closest("[data-kk]");if(kk)return sendKakao(kk);
+ const kk=e.target.closest("[data-kk],[data-kv]");if(kk)return sendKakao(kk);
  const dm=e.target.closest("[data-dm]");if(dm){dcal=new Date(dcal.getFullYear(),dcal.getMonth()+ +dm.dataset.dm,1);render();return}
  const ed=e.target.closest("[data-ed]");if(ed){evDay=ed.dataset.ed;evEdit=null;const[a,m,d]=evDay.split("-").map(Number);$("#eTitle").textContent=`${m}월 ${d}일 일정 추가`;$("#eDay").value=evDay;$("#eText").value="";$("#dlgE").showModal();$("#eText").focus();return}
  const ee=e.target.closest("[data-eedit]");if(ee){const x=(cur().events||[]).find(z=>z.id===ee.dataset.eedit);if(!x)return;evEdit=x.id;evDay=x.day;$("#eTitle").textContent="일정 수정";$("#eDay").value=x.day;$("#eText").value=x.t;$("#dlgE").showModal();$("#eText").focus();return}
