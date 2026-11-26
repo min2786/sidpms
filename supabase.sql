@@ -32,3 +32,10 @@ create policy "pms_img_auth" on storage.objects
 
 -- 실시간 알림: UPDATE 웹훅에서 변경 전 데이터(old_record)를 받으려면 필요합니다.
 alter table public.pms_docs replica identity full;
+
+-- 회의 녹음 임시 저장용 비공개 버킷 (정리가 끝나면 서버가 자동 삭제). 파일당 최대 100MB
+insert into storage.buckets (id, name, public, file_size_limit) values ('pms-audio','pms-audio',false,104857600)
+  on conflict (id) do nothing;
+drop policy if exists pms_audio_auth on storage.objects;
+create policy pms_audio_auth on storage.objects for all to authenticated
+  using (bucket_id = 'pms-audio') with check (bucket_id = 'pms-audio');

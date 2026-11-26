@@ -44,3 +44,12 @@ Claude 안에서 열면 연결된 카카오톡 도구로 "나에게 보내기"�
 3. Edge Functions → Secrets에 추가: `VAPID_PUBLIC`, `VAPID_PRIVATE`, `VAPID_SUBJECT`, `WEBHOOK_SECRET`(임의의 긴 문자열)
 4. Database → Webhooks → Create: 테이블 `pms_docs`, 이벤트 Insert+Update, 타입 Supabase Edge Function → `notify`, HTTP Headers에 `x-webhook-secret` = 3번의 WEBHOOK_SECRET 값
 5. 앱 설정 → 알림에서 종류별로 켜고 끌 수 있습니다. 내가 올린 변경은 내 기기로는 오지 않습니다.
+
+## 회의 녹음 → Gemini 자동 정리 (Monday Meeting)
+1. Supabase SQL Editor에서 `supabase.sql` 맨 아래 **회의 녹음 버킷(pms-audio)** 블록 실행
+2. https://aistudio.google.com 에서 Gemini API 키 발급 (키는 채팅/저장소에 올리지 말 것)
+3. Supabase → Edge Functions → 새 함수 `transcribe` → `supabase/functions/transcribe/index.ts` 붙여넣기. **Verify JWT는 켜 둠**
+4. Edge Functions → Secrets: `GEMINI_API_KEY` (선택: `GEMINI_MODEL`, 기본 gemini-2.5-flash. 모델이 종료되면 최신 flash 모델명으로 변경)
+5. 앱 Monday Meeting → "녹음 시작" → "녹음 종료 · AI 정리". 요약·결정사항이 먼저 채워지고, 받아쓰기는 이어서 추가됩니다.
+- 정리가 성공하면 원본 음성은 자동 삭제됩니다. 실패하면 "다시 시도"로 재처리합니다.
+- 업로드 전에 앱이 멈추면 녹음은 폰에 임시 보관되며, 다시 열면 "정리하기" 버튼이 나옵니다.
