@@ -128,7 +128,7 @@ dialog h2{margin:0 0 16px}
 .dday small{width:100%;font-size:11px;font-weight:600;opacity:.85}.dday strong{font-size:40px;line-height:1;letter-spacing:-.02em;font-weight:800}.dday span{font-size:12px;opacity:.85}
 .dday.soon{background:#fff1e0;color:#c2570c}.dday.late{background:#fde8e4;color:#b3402a}
 .ddb{font-weight:800;font-size:13px;padding:4px 12px;border-radius:12px;background:var(--gt);color:var(--gd);flex:none}.ddb.soon{background:#fff1e0;color:#c2570c}.ddb.late{background:#fde8e4;color:#b3402a}
-.kk{margin-left:10px;border:0;border-radius:10px;background:#fee500;color:#181600;font-size:11px;font-weight:700;padding:4px 10px;vertical-align:middle}.kk:disabled{opacity:.5}
+.kk{margin-left:10px;border:0;border-radius:10px;background:#fee500;color:#181600;font-size:11px;font-weight:700;padding:4px 10px;vertical-align:middle}.kk:disabled{opacity:.5}.prow .kk.kp{margin:0 8px 0 0;flex:none;white-space:nowrap}
 .mseg{max-width:460px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0 4px}.mseg button{border:1.5px solid var(--line);background:var(--surf);border-radius:12px;padding:12px 4px;font-weight:700;font-size:13px;color:var(--ink2)}.mseg button[data-mst="진행중"][aria-pressed=true]{border-color:#2e9e5b;background:#e3f4ea;color:#1f7a44}.mseg button[data-mst="일시멈춤"][aria-pressed=true]{border-color:#e5484d;background:#fde8e8;color:#b3262b}.mseg button[data-mst="완료"][aria-pressed=true]{border-color:#2b6fe0;background:#e6f0fd;color:#1a4fa8}
 .utiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:10px;margin:14px 0}.ut{border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:var(--side);position:relative}.ut b{font-size:26px;font-weight:700;display:block;line-height:1.1}.ut small{display:flex;align-items:center;gap:6px;color:var(--ink2);font-size:12px;margin-top:6px}.ut small i{width:8px;height:8px;border-radius:50%;background:var(--c)}.ut em{position:absolute;top:10px;right:10px;font-style:normal;font-size:10px;font-weight:700;background:var(--surf);border:1px solid var(--line);border-radius:10px;padding:1px 7px;color:var(--ink2)}
 .uwrap{overflow-x:auto}.ugrid{display:grid;grid-template-columns:64px minmax(110px,1fr) 194px 90px 90px 30px;gap:8px;align-items:center;min-width:620px}.ugrid.uh{font-size:12px;color:var(--ink2);font-weight:700;padding:8px 0;border-bottom:1px solid var(--line)}.ugrid.uh span{text-align:center}.ugrid.ur{padding:7px 0;border-bottom:1px solid var(--line)}.ugrid.ur.urg{background:#fff0f0;border-radius:10px}.ugrid.ur.urg .in{background:#fffafa}
@@ -570,8 +570,9 @@ function kakaoShare(msg){
  catch(x){toast("카카오톡 공유를 열지 못했습니다. 키와 등록한 도메인을 확인해 주세요.")}
 }
 async function sendKakao(btn){
- const p=cur();let msg;
- if(btn.dataset.kv){const v=(p.versions||[]).find(x=>x.id===btn.dataset.kv);if(!v)return;msg=`[${p.name}]\n${v.ver} (${fmt(v.day).slice(2)})${v.t?"\n"+v.t:""}`}
+ const p=btn.dataset.kp?null:cur();let msg;
+ if(btn.dataset.kp){const x=plans.find(z=>z.id===btn.dataset.kp);if(!x)return;const d=pdays(x),r=x.start===x.end?fmt(x.start).slice(2):`${fmt(x.start).slice(2)} ~ ${fmt(x.end).slice(2)}`;msg=`[${PK[x.kind]||"휴가"}]\n${x.type}${x.title&&x.title!==x.type?" · "+x.title:""}\n${r} (${fmtD(d)}일)${x.note?"\n"+x.note:""}`}
+ else if(btn.dataset.kv){const v=(p.versions||[]).find(x=>x.id===btn.dataset.kv);if(!v)return;msg=`[${p.name}]\n${v.ver} (${fmt(v.day).slice(2)})${v.t?"\n"+v.t:""}`}
  else{const day=btn.dataset.kk,L=(p.journal||[]).filter(x=>x.day===day).sort((a,b)=>a.at-b.at);if(!L.length)return;msg=`[${p.name}]\n`+L.map(x=>x.t).join("\n")}
  if(msg.length>200)msg=msg.slice(0,197)+"...";
  if(!window.claude)return kakaoShare(msg);
@@ -633,7 +634,7 @@ function planView(){
   g+=`<div class="wk" style="min-height:${Math.max(96,42+lanes.length*30)}px">${cells}<div class="ev">${bars.join("")}</div></div>`;
  }
  g+="</div></div>";
- const rows=inM.length?inM.map(x=>{const c=pcol(x),dd=pdays(x);return `<div class="prow"><span class="dot" style="background:${c[0]}"></span><div class="tx"><b>${esc(x.title)}</b><small>${fmt(x.start)}${x.start!==x.end?" – "+fmt(x.end):""} · ${k==="vacation"?fmtD(dd)+"일":dd+"일"}${x.note?" · "+esc(x.note):""}</small></div><span class="tag">${esc(x.type)}</span><button class="x ed" data-pedit="${esc(x.id)}" aria-label="수정" title="수정">✎</button><button class="x" data-pdel="${esc(x.id)}" aria-label="삭제" title="삭제">×</button></div>`}).join(""):`<div class="empty">이 달에 등록된 일정이 없습니다. 날짜를 누르거나 “일정 추가”를 눌러 등록하세요.</div>`;
+ const rows=inM.length?inM.map(x=>{const c=pcol(x),dd=pdays(x);return `<div class="prow"><span class="dot" style="background:${c[0]}"></span><div class="tx"><b>${esc(x.title)}</b><small>${fmt(x.start)}${x.start!==x.end?" – "+fmt(x.end):""} · ${k==="vacation"?fmtD(dd)+"일":dd+"일"}${x.note?" · "+esc(x.note):""}</small></div><span class="tag">${esc(x.type)}</span>${k==="vacation"?`<button class="kk kp" data-kp="${esc(x.id)}" title="카카오톡 나에게 보내기">카톡 전송</button>`:""}<button class="x ed" data-pedit="${esc(x.id)}" aria-label="수정" title="수정">✎</button><button class="x" data-pdel="${esc(x.id)}" aria-label="삭제" title="삭제">×</button></div>`}).join(""):`<div class="empty">이 달에 등록된 일정이 없습니다. 날짜를 누르거나 “일정 추가”를 눌러 등록하세요.</div>`;
  return `<div id="planwrap"><div class="ctl"><div class="seg">${["work","vacation"].map(t=>`<button data-ptab="${t}" aria-pressed="${k===t}">${PK[t]}</button>`).join("")}</div><span style="flex:1"></span><button class="ib" data-pm="-1" aria-label="이전 달">‹</button><h2 style="min-width:110px;text-align:center">${Y}년 ${M+1}월</h2><button class="ib" data-pm="1" aria-label="다음 달">›</button><button class="pill" data-pm="0">오늘</button><button class="btn" data-padd>+ 일정 추가</button></div>
  <div class="tiles">${tiles.map(([a,b])=>a===null?b:`<div class="tile"><small>${a}</small><strong>${b}</strong></div>`).join("")}</div>${g}
  <div class="row-ctl"><h2>${M+1}월 ${k==="work"?"업무 일정":"휴가 일정"}</h2></div>${rows}</div>`;
@@ -747,7 +748,7 @@ document.addEventListener("click",async e=>{
  if(e.target.closest("[data-vcancel]")){vEdit=null;render();return}
  const vs=e.target.closest("[data-vsave]");if(vs){const ver=$("#vEditV").value.trim(),t=$("#vEditT").value.trim(),d=$("#vEditD").value;if(!ver){$("#vEditV").focus();return}const p=cur();p.versions=(p.versions||[]).map(z=>z.id===vs.dataset.vsave?{...z,ver,t,day:d||z.day}:z);vEdit=null;render();persist(p);toast("버전이 수정되었습니다");return}
  if(e.target.id==="jAdd")return addJ();
- const kk=e.target.closest("[data-kk],[data-kv]");if(kk)return sendKakao(kk);
+ const kk=e.target.closest("[data-kk],[data-kv],[data-kp]");if(kk)return sendKakao(kk);
  const dm=e.target.closest("[data-dm]");if(dm){dcal=new Date(dcal.getFullYear(),dcal.getMonth()+ +dm.dataset.dm,1);render();return}
  const ed=e.target.closest("[data-ed]");if(ed){evDay=ed.dataset.ed;evEdit=null;const[a,m,d]=evDay.split("-").map(Number);$("#eTitle").textContent=`${m}월 ${d}일 일정 추가`;$("#eDay").value=evDay;$("#eText").value="";$("#dlgE").showModal();$("#eText").focus();return}
  const ee=e.target.closest("[data-eedit]");if(ee){const x=(cur().events||[]).find(z=>z.id===ee.dataset.eedit);if(!x)return;evEdit=x.id;evDay=x.day;$("#eTitle").textContent="일정 수정";$("#eDay").value=x.day;$("#eText").value=x.t;$("#dlgE").showModal();$("#eText").focus();return}
