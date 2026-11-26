@@ -106,6 +106,8 @@ dialog h2{margin:0 0 16px}
 .d.today span{background:var(--gd);color:#fff;font-weight:700}
 .tl .now{position:absolute;top:0;bottom:0;width:2px;background:var(--gd);z-index:1}
 .tbar{position:absolute;top:9px;height:38px;border:0;border-radius:20px;display:flex;align-items:center;gap:8px;padding:0 14px 0 8px;font-size:12px;font-weight:700;overflow:hidden;white-space:nowrap;z-index:2}
+.bar.thin{position:relative;background:transparent!important;border-radius:0!important;padding:0 2px;font-size:10px;line-height:18px;font-weight:700;opacity:.95}.bar.thin:after{content:"";position:absolute;left:0;right:0;bottom:3px;height:6px;border-radius:var(--rl,0) var(--rr,0) var(--rr,0) var(--rl,0);background:var(--bc)}
+.tbar.thin{top:21px;height:9px;padding:0;border-radius:5px}.tbar.thin i,.tbar.thin span{display:none}
 .tbar i{width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.35);display:grid;place-items:center;flex:none}
 .tbar i:after{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
 .tbar:hover{filter:brightness(.95)}
@@ -284,12 +286,13 @@ function calendar(){
  const ws=settings.weekStart,today=dn(new Date()),cols=scope==="day"?1:7,y=mon.getFullYear(),m=mon.getMonth(),bases=[];
  if(scope==="month"){const off=(new Date(y,m,1).getDay()-ws+7)%7,n=Math.ceil((off+new Date(y,m+1,0).getDate())/7);for(let w=0;w<n;w++)bases.push(new Date(y,m,1-off+w*7))}
  else bases.push(scope==="week"?ws0():new Date(y,m,mon.getDate()));
- const P=projects.filter(p=>p.start&&p.end).map(p=>({...p,s:pd(p.start),e:pd(p.end)})).sort((a,b)=>a.s-b.s||(b.e-b.s)-(a.e-a.s));
+ const P=projects.filter(p=>p.start&&(p.end||isM(p))).map(p=>({...p,s:pd(p.start),e:isM(p)?pd(p.start)+36500:pd(p.end)})).sort((a,b)=>a.s-b.s||(b.e-b.s)-(a.e-a.s));
  let h=`<div class="cal" style="--cols:${cols}"><div class="dow">${Array.from({length:cols},(_,i)=>{const k=cols===1?mon.getDay():(i+ws)%7;return `<div class="${dcls(k)}">${KN[k]}</div>`}).join("")}</div><div class="weeks">`;
  bases.forEach(b0=>{
   const base=dn(b0),lanes=[],bars=[];
   P.forEach(p=>{if(p.e<base||p.s>base+cols-1)return;const a=Math.max(p.s,base)-base,b=Math.min(p.e,base+cols-1)-base;let l=lanes.findIndex(x=>x<a);if(l<0){l=lanes.length;lanes.push(-1)}lanes[l]=b;
    const c=PAL[(p.color||0)%PAL.length],L=p.s>=base?20:0,R=p.e<=base+cols-1?20:0;
+   if(isM(p)){bars.push(`<button class="bar thin" data-id="${esc(p.id)}" title="${esc(p.name)} (${fmt(p.start)} ~ 유지관리)" style="grid-column:${a+1}/${b+2};grid-row:${l+1};color:${c[0]};--bc:${c[0]};--rl:${L}px;--rr:0px">${esc(p.name)}</button>`);return}
    bars.push(`<button class="bar" data-id="${esc(p.id)}" title="${esc(p.name)} (${fmt(p.start)} – ${fmt(p.end)})" style="grid-column:${a+1}/${b+2};grid-row:${l+1};background:${c[0]};color:${c[1]};border-radius:${L}px ${R}px ${R}px ${L}px">${esc(p.name)}</button>`)});
   let cells="";
   for(let c=0;c<cols;c++){const d=new Date(b0.getFullYear(),b0.getMonth(),b0.getDate()+c);cells+=`<div class="cell ${scope==="month"&&d.getMonth()!==m?"o":""} ${dn(d)===today?"t":""} ${dcls(d.getDay())}" data-d="${iso(d)}"><em>${d.getDate()===1?(d.getMonth()+1)+"월 1일":d.getDate()}</em></div>`}
@@ -303,11 +306,11 @@ function timeline(){
  else if(scope==="week"){first=dn(ws0());n=7;cw=120}
  else{first=dn(mon);n=1;cw=420}
  const last=first+n-1,U=i=>new Date((first+i)*864e5);
- const P=projects.filter(p=>p.start&&p.end&&pd(p.end)>=first&&pd(p.start)<=last).sort((a,b)=>a.start.localeCompare(b.start));
+ const P=projects.filter(p=>p.start&&(p.end||isM(p))&&(isM(p)||pd(p.end)>=first)&&pd(p.start)<=last).sort((a,b)=>a.start.localeCompare(b.start));
  const days=Array.from({length:n},(_,i)=>{const k=U(i).getUTCDay();return `<div class="d ${first+i===today?"today":""} ${dcls(k)}"><span>${KN[k]} ${U(i).getUTCDate()}</span></div>`}).join("");
  const now=today>=first&&today<=last?`<div class="now" style="left:${(today-first)*cw+cw/2-1}px"></div>`:"";
- const rows=P.map(p=>{const s=pd(p.start),e=pd(p.end),c=PAL[(p.color||0)%PAL.length],pct=pg(p),a=Math.max(s,first)-first,b=Math.min(e,last)-first+1;
-  return `<div class="gr"><div class="gname"><button class="who" data-id="${esc(p.id)}"><span class="dot" style="background:${c[0]}"></span><div><strong>${esc(p.name)}</strong><small>${fmt(p.start)} – ${fmt(p.end)}</small></div></button></div><div class="tl" style="width:${n*cw}px">${now}<button class="tbar" data-id="${esc(p.id)}" title="${esc(p.name)}" style="left:${a*cw+2}px;width:${(b-a)*cw-4}px;background:${c[0]};color:${c[1]}"><i></i><span>${esc(p.name)}</span></button>${b<n?`<em class="pc" style="left:${b*cw+8}px">${pct}%</em>`:""}</div></div>`}).join("");
+ const rows=P.map(p=>{const M=isM(p),s=pd(p.start),e=M?last:pd(p.end),c=PAL[(p.color||0)%PAL.length],pct=pg(p),a=Math.max(s,first)-first,b=Math.min(e,last)-first+1;
+  return `<div class="gr"><div class="gname"><button class="who" data-id="${esc(p.id)}"><span class="dot" style="background:${c[0]}"></span><div><strong>${esc(p.name)}</strong><small>${M?fmt(p.start)+" ~ 유지관리":fmt(p.start)+" – "+fmt(p.end)}</small></div></button></div><div class="tl" style="width:${n*cw}px">${now}<button class="tbar${M?" thin":""}" data-id="${esc(p.id)}" title="${esc(p.name)}" style="left:${a*cw+2}px;width:${(b-a)*cw-4}px;background:${c[0]};color:${c[1]}"><i></i><span>${esc(p.name)}</span></button>${!M&&b<n?`<em class="pc" style="left:${b*cw+8}px">${pct}%</em>`:""}</div></div>`}).join("");
  return `<div class="gantt" id="gantt" style="--cw:${cw}px"><div class="gr gh"><div class="gname"></div><div class="tl" style="width:${n*cw}px">${days}</div></div>${rows||'<div class="empty">이 기간에 해당하는 프로젝트가 없습니다. 왼쪽의 Create new project 버튼으로 추가해 보세요.</div>'}</div>`;
 }
 function dashboardView(){return ctl()+(layout==="tl"?timeline():calendar())}
@@ -494,11 +497,11 @@ addEventListener("hashchange",route);
 /* dialog */
 let pType="general";
 function setType(t){pType=t;document.querySelectorAll("[data-ptype]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.ptype===t)));$("#eWrap").style.display=t==="maintenance"?"none":"";$("#dRow").style.gridTemplateColumns=t==="maintenance"?"1fr":""}
-document.addEventListener("click",e=>{const b=e.target.closest("[data-ptype]");if(b&&!editId)setType(b.dataset.ptype)});
+document.addEventListener("click",e=>{const b=e.target.closest("[data-ptype]");if(b){setType(b.dataset.ptype);if(b.dataset.ptype==="general"&&!$("#fEnd").value&&$("#fStart").value){const t=$("#fStart").value;$("#fEnd").value=iso(new Date(+t.slice(0,4),+t.slice(5,7)-1,+t.slice(8)+13))}}});
 function openDlg(date,id){
  editId=id||null;const p=editId&&projects.find(x=>x.id===editId);$("#dErr").textContent="";
  $("#dTitle").textContent=p?"프로젝트 수정":"새 프로젝트 만들기";$("#save").textContent=p?"변경사항 저장":"프로젝트 만들기";$("#del").hidden=!p;
- setType(p&&isM(p)?"maintenance":"general");$("#tWrap").style.display=p?"none":"";
+ setType(p&&isM(p)?"maintenance":"general");
  const s=p?p.start:date||iso(new Date());
  $("#fName").value=p?p.name:"";selColor=p&&p.color!=null?p.color:null;drawColors();$("#fStart").value=s;$("#fEnd").value=p&&p.end?p.end:iso(new Date(+s.slice(0,4),+s.slice(5,7)-1,+s.slice(8)+13));
  $("#dlg").showModal();$("#fName").focus();
@@ -510,7 +513,7 @@ $("#save").onclick=async()=>{
  if(!name||!start||(!M&&!end)){er.textContent="모든 항목을 입력해 주세요.";return}
  if(!M&&end<start){er.textContent="마감일은 시작일 이후여야 합니다.";return}
  const old=editId&&projects.find(x=>x.id===editId);
- if(old){Object.assign(old,{name,start,color:selColor!=null?selColor:old.color},isM(old)?{}:{end});if(!(await persist(old)))return;$("#dlg").close();render();toast("프로젝트가 수정되었습니다");return}
+ if(old){Object.assign(old,{name,start,type:pType,color:selColor!=null?selColor:old.color});if(M)delete old.end;else old.end=end;if(!(await persist(old)))return;$("#dlg").close();render();toast("프로젝트가 수정되었습니다");return}
  const data={name,start,...(M?{type:"maintenance"}:{type:"general",end}),color:selColor!=null?selColor:Math.floor(Math.random()*PAL.length),progress:0,journal:[],updatedAt:Date.now()};
  try{
   if(db){await db.collection("projects").doc().set(data)}
