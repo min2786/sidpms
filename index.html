@@ -551,7 +551,7 @@ function linkify(t){return esc(t||"").replace(URLRE,m=>{let u=m,tail="";const mm
 function memoShow(edit){const ta=$("#memo"),v=$("#memoView");if(!ta||!v)return;if(edit){v.hidden=true;ta.hidden=false;ta.focus();ta.setSelectionRange(ta.value.length,ta.value.length)}else if(hasUrl(ta.value)){v.innerHTML=linkify(ta.value);ta.hidden=true;v.hidden=false}}
 async function saveMemo(){const p=cur();if(!p)return;p.memo=memoV;const ok=await persist(p);const st=$("#memoSt");if(st)st.textContent=ok?"저장됨":"저장 실패"}
 async function persist(p){
- const {id,...d}=p;d.updatedAt=Date.now();
+ const {id,...d}=p;d.updatedAt=Date.now();d.by=devId();
  try{if(db)await db.collection("projects").doc(id).set(d);else toast("클라우드에 연결되지 않았습니다. 이번 세션에서만 저장됩니다.");return true}
  catch(x){toast("저장하지 못했습니다. 보기 전용 권한일 수 있습니다.");return false}
 }
@@ -878,6 +878,9 @@ route();
 
 // ===== 웹푸시 알림 =====
 const b64u=s=>{const p="=".repeat((4-s.length%4)%4),r=atob((s+p).replace(/-/g,"+").replace(/_/g,"/"));return Uint8Array.from(r,c=>c.charCodeAt(0))};
+const devId=()=>{try{let v=localStorage.getItem("pms_dev");if(!v){v=Math.random().toString(36).slice(2,12);localStorage.setItem("pms_dev",v)}return v}catch(_){return"x"}};
+const PF=[["daily","매일 오전 9시 요약"],["np","새 프로젝트"],["up","새 업데이트·컨텐츠 (긴급 포함)"],["vr","새 버전업"],["ev","새 일정"],["st","상태 변경"]];
+const getPrefs=()=>{try{return JSON.parse(localStorage.getItem("pms_pf")||"{}")}catch(_){return{}}};
 const pushOK=()=>"serviceWorker"in navigator&&"PushManager"in window&&"Notification"in window;
 const isIOS=()=>/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
 const standalone=()=>matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
@@ -890,7 +893,7 @@ async function pushInit(){
  if(!pushOK()){return put(isIOS()&&!standalone()?"아이폰은 Safari 공유 버튼 → <b>홈 화면에 추가</b> 후, 홈 화면의 SID 앱에서 이 설정을 열어 주세요.":"이 브라우저는 웹푸시를 지원하지 않습니다.")}
  let sub=null;try{const r=await pushReg();sub=await r.pushManager.getSubscription()}catch(_){}
  if(Notification.permission==="denied")return put("알림이 차단되어 있습니다. 브라우저/기기 설정에서 이 사이트의 알림을 허용해 주세요.");
- if(sub)put("✅ 이 기기에서 알림을 받는 중입니다.",'<div style="display:flex;gap:8px"><button class="btn sec" id="pushTest">테스트 알림</button><button class="btn sec" id="pushOff">알림 끄기</button></div>');
+ if(sub){const pf=getPrefs();put("✅ 이 기기에서 알림을 받는 중입니다. (내가 올린 변경은 내 기기로 오지 않습니다)",`<div id="pfBox" style="display:grid;gap:8px;margin:0 0 12px">${PF.map(([k,l])=>`<label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600"><input type="checkbox" data-pf="${k}" ${pf[k]===false?"":"checked"} style="width:18px;height:18px;accent-color:var(--tg,#7cb518)">${l}</label>`).join("")}</div><div style="display:flex;gap:8px"><button class="btn sec" id="pushTest">테스트 알림</button><button class="btn sec" id="pushOff">알림 끄기</button></div>`)}
  else put("",'<button class="btn" id="pushOn">이 기기에서 알림 받기</button>');
 }
 async function pushOn(){
@@ -899,11 +902,16 @@ async function pushOn(){
   const r=await pushReg();let sub=await r.pushManager.getSubscription();
   if(!sub)sub=await r.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64u(window.PUSH_PUBLIC_KEY)});
   const j=sub.toJSON();
-  if(db)await db.collection("push").doc(await pushId(j.endpoint)).set({sub:j,ua:navigator.userAgent.slice(0,120),at:Date.now()});
+  if(db)await db.collection("push").doc(await pushId(j.endpoint)).set({sub:j,dev:devId(),prefs:getPrefs(),ua:navigator.userAgent.slice(0,120),at:Date.now()});
   toast("알림이 켜졌습니다")
  }catch(e){toast("알림을 켜지 못했습니다: "+(e&&e.message||e))}
  pushInit()
 }
+async function pushPrefs(){
+ const pf={};document.querySelectorAll("[data-pf]").forEach(c=>pf[c.dataset.pf]=c.checked);
+ try{localStorage.setItem("pms_pf",JSON.stringify(pf));const r=await pushReg(),sub=await r.pushManager.getSubscription();if(sub&&db){const j=sub.toJSON();await db.collection("push").doc(await pushId(j.endpoint)).set({sub:j,dev:devId(),prefs:pf,ua:navigator.userAgent.slice(0,120),at:Date.now()})}toast("알림 설정이 저장되었습니다")}catch(e){toast("저장하지 못했습니다")}
+}
+document.addEventListener("change",e=>{if(e.target.matches("[data-pf]"))pushPrefs()});
 async function pushOff(){
  try{const r=await pushReg(),sub=await r.pushManager.getSubscription();if(sub){const ep=sub.endpoint;await sub.unsubscribe();if(db)await db.collection("push").doc(await pushId(ep)).delete()}toast("알림이 꺼졌습니다")}catch(e){toast("알림을 끄지 못했습니다")}
  pushInit()

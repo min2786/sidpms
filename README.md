@@ -36,3 +36,11 @@ Claude 안에서 열면 연결된 카카오톡 도구로 "나에게 보내기"�
    `SUPABASE_URL`, `SUPABASE_SERVICE_KEY`(service_role, Supabase에서 복사), `VAPID_PUBLIC`, `VAPID_PRIVATE`, `VAPID_SUBJECT`(예: mailto:내이메일)
 4. 폰에서 앱 설정 → "이 기기에서 알림 받기" (아이폰은 먼저 Safari에서 홈 화면에 추가)
 5. Actions 탭 → daily-push → Run workflow 로 즉시 테스트
+
+## 실시간 알림 (변경 즉시 푸시)
+새 프로젝트/업데이트/버전업/일정/상태 변경이 저장되면 바로 푸시합니다. (위 웹푸시 1~4단계를 먼저 완료)
+1. Supabase SQL Editor에서 `supabase.sql` 맨 아래 `alter table ... replica identity full;` 실행
+2. Supabase 대시보드 → Edge Functions → **Deploy a new function** (이름: `notify`) → `supabase/functions/notify/index.ts` 내용 붙여넣기. 같은 함수에 파일 `diff.js`도 추가(내용 붙여넣기). **Verify JWT는 끄기**
+3. Edge Functions → Secrets에 추가: `VAPID_PUBLIC`, `VAPID_PRIVATE`, `VAPID_SUBJECT`, `WEBHOOK_SECRET`(임의의 긴 문자열)
+4. Database → Webhooks → Create: 테이블 `pms_docs`, 이벤트 Insert+Update, 타입 Supabase Edge Function → `notify`, HTTP Headers에 `x-webhook-secret` = 3번의 WEBHOOK_SECRET 값
+5. 앱 설정 → 알림에서 종류별로 켜고 끌 수 있습니다. 내가 올린 변경은 내 기기로는 오지 않습니다.

@@ -22,7 +22,7 @@ if(!lines.length||!subs.length)process.exit(0);
 const payload=JSON.stringify({title:`SID 오늘 알림 (${lines.length}건)`,body:lines.slice(0,6).join("\n")+(lines.length>6?`\n외 ${lines.length-6}건`:""),url:"./#projects",tag:"sid-"+today});
 let ok=0,gone=0;
 for(const {id,data:s} of subs){
-  if(!s||!s.sub)continue;
+  if(!s||!s.sub||(s.prefs&&s.prefs.daily===false))continue;
   try{await webpush.sendNotification(s.sub,payload);ok++}
   catch(e){if(e.statusCode===404||e.statusCode===410){gone++;await fetch(`${U}/rest/v1/pms_docs?col=eq.push&id=eq.${encodeURIComponent(id)}`,{method:"DELETE",headers:H})}else console.error("실패",e.statusCode||e.message)}
 }

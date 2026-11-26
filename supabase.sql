@@ -29,3 +29,6 @@ create policy "pms_img_auth" on storage.objects
   for all to authenticated
   using (bucket_id = 'pms-images')
   with check (bucket_id = 'pms-images');
+
+-- 실시간 알림: UPDATE 웹훅에서 변경 전 데이터(old_record)를 받으려면 필요합니다.
+alter table public.pms_docs replica identity full;
