@@ -182,6 +182,7 @@ input[type=range]::-moz-range-track{background:transparent}
 .jform{display:grid;gap:8px;margin:12px 0 18px}.jform .btn{justify-self:end}.jform textarea{resize:vertical;font:inherit}
 .jday h4{margin:16px 0 8px;font-size:13px;color:var(--gd)}
 .jitem{display:flex;gap:8px;align-items:flex-start;background:var(--side);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:6px}
+.vb{flex:none;align-self:flex-start;background:var(--gd);color:#fff;font-weight:800;font-size:12px;padding:3px 10px;border-radius:10px;min-width:48px;text-align:center}.vf{display:grid;grid-template-columns:130px 150px 1fr;gap:8px;margin:12px 0 18px}.vf textarea{grid-column:1/-1;resize:vertical;font:inherit;min-height:80px}.vf .btn{grid-column:1/-1;justify-self:end}.vi{align-items:center}.vi .vd{flex:none;color:var(--ink2);font-size:12px;width:62px}@media(max-width:560px){.vf{grid-template-columns:1fr 1fr}.vf #vVer{grid-column:1/-1}}
 .jitem p{margin:0;flex:1;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px}
 .pill.sm{font-size:13px;font-weight:600;margin-left:12px;vertical-align:middle}
 #login{position:fixed;inset:0;z-index:100;background:var(--bg);display:grid;place-items:center;padding:20px;overflow:auto}#login[hidden]{display:none}
@@ -337,7 +338,7 @@ function projectsView(){
  const L=[...projects].sort((a,b)=>(a.start||"").localeCompare(b.start||""));
  return L.length?`<div class="plist">${L.map(p=>{const c=PAL[(p.color||0)%PAL.length],m=isM(p),days=m?0:pd(p.end)-pd(p.start)+1,dd=m?"":ddOf(p);return `<button class="pitem" data-id="${esc(p.id)}" style="--c:${c[0]}"><div class="ph"><div class="n"><span class="ttag ${m?"m":""}">${m?"유지관리":"일반"}</span><br><strong>${esc(p.name)}</strong><br><small>${m?`${fmt(p.start)} 시작`:`${fmt(p.start)} – ${fmt(p.end)} · ${days}일`}</small></div>${m?"":`<span class="ddb ${dd[1]}">${dd[0]}</span>`}</div><div class="pf"><div class="pbar"><i style="width:${pg(p)}%"></i></div><strong>${pg(p)}%</strong></div></button>`}).join("")}</div>`:`<div class="empty">아직 프로젝트가 없습니다. 왼쪽의 Create new project 버튼으로 추가해 보세요.</div>`;
 }
-let dateEdit=null,dcal=null,evDay=null,evEdit=null,jEdit=null;
+let dateEdit=null,dcal=null,evDay=null,evEdit=null,jEdit=null,vEdit=null;
 const wk=["일","월","화","수","목","금","토"];
 function schedCard(p){
  const b=dcal||(dcal=new Date(new Date().getFullYear(),new Date().getMonth(),1)),Y=b.getFullYear(),M=b.getMonth(),E=p.events||[],t=dayKey(0);
@@ -416,10 +417,10 @@ function detailView(p){
    <div class="kvs">${row("유형",M?"유지관리형":"일반")}${row("시작일",dtv("start",p.start))}${M?"":row("마감일",dtv("end",p.end))+row("전체 기간",`${e-s+1}일`)+row("남은 기간",dd)}${row("진행 일지",`${J.length}건`)}</div></section>
   ${schedCard(p)}`}
   </div>${M?`<div class="sch" style="margin-top:16px">${schedCard(p)}</div>`:""}
-  <section class="card jcard"><h3>일일 진행일지</h3>
+  ${M?versionCard(p):`<section class="card jcard"><h3>일일 진행일지</h3>
    <div class="jform"><input class="in" id="jDay" type="date" value="${t}" aria-label="날짜"><textarea class="in" id="jText" rows="3" maxlength="1000" placeholder="이날 진행한 내용을 기록하세요 (Ctrl+Enter로 저장)"></textarea><button class="btn" id="jAdd">기록 추가</button></div>
    ${days.length?days.map(k=>`<div class="jday"><h4>${lab(k)}<button class="kk" data-kk="${k}" title="카카오톡 나에게 보내기">카톡 전송</button></h4>${J.filter(x=>x.day===k).map(x=>x.id===jEdit?`<div class="jitem edit"><input class="in" id="jEditD" type="date" value="${x.day}"><textarea class="in" id="jEditT" rows="3" maxlength="1000">${esc(x.t)}</textarea><div class="jeb"><button class="btn sec sm" data-jcancel>취소</button><button class="btn sm" data-jsave="${x.id}">저장</button></div></div>`:`<div class="jitem"><p>${esc(x.t)}</p><button class="x ed" data-je="${x.id}" aria-label="수정" title="수정">✎</button><button class="x" data-jd="${x.id}" aria-label="삭제" title="삭제">×</button></div>`).join("")}</div>`).join(""):'<div class="empty">아직 기록이 없습니다. 오늘의 진행 상황을 남겨 보세요.</div>'}
-  </section>`;
+  </section>`}`;
 }
 function settingsView(){
  return `<div class="fgrid"><div><div class="lbl">테마 색상</div><div class="swrow">${THEMES.map((t,i)=>`<button class="sw" data-t="${i}" aria-pressed="${(settings.theme||0)===i}" aria-label="${t.n}" title="${t.n}" style="background:${t.g}"></button>`).join("")}</div></div><label>사용자 이름<input class="in" id="sWs" value="${esc(userName())}"></label>
@@ -467,6 +468,17 @@ function addEv(){
  const p=cur(),L=p.events||[];
  p.events=evEdit?L.map(x=>x.id===evEdit?{...x,t,day}:x):[...L,{id:Math.random().toString(36).slice(2,9),day,t,at:Date.now()}];
  $("#dlgE").close();render();persist(p);
+}
+function versionCard(p){
+ const V=[...(p.versions||[])].sort((a,b)=>(b.day||"").localeCompare(a.day||"")||(b.at||0)-(a.at||0));
+ return `<section class="card jcard"><h3>버전업 리스트</h3>
+  <div class="vf"><input class="in" id="vVer" maxlength="20" placeholder="버전 (예: v1.0)" aria-label="버전"><input class="in" id="vDay" type="date" value="${dayKey(0)}" aria-label="날짜"><span></span><textarea class="in" id="vText" rows="3" maxlength="1000" placeholder="리뉴얼 내용을 기록하세요 (Ctrl+Enter로 저장)"></textarea><button class="btn" id="vAdd">버전 등록</button></div>
+  ${V.length?V.map(x=>x.id===vEdit?`<div class="jitem edit"><input class="in" id="vEditV" maxlength="20" value="${esc(x.ver)}" aria-label="버전"><input class="in" id="vEditD" type="date" value="${esc(x.day)}"><textarea class="in" id="vEditT" rows="3" maxlength="1000">${esc(x.t||"")}</textarea><div class="jeb"><button class="btn sec sm" data-vcancel>취소</button><button class="btn sm" data-vsave="${x.id}">저장</button></div></div>`:`<div class="jitem vi"><span class="vb">${esc(x.ver)}</span><span class="vd">${fmt(x.day).slice(2)}</span><p>${esc(x.t||"")}</p><button class="x ed" data-ve="${x.id}" aria-label="수정" title="수정">✎</button><button class="x" data-vd="${x.id}" aria-label="삭제" title="삭제">×</button></div>`).join(""):'<div class="empty">아직 등록된 버전이 없습니다.</div>'}
+ </section>`;
+}
+function addV(){
+ const ver=$("#vVer").value.trim(),t=$("#vText").value.trim(),day=$("#vDay").value||dayKey(0);if(!ver){$("#vVer").focus();return}
+ const p=cur();p.versions=[...(p.versions||[]),{id:Math.random().toString(36).slice(2,9),ver,day,t,at:Date.now()}];render();persist(p);
 }
 function addJ(){
  const t=$("#jText").value.trim(),day=$("#jDay").value||dayKey(0);if(!t){$("#jText").focus();return}
@@ -554,7 +566,7 @@ function render(){
  {const m=$("#main"),pr=view==="projects"&&detailId&&cur();["--g","--gd","--gt"].forEach(v=>m.style.removeProperty(v));if(pr){const c=PAL[(pr.color||0)%PAL.length][0];m.style.setProperty("--g",c);m.style.setProperty("--gd",`color-mix(in srgb,${c} 72%,#000)`);m.style.setProperty("--gt",`color-mix(in srgb,${c} 16%,#fff)`)}}
  const g=$("#gantt");if(g&&scope==="month"){const o=dn(new Date())-dn(new Date(mon.getFullYear(),mon.getMonth(),1));g.scrollLeft=o>=0?Math.max(0,o*52-120):0}
 }
-function route(){const h=location.hash.slice(1);view=["dashboard","projects","plan","settings"].includes(h)?h:"dashboard";if(view!=="projects"){detailId=null;jEdit=null}dateEdit=null;render()}
+function route(){const h=location.hash.slice(1);view=["dashboard","projects","plan","settings"].includes(h)?h:"dashboard";if(view!=="projects"){detailId=null;jEdit=vEdit=null}dateEdit=null;render()}
 addEventListener("hashchange",route);
 
 /* dialog */
@@ -594,16 +606,21 @@ $("#del").onclick=()=>{const id=editId,p=projects.find(x=>x.id===id);confirmDel(
  projects=projects.filter(z=>z.id!==id);$("#dlg").close();detailId=null;render();toast("프로젝트가 삭제되었습니다")})};
 
 document.addEventListener("click",async e=>{
- if(e.target.closest("[data-home]")){detailId=null;jEdit=null;dateEdit=null;if(location.hash==="#dashboard"||!location.hash){e.preventDefault();render()}return}
+ if(e.target.closest("[data-home]")){detailId=null;jEdit=vEdit=null;dateEdit=null;if(location.hash==="#dashboard"||!location.hash){e.preventDefault();render()}return}
  const de=e.target.closest("[data-dedit]");if(de){dateEdit=de.dataset.dedit;render();const i=$("#dEditV");if(i){i.focus();try{i.showPicker&&i.showPicker()}catch(x){}}return}
  if(e.target.closest("[data-dcancel]")){dateEdit=null;render();return}
  const dsv=e.target.closest("[data-dsave]");if(dsv){const v=$("#dEditV").value,k=dsv.dataset.dsave,p=cur();if(!v){toast("날짜를 선택해 주세요.");return}
   const ns=k==="start"?v:p.start,ne=k==="end"?v:p.end;if(!isM(p)&&ne<ns){toast(k==="start"?"시작일은 마감일 이전이어야 합니다.":"마감일은 시작일 이후여야 합니다.");return}
   p.start=ns;if(!isM(p))p.end=ne;dateEdit=null;render();if(await persist(p))toast("날짜가 수정되었습니다");return}
  const lo=e.target.closest("[data-logout]");if(lo){logout();return}
- const nv=e.target.closest("nav a[data-v]");if(nv){detailId=null;jEdit=null;if(location.hash==="#"+nv.dataset.v)render();return}
+ const nv=e.target.closest("nav a[data-v]");if(nv){detailId=null;jEdit=vEdit=null;if(location.hash==="#"+nv.dataset.v)render();return}
  if(e.target.closest("#planwrap")&&await planClick(e))return;
  const pcs=e.target.closest("[data-pc]");if(pcs){selColor=+pcs.dataset.pc;drawColors();return}
+ if(e.target.id==="vAdd")return addV();
+ const vd=e.target.closest("[data-vd]");if(vd){const id=vd.dataset.vd,x=(cur().versions||[]).find(z=>z.id===id);confirmDel("버전을 삭제할까요?",`“${x?x.ver:""}” 기록이 삭제됩니다.`,()=>{const p=cur();p.versions=(p.versions||[]).filter(z=>z.id!==id);render();persist(p);toast("버전이 삭제되었습니다")});return}
+ const ve=e.target.closest("[data-ve]");if(ve){vEdit=ve.dataset.ve;render();const i=$("#vEditT");if(i)i.focus();return}
+ if(e.target.closest("[data-vcancel]")){vEdit=null;render();return}
+ const vs=e.target.closest("[data-vsave]");if(vs){const ver=$("#vEditV").value.trim(),t=$("#vEditT").value.trim(),d=$("#vEditD").value;if(!ver){$("#vEditV").focus();return}const p=cur();p.versions=(p.versions||[]).map(z=>z.id===vs.dataset.vsave?{...z,ver,t,day:d||z.day}:z);vEdit=null;render();persist(p);toast("버전이 수정되었습니다");return}
  if(e.target.id==="jAdd")return addJ();
  const kk=e.target.closest("[data-kk]");if(kk)return sendKakao(kk);
  const dm=e.target.closest("[data-dm]");if(dm){dcal=new Date(dcal.getFullYear(),dcal.getMonth()+ +dm.dataset.dm,1);render();return}
@@ -614,8 +631,8 @@ document.addEventListener("click",async e=>{
  if(e.target.id==="eYes")return addEv();
  const jd=e.target.closest("[data-jd]");if(jd){const id=jd.dataset.jd,x=(cur().journal||[]).find(z=>z.id===id),sn=x?x.t.replace(/\s+/g," ").slice(0,40)+(x.t.length>40?"…":""):"";confirmDel("진행일지를 삭제할까요?",`“${sn}” 기록이 삭제됩니다.`,()=>{const p=cur();p.journal=(p.journal||[]).filter(z=>z.id!==id);render();persist(p);toast("진행일지가 삭제되었습니다")});return}
  const je=e.target.closest("[data-je]");if(je){jEdit=je.dataset.je;render();const t=$("#jEditT");if(t)t.focus();return}
- if(e.target.closest("[data-jcancel]")){jEdit=null;render();return}
- const js=e.target.closest("[data-jsave]");if(js){const t=$("#jEditT").value.trim(),d=$("#jEditD").value;if(!t){$("#jEditT").focus();return}const p=cur();p.journal=(p.journal||[]).map(z=>z.id===js.dataset.jsave?{...z,t,day:d||z.day}:z);jEdit=null;render();persist(p);toast("진행일지가 수정되었습니다");return}
+ if(e.target.closest("[data-jcancel]")){jEdit=vEdit=null;render();return}
+ const js=e.target.closest("[data-jsave]");if(js){const t=$("#jEditT").value.trim(),d=$("#jEditD").value;if(!t){$("#jEditT").focus();return}const p=cur();p.journal=(p.journal||[]).map(z=>z.id===js.dataset.jsave?{...z,t,day:d||z.day}:z);jEdit=vEdit=null;render();persist(p);toast("진행일지가 수정되었습니다");return}
  if(e.target.id==="back"){detailId=null;render();return}
  if(e.target.id==="editP"){openDlg(null,detailId);return}
  const ths=e.target.closest("[data-t]");if(ths){settings.theme=+ths.dataset.t;applyTheme();render();try{if(db)await db.doc("settings/main").set(settings)}catch(x){toast("테마를 저장하지 못했습니다.")}return}
@@ -640,7 +657,7 @@ let memoT=null,memoV="";
 document.addEventListener("input",e=>{if(e.target.id==="memo"){memoV=e.target.value;$("#memoSt").textContent="저장 중…";clearTimeout(memoT);memoT=setTimeout(saveMemo,900)}
  if(e.target.id==="pgR"){$("#pgV").textContent=e.target.value+"%";$("#pgB").style.width=e.target.value+"%";e.target.style.setProperty("--v",e.target.value+"%")}});
 document.addEventListener("keydown",e=>{if(e.target.id==="dEditV"){if(e.key==="Enter"){const b=document.querySelector("[data-dsave]");b&&b.click()}if(e.key==="Escape"){dateEdit=null;render()}}
- if(e.key==="Enter"&&e.target.id==="eText")addEv();if(e.key==="Enter"&&(e.ctrlKey||e.metaKey)&&e.target.id==="jText")addJ()});
+ if(e.key==="Enter"&&e.target.id==="eText")addEv();if(e.key==="Enter"&&(e.ctrlKey||e.metaKey)&&e.target.id==="jText")addJ();if(e.key==="Enter"&&(e.ctrlKey||e.metaKey)&&e.target.id==="vText")addV()});
 
 if(window.KAKAO_JS_KEY&&!window.claude)loadKakao();
 /* cloud */
