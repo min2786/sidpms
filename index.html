@@ -151,6 +151,7 @@ dialog h2{margin:0 0 16px}
 .istat{margin-top:16px}.istat .iseg{display:flex;gap:4px;margin:8px 0}.istat .iseg button{flex:1;border:1px solid var(--line);background:var(--surf);border-radius:9px;padding:5px 0;font-size:12px;font-weight:700;color:var(--ink2)}.istat .iseg button[aria-pressed=true]{background:var(--gt);border-color:var(--g);color:var(--gd)}
 .ibars{display:flex;align-items:flex-end;gap:3px;height:92px;margin-top:6px}.ibars>div{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}.ibars i{display:block;width:100%;max-width:18px;border-radius:4px 4px 0 0;background:var(--g);min-height:0}.ibars b{font-size:9px;color:var(--ink2);height:12px;line-height:12px}.ibars span{font-size:9px;color:var(--ink2);margin-top:3px;white-space:nowrap}
 .isum{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px}.isum div{background:var(--side);border:1px solid var(--line);border-radius:10px;padding:6px 8px}.isum b{display:block;font-size:16px}.isum small{font-size:10px;color:var(--ink2)}
+.usearch{position:relative;display:flex;align-items:center;gap:10px;margin:2px 0 14px}.usearch svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--ink2);pointer-events:none}.usearch .in{flex:1;padding:9px 34px 9px 36px;font-size:13px;border-radius:12px;background:var(--surf)}.usearch .qx{position:absolute;right:calc(var(--qr,0px) + 8px);top:50%;transform:translateY(-50%);width:22px;height:22px;border:0;border-radius:50%;background:#e4e6e9;color:#555;font-size:14px;line-height:1;padding:0}.usearch small{color:var(--ink2);font-size:12px;white-space:nowrap}
 .sch{margin-bottom:16px}.uhead{display:flex;align-items:baseline;justify-content:space-between;gap:8px}.uhead small{color:var(--ink2)}
 .jcard{margin-top:16px}.jcard .jform textarea{min-height:90px}
 .top h1 .ib{width:34px;height:34px;font-size:18px;flex:none}
@@ -398,14 +399,14 @@ let uSort={k:"reg",d:-1},uFilter="전체";
 const sbtn=(k,on,att)=>`<button type="button" class="sb" aria-pressed="${on}" ${att} style="--c:${SC[k][0]};--sbg:${SC[k][1]}">${k}</button>`;
 let uPage=1;
 function updatesCard(p){
- const CT=p.sub==="content",IM=CT&&!!db&&!!db.storage,LS=CT?USC:US;if(uPendPid!==p.id){uPend=[];uPendPid=p.id}
+ const CT=p.sub==="content",IM=CT&&!!db&&!!db.storage,LS=CT?USC:US;if(uPendPid!==p.id){uPend=[];uPendPid=p.id;uQ=""}
  if(uFilter!=="전체"&&!LS.includes(uFilter))uFilter="전체";
  const nst=x=>CT?(USC.includes(x.status)?x.status:(x.status==="취소"?"대기":"제작중")):x.status;
  const U=(p.updates||[]).map(x=>({...x,status:nst(x)})),n=U.length,c=k=>U.filter(x=>x.status===k).length,pc=v=>n?Math.round(v/n*100)+"%":"0%";
  const tile=(l,v,col,pt)=>`<button type="button" class="ut" data-uf="${l}" aria-pressed="${uFilter===l}" style="--c:${col}"><b>${v}</b><small><i></i>${l}</small>${pt?`<em>${pc(v)}</em>`:""}</button>`;
  const t=dayKey(0),GO={L:0,M:1,S:2},SO=Object.fromEntries(LS.map((k,i)=>[k,i])),d=uSort.d,sk=CT&&uSort.k==="grade"?"reg":uSort.k;
  const key=x=>sk==="grade"?GO[x.grade]:sk==="status"?SO[x.status]:(x[sk]||"");
- const F=U.filter(x=>uFilter==="전체"||x.status===uFilter);
+ const q=CT?uQ.trim().toLowerCase():"",F=U.filter(x=>(uFilter==="전체"||x.status===uFilter)&&(!q||((x.text||"")+" "+(x.path||"")).toLowerCase().includes(q)));
  const L=[...F].sort((a,b)=>{const A=key(a),B=key(b),r=typeof A==="number"?A-B:String(A).localeCompare(String(B));return (r*d)||(b.reg||"").localeCompare(a.reg||"")||(b.at||0)-(a.at||0)});
  const pages=Math.max(1,Math.ceil(L.length/10));if(uPage>pages)uPage=pages;if(uPage<1)uPage=1;
  const V=L.slice((uPage-1)*10,uPage*10);
@@ -420,11 +421,12 @@ function updatesCard(p){
   return `<div class="ugrid ur ${gc} ${!CT&&x.status==="긴급"?"urg":""}" ${IM?`data-udrop="${esc(x.id)}"`:""}>${CT?"":`<div class="tl3">${["L","M","S"].map(k=>gdot(k,x.grade===k,'data-ugs="'+esc(x.id)+'|'+k+'"')).join("")}</div>`}<div class="ucell">${imgRow(thumbs,esc(x.id))}<input class="in" data-ut="${esc(x.id)}" value="${esc(x.text)}" maxlength="200" aria-label="프로젝트 내용">${CT?pathIn('data-up="'+esc(x.id)+'"',x.path):""}</div><div class="sc4">${LS.map(k=>sbtn(k,x.status===k,'data-uss="'+esc(x.id)+'|'+k+'"')).join("")}</div>${dw('data-ur="'+esc(x.id)+'"',x.reg,"등록일")}${dw('data-ud="'+esc(x.id)+'"',x.done,"완료일")}<button class="ux" data-udel="${esc(x.id)}" aria-label="삭제" title="삭제">×</button></div>`};
  return `<section class="card ucard"><div class="uhead"><h3>${CT?"컨텐츠 현황":"업데이트 현황"}</h3></div>
  <div class="utiles">${tiles}</div>
+ ${CT?`<div class="usearch"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input class="in" id="uQ" type="search" value="${esc(uQ)}" placeholder="세부 프로젝트 검색 (내용 · 저장 경로)" aria-label="세부 프로젝트 검색" autocomplete="off">${q?`<small>검색 결과 ${L.length}건</small>`:""}</div>`:""}
  <div class="uwrap"><div class="ugrid uh ${gc}">${CT?"":th("grade","등급")}<span>프로젝트 내용</span>${th("status","상태")}${th("reg","등록일")}${th("done","완료일")}<span></span></div>
  ${addRow}
- ${V.length?V.map(rowH).join(""):`<div class="empty" style="padding:26px 0">${n?"해당하는 항목이 없습니다.":"아직 등록된 업데이트가 없습니다."}</div>`}</div>${pager}</section>`;
+ ${V.length?V.map(rowH).join(""):`<div class="empty" style="padding:26px 0">${n?(q?"검색 결과가 없습니다.":"해당하는 항목이 없습니다."):"아직 등록된 업데이트가 없습니다."}</div>`}</div>${pager}</section>`;
 }
-let iStat="day";
+let iStat="day",uQ="",uComp=false;
 function imgStatBlock(p){
  const ws=settings.weekStart||0,ts=[];(p.updates||[]).forEach(x=>(x.imgs||[]).forEach(m=>ts.push(m.at||x.at||(x.reg?+new Date(x.reg+"T12:00:00"):Date.now()))));
  const wk=d=>{const o=(d.getDay()-ws+7)%7;return iso(new Date(d.getFullYear(),d.getMonth(),d.getDate()-o))};
@@ -464,7 +466,10 @@ document.addEventListener("click",e=>{
  const ms=e.target.closest("[data-mst]");if(ms){const p=cur();p.mstate=ms.dataset.mst;render();persist(p)}
 });
 document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.id==="uNText")addUpd()});
-document.addEventListener("input",e=>{if(e.target.id==="uNText")uNew.text=e.target.value;if(e.target.id==="uNPath")uNew.path=e.target.value});
+document.addEventListener("compositionstart",e=>{if(e.target.id==="uQ")uComp=true});
+document.addEventListener("compositionend",e=>{if(e.target.id==="uQ"){uComp=false;qSearch(e.target)}});
+function qSearch(el){uQ=el.value;uPage=1;if(uComp)return;const pos=el.selectionStart;render();const i=$("#uQ");if(i){i.focus();try{i.setSelectionRange(pos,pos)}catch(x){}}}
+document.addEventListener("input",e=>{if(e.target.id==="uQ"){qSearch(e.target);return}if(e.target.id==="uNText")uNew.text=e.target.value;if(e.target.id==="uNPath")uNew.path=e.target.value});
 document.addEventListener("change",e=>{const t=e.target;if(t.id==="uFile"){const f=t.files;if(f&&f.length&&uFileFor)addImgs(uFileFor,f);return}if(t.id==="uNReg")uNew.reg=t.value;if(t.id==="uNDone")uNew.done=t.value});
 const hasFiles=e=>e.dataTransfer&&[...(e.dataTransfer.types||[])].includes("Files");
 document.addEventListener("dragover",e=>{const r=e.target.closest&&e.target.closest("[data-udrop]");if(r&&hasFiles(e)){e.preventDefault();r.classList.add("drag")}});
