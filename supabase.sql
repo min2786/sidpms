@@ -17,3 +17,15 @@ create policy "pms_auth" on public.pms_docs
 
 -- 테이블을 API가 바로 인식하도록 스키마 캐시를 새로고침합니다.
 notify pgrst, 'reload schema';
+
+-- ===== 이미지 업로드(컨텐츠 현황)용 Storage 설정 =====
+-- 비공개 버킷을 만들고, 로그인한 사용자만 읽고/쓰고/지울 수 있게 합니다.
+insert into storage.buckets (id, name, public)
+values ('pms-images', 'pms-images', false)
+on conflict (id) do nothing;
+
+drop policy if exists "pms_img_auth" on storage.objects;
+create policy "pms_img_auth" on storage.objects
+  for all to authenticated
+  using (bucket_id = 'pms-images')
+  with check (bucket_id = 'pms-images');

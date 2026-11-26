@@ -124,7 +124,7 @@ dialog h2{margin:0 0 16px}
 .dday.soon{background:#fff1e0;color:#c2570c}.dday.late{background:#fde8e4;color:#b3402a}
 .ddb{font-weight:800;font-size:13px;padding:4px 12px;border-radius:12px;background:var(--gt);color:var(--gd);flex:none}.ddb.soon{background:#fff1e0;color:#c2570c}.ddb.late{background:#fde8e4;color:#b3402a}
 .kk{margin-left:10px;border:0;border-radius:10px;background:#fee500;color:#181600;font-size:11px;font-weight:700;padding:4px 10px;vertical-align:middle}.kk:disabled{opacity:.5}
-.mseg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0 4px}.mseg button{border:1.5px solid var(--line);background:var(--surf);border-radius:12px;padding:12px 4px;font-weight:700;font-size:13px;color:var(--ink2)}.mseg button[aria-pressed=true]{border-color:var(--g);background:var(--gt);color:var(--gd)}.mseg button[data-mst="일시멈춤"][aria-pressed=true]{border-color:#e0a030;background:#fff4dc;color:#a36a00}.mseg button[data-mst="완료"][aria-pressed=true]{border-color:#5b6bd6;background:#e9ecfb;color:#3a47a8}
+.mseg{max-width:460px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0 4px}.mseg button{border:1.5px solid var(--line);background:var(--surf);border-radius:12px;padding:12px 4px;font-weight:700;font-size:13px;color:var(--ink2)}.mseg button[aria-pressed=true]{border-color:var(--g);background:var(--gt);color:var(--gd)}.mseg button[data-mst="일시멈춤"][aria-pressed=true]{border-color:#e0a030;background:#fff4dc;color:#a36a00}.mseg button[data-mst="완료"][aria-pressed=true]{border-color:#5b6bd6;background:#e9ecfb;color:#3a47a8}
 .utiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:10px;margin:14px 0}.ut{border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:var(--side);position:relative}.ut b{font-size:26px;font-weight:700;display:block;line-height:1.1}.ut small{display:flex;align-items:center;gap:6px;color:var(--ink2);font-size:12px;margin-top:6px}.ut small i{width:8px;height:8px;border-radius:50%;background:var(--c)}.ut em{position:absolute;top:10px;right:10px;font-style:normal;font-size:10px;font-weight:700;background:var(--surf);border:1px solid var(--line);border-radius:10px;padding:1px 7px;color:var(--ink2)}
 .uwrap{overflow-x:auto}.ugrid{display:grid;grid-template-columns:64px minmax(110px,1fr) 194px 90px 90px 30px;gap:8px;align-items:center;min-width:620px}.ugrid.uh{font-size:12px;color:var(--ink2);font-weight:700;padding:8px 0;border-bottom:1px solid var(--line)}.ugrid.uh span{text-align:center}.ugrid.ur{padding:7px 0;border-bottom:1px solid var(--line)}.ugrid.ur.urg{background:#fff0f0;border-radius:10px}.ugrid.ur.urg .in{background:#fffafa}
 .uh button{border:0;background:transparent;font:inherit;color:inherit;font-weight:700;text-align:center;padding:0}.uh button:hover{color:var(--ink)}.uh button[aria-pressed=true]{color:var(--gd)}
@@ -138,6 +138,13 @@ dialog h2{margin:0 0 16px}
 .pgr{display:flex;justify-content:center;align-items:center;gap:6px;margin-top:14px}.pgr button{min-width:32px;height:32px;border:1px solid var(--line);background:var(--surf);border-radius:10px;font-size:13px;font-weight:700;color:var(--ink2)}.pgr button[aria-pressed=true]{background:var(--gd);color:#fff;border-color:var(--gd)}.pgr button:disabled{opacity:.35}
 .dc{text-align:center;color:var(--ink2)}
 .btn:disabled{opacity:.4;cursor:not-allowed}
+.ugrid.cg{grid-template-columns:64px minmax(300px,1fr) 194px 90px 90px 30px;min-width:760px}
+.ucell{display:flex;flex-wrap:wrap;gap:6px;align-items:flex-start;min-width:0}.ucell>.in{flex:1 1 150px;min-width:120px}
+.th{position:relative;width:110px;height:110px;border-radius:10px;overflow:hidden;border:1px solid var(--line);background:#eef0ee;flex:none;cursor:zoom-in}.th img{width:100%;height:100%;object-fit:cover;display:block}.th.sm{width:56px;height:56px}
+.thx{position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:50%;border:0;background:rgba(0,0,0,.55);color:#fff;font-size:14px;line-height:1;padding:0;display:grid;place-items:center;cursor:pointer}.th.sm .thx{width:18px;height:18px;font-size:12px;top:2px;right:2px}
+.imgadd{border:1px dashed #b9bec6;background:var(--surf);border-radius:10px;height:32px;padding:0 10px;font-size:12px;font-weight:700;color:var(--ink2);flex:none}.imgadd:hover{border-color:#7a808a;color:var(--ink)}
+.ugrid.drag,.uadd.drag{outline:2px dashed var(--g);outline-offset:-2px;background:var(--gt)}
+#dlgImg{padding:10px;width:auto;max-width:min(560px,94vw);background:#fff;cursor:zoom-out}#dlgImg img{display:block;max-width:100%;max-height:80vh;border-radius:10px}
 .sch{margin-bottom:16px}.uhead{display:flex;align-items:baseline;justify-content:space-between;gap:8px}.uhead small{color:var(--ink2)}
 .jcard{margin-top:16px}.jcard .jform textarea{min-height:90px}
 .top h1 .ib{width:34px;height:34px;font-size:18px;flex:none}
@@ -270,6 +277,7 @@ input[type=range]::-moz-range-track{background:transparent}
  <label>메모 (선택)<input class="in" id="pN" maxlength="120"></label></div>
  <div class="err" id="pErr" role="alert"></div>
  <div class="acts"><button class="btn del" id="pDel" hidden>삭제</button><button class="btn sec" id="pNo">취소</button><button class="btn" id="pYes">저장</button></div></dialog>
+<dialog id="dlgImg"><img id="bigImg" alt=""></dialog><input type="file" id="uFile" accept="image/*" multiple hidden>
 <dialog id="dlgC"><h2 id="cTitle">삭제할까요?</h2><p id="cMsg" style="margin:0;color:var(--ink2)"></p><div class="acts"><button class="btn sec" id="cNo">취소</button><button class="btn" id="cYes" style="background:#b3402a">삭제</button></div></dialog>
 <div id="toast" role="status"></div>
 <div id="login" hidden></div>
@@ -358,6 +366,25 @@ function ddOf(p){if(isM(p))return["","ok"];const l=pd(p.end)-dn(new Date());retu
 const EV_KM=420; /* 완충 기준 주행거리(km) — 필요 시 수정 */
 const GR={L:["#e5484d","시간이 가장 오래 걸리는 업데이트"],M:["#f5a524","보통의 업데이트"],S:["#30a46c","간단한 업데이트"]},US=["긴급","진행","대기","취소","완료"],MS=["진행중","일시멈춤","완료"];
 let uNew={grade:"S",status:"대기"};
+const rid=()=>Math.random().toString(36).slice(2,10);
+let IMGC={};try{IMGC=JSON.parse(sessionStorage.getItem("pms_imgc")||"{}")}catch(x){}
+const imgSrc=p=>IMGC[p]&&IMGC[p].e>Date.now()?IMGC[p].u:"";
+async function imgUrls(paths){const need=paths.filter(p=>!IMGC[p]||IMGC[p].e<Date.now()+3600e3);if(!need.length||!db||!db.storage)return;try{(await db.storage.urls(need)).forEach(x=>{IMGC[x.path]={u:x.url,e:Date.now()+86400e3}});try{sessionStorage.setItem("pms_imgc",JSON.stringify(IMGC))}catch(x){}}catch(e){}}
+function hydrateImgs(){const els=[...document.querySelectorAll("img[data-ip]:not([src])")];if(!els.length)return;imgUrls([...new Set(els.map(e=>e.dataset.ip))]).then(()=>els.forEach(e=>{const u=imgSrc(e.dataset.ip);if(u)e.src=u}))}
+async function procImg(file){const bm=await createImageBitmap(file);const fit=m=>{const r=Math.min(1,m/Math.max(bm.width,bm.height)),w=Math.max(1,Math.round(bm.width*r)),h=Math.max(1,Math.round(bm.height*r)),c=document.createElement("canvas");c.width=w;c.height=h;const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,w,h);x.drawImage(bm,0,0,w,h);return new Promise((res,rej)=>c.toBlob(b=>b?res(b):rej(new Error("변환 실패")),"image/jpeg",.82))};const full=await fit(500),th=await fit(220);if(bm.close)bm.close();return{full,th}}
+const uploadImg=(pid,iid,o)=>Promise.all([db.storage.upload(`${pid}/${iid}/${o.id}.jpg`,o.full),db.storage.upload(`${pid}/${iid}/${o.id}_t.jpg`,o.th)]);
+let uPend=[],uPendPid=null,uFileFor=null;
+async function addImgs(target,files){
+ const p=cur();if(!p||!db||!db.storage)return;
+ const F=[...files].filter(f=>/^image\//.test(f.type)||/\.(jpe?g|png|gif|webp|bmp|heic|heif)$/i.test(f.name));
+ if(!F.length){toast("이미지 파일만 등록할 수 있습니다");return}
+ toast("이미지를 최적화하는 중…");const out=[];
+ for(const f of F){try{out.push({id:rid(),...await procImg(f)})}catch(e){toast("읽을 수 없는 이미지입니다: "+f.name)}}
+ if(!out.length)return;
+ if(target==="new"){out.forEach(o=>o.url=URL.createObjectURL(o.th));uPend=[...uPend,...out];render();return}
+ try{await Promise.all(out.map(o=>uploadImg(p.id,target,o)))}catch(e){toast("업로드 실패: "+e.message);return}
+ await updSave(a=>a.map(x=>x.id===target?{...x,imgs:[...(x.imgs||[]),...out.map(o=>({id:o.id}))]}:x),true);toast("이미지 "+out.length+"장이 등록되었습니다");
+}
 const gdot=(k,on,att)=>`<button type="button" class="gd" aria-pressed="${on}" ${att} title="${k} · ${GR[k][1]}" aria-label="등급 ${k}" style="--c:${GR[k][0]}">${k}</button>`;
 const SC={"긴급":["#e5484d","#fde8e8"],"진행":["#2b7de9","#e6f0fd"],"대기":["#8a8f98","#eceef0"],"취소":["#f08a24","#fff0dc"],"완료":["#2f9e5a","#e3f4ea"]};
 const fd=v=>v?v.slice(2).replace(/-/g,"."):"-",dw=(att,v,lab)=>`<label class="dw" title="${lab}"><span>${fd(v)}</span><input type="date" ${att} value="${esc(v||"")}" aria-label="${lab}"></label>`;
@@ -365,6 +392,7 @@ let uSort={k:"reg",d:-1},uFilter="전체";
 const sbtn=(k,on,att)=>`<button type="button" class="sb" aria-pressed="${on}" ${att} style="--c:${SC[k][0]};--sbg:${SC[k][1]}">${k}</button>`;
 let uPage=1;
 function updatesCard(p){
+ const IM=p.sub==="content"&&!!db&&!!db.storage;if(uPendPid!==p.id){uPend=[];uPendPid=p.id}
  const U=p.updates||[],n=U.length,c=k=>U.filter(x=>x.status===k).length,pc=v=>n?Math.round(v/n*100)+"%":"0%";
  const tile=(l,v,col,pt)=>`<button type="button" class="ut" data-uf="${l}" aria-pressed="${uFilter===l}" style="--c:${col}"><b>${v}</b><small><i></i>${l}</small>${pt?`<em>${pc(v)}</em>`:""}</button>`;
  const t=dayKey(0),GO={L:0,M:1,S:2},SO=Object.fromEntries(US.map((k,i)=>[k,i])),d=uSort.d;
@@ -377,27 +405,40 @@ function updatesCard(p){
  const th=(k,l)=>`<button type="button" data-usort="${k}" aria-pressed="${uSort.k===k}">${l}${uSort.k===k?(d<0?" ▼":" ▲"):""}</button>`;
  return `<section class="card ucard"><div class="uhead"><h3>${p.sub==="content"?"컨텐츠 현황":"업데이트 현황"}</h3></div>
  <div class="utiles">${tile("전체",n,"#e08a2e",0)}${tile("긴급",c("긴급"),SC["긴급"][0],1)}${tile("진행",c("진행"),SC["진행"][0],1)}${tile("대기",c("대기"),SC["대기"][0],1)}${tile("완료",c("완료"),SC["완료"][0],1)}${tile("취소",c("취소"),SC["취소"][0],1)}</div>
- <div class="uwrap"><div class="ugrid uh">${th("grade","등급")}<span>프로젝트 내용</span>${th("status","상태")}${th("reg","등록일")}${th("done","완료일")}<span></span></div>
- <div class="uadd" id="uAdd"><div class="ugrid"><div class="tl3">${["L","M","S"].map(k=>gdot(k,uNew.grade===k,'data-ung="'+k+'"')).join("")}</div><input class="in" id="uNText" maxlength="200" placeholder="${p.sub==="content"?"컨텐츠 내용을 입력하세요":"업데이트 내용을 입력하세요"}"><div class="sc4" id="uNSt">${US.map(k=>sbtn(k,uNew.status===k,'data-uns="'+k+'"')).join("")}</div>${dw('id="uNReg"',t,"등록일")}${dw('id="uNDone"',uNew.status==="완료"?t:"","완료일")}<button class="btn sm" id="uAddB" aria-label="추가" title="추가">+</button></div></div>
- ${V.length?V.map(x=>`<div class="ugrid ur ${x.status==="긴급"?"urg":""}"><div class="tl3">${["L","M","S"].map(k=>gdot(k,x.grade===k,'data-ugs="'+esc(x.id)+'|'+k+'"')).join("")}</div><input class="in" data-ut="${esc(x.id)}" value="${esc(x.text)}" maxlength="200" aria-label="프로젝트 내용"><div class="sc4">${US.map(k=>sbtn(k,x.status===k,'data-uss="'+esc(x.id)+'|'+k+'"')).join("")}</div>${dw('data-ur="'+esc(x.id)+'"',x.reg,"등록일")}${dw('data-ud="'+esc(x.id)+'"',x.done,"완료일")}<button class="ux" data-udel="${esc(x.id)}" aria-label="삭제" title="삭제">×</button></div>`).join(""):`<div class="empty" style="padding:26px 0">${n?"해당하는 항목이 없습니다.":"아직 등록된 업데이트가 없습니다."}</div>`}</div>${pager}</section>`;
+ <div class="uwrap"><div class="ugrid uh ${IM?"cg":""}">${th("grade","등급")}<span>프로젝트 내용</span>${th("status","상태")}${th("reg","등록일")}${th("done","완료일")}<span></span></div>
+ <div class="uadd" id="uAdd" ${IM?'data-udrop="new"':""}><div class="ugrid ${IM?"cg":""}"><div class="tl3">${["L","M","S"].map(k=>gdot(k,uNew.grade===k,'data-ung="'+k+'"')).join("")}</div><div class="ucell"><input class="in" id="uNText" maxlength="200" value="${esc(uNew.text||"")}" placeholder="${p.sub==="content"?"컨텐츠 내용을 입력하세요":"업데이트 내용을 입력하세요"}">${uPend.map(o=>`<span class="th sm"><img src="${o.url}" alt=""><button type="button" class="thx" data-upx="${o.id}" aria-label="이미지 제거">×</button></span>`).join("")}${IM?`<button type="button" class="imgadd" data-uimgadd="new">＋ 이미지</button>`:""}</div><div class="sc4" id="uNSt">${US.map(k=>sbtn(k,uNew.status===k,'data-uns="'+k+'"')).join("")}</div>${dw('id="uNReg"',uNew.reg||t,"등록일")}${dw('id="uNDone"',uNew.done!=null?uNew.done:(uNew.status==="완료"?t:""),"완료일")}<button class="btn sm" id="uAddB" aria-label="추가" title="추가">+</button></div></div>
+ ${V.length?V.map(x=>`<div class="ugrid ur ${IM?"cg":""} ${x.status==="긴급"?"urg":""}" ${IM?`data-udrop="${esc(x.id)}"`:""}><div class="tl3">${["L","M","S"].map(k=>gdot(k,x.grade===k,'data-ugs="'+esc(x.id)+'|'+k+'"')).join("")}</div><div class="ucell"><input class="in" data-ut="${esc(x.id)}" value="${esc(x.text)}" maxlength="200" aria-label="프로젝트 내용">${IM?(x.imgs||[]).map(m=>{const tp=`${p.id}/${x.id}/${m.id}_t.jpg`;return `<span class="th"><img data-ip="${tp}" ${imgSrc(tp)?`src="${imgSrc(tp)}"`:""} alt="" loading="lazy"><button type="button" class="thx" data-uimgdel="${esc(x.id)}|${esc(m.id)}" aria-label="이미지 삭제">×</button></span>`}).join("")+`<button type="button" class="imgadd" data-uimgadd="${esc(x.id)}">＋ 이미지</button>`:""}</div><div class="sc4">${US.map(k=>sbtn(k,x.status===k,'data-uss="'+esc(x.id)+'|'+k+'"')).join("")}</div>${dw('data-ur="'+esc(x.id)+'"',x.reg,"등록일")}${dw('data-ud="'+esc(x.id)+'"',x.done,"완료일")}<button class="ux" data-udel="${esc(x.id)}" aria-label="삭제" title="삭제">×</button></div>`).join(""):`<div class="empty" style="padding:26px 0">${n?"해당하는 항목이 없습니다.":"아직 등록된 업데이트가 없습니다."}</div>`}</div>${pager}</section>`;
 }
 async function updSave(fn,rerender){const p=cur();if(!p)return;p.updates=fn([...(p.updates||[])].map(x=>({...x})));if(rerender)render();await persist(p)}
 function setDW(i,v){i.value=v;const sp=i.previousElementSibling;if(sp)sp.textContent=fd(v)}
-async function addUpd(){const tx=$("#uNText").value.trim();if(!tx){$("#uNText").focus();return}const st=uNew.status,reg=$("#uNReg").value||dayKey(0),done=$("#uNDone").value||(st==="완료"?dayKey(0):"");const g=uNew.grade;uNew={grade:g,status:"대기"};uPage=1;await updSave(a=>[...a,{id:"u"+Date.now().toString(36)+Math.random().toString(36).slice(2,5),grade:g,text:tx,status:st,reg,done,at:Date.now()}],true)}
+async function addUpd(){const tx=$("#uNText").value.trim();if(!tx){$("#uNText").focus();return}const p=cur();if(!p)return;const st=uNew.status,reg=$("#uNReg").value||dayKey(0),done=$("#uNDone").value||(st==="완료"?dayKey(0):"");const g=uNew.grade,iid="u"+Date.now().toString(36)+Math.random().toString(36).slice(2,5),pend=uPend;
+ if(pend.length){try{await Promise.all(pend.map(o=>uploadImg(p.id,iid,o)))}catch(e){toast("이미지 업로드 실패: "+e.message);return}}
+ uNew={grade:g,status:"대기"};uPend=[];uPage=1;await updSave(a=>[...a,{id:iid,grade:g,text:tx,status:st,reg,done,at:Date.now(),...(pend.length?{imgs:pend.map(o=>({id:o.id}))}:{})}],true)}
 document.addEventListener("click",e=>{
  const g=e.target.closest("[data-ung]");if(g){uNew.grade=g.dataset.ung;document.querySelectorAll("[data-ung]").forEach(b=>b.setAttribute("aria-pressed",String(b===g)));return}
  const gs=e.target.closest("[data-ugs]");if(gs){const[id,k]=gs.dataset.ugs.split("|");updSave(a=>a.map(x=>x.id===id?{...x,grade:k}:x),true);return}
- const sn=e.target.closest("[data-uns]");if(sn){uNew.status=sn.dataset.uns;document.querySelectorAll("[data-uns]").forEach(b=>b.setAttribute("aria-pressed",String(b===sn)));setDW($("#uNDone"),uNew.status==="완료"?dayKey(0):"");return}
+ const sn=e.target.closest("[data-uns]");if(sn){uNew.status=sn.dataset.uns;document.querySelectorAll("[data-uns]").forEach(b=>b.setAttribute("aria-pressed",String(b===sn)));uNew.done=uNew.status==="완료"?dayKey(0):"";setDW($("#uNDone"),uNew.done);return}
  const ss=e.target.closest("[data-uss]");if(ss){const[id,k]=ss.dataset.uss.split("|");updSave(a=>a.map(x=>x.id===id?{...x,status:k,done:k==="완료"?dayKey(0):""}:x),true);return}
  const uf=e.target.closest("[data-uf]");if(uf){uFilter=uFilter===uf.dataset.uf?"전체":uf.dataset.uf;uPage=1;render();return}
  const us=e.target.closest("[data-usort]");if(us){const k=us.dataset.usort;uSort=uSort.k===k?{k,d:-uSort.d}:{k,d:k==='reg'||k==='done'?-1:1};uPage=1;render();return}
  const dwl=e.target.closest(".dw");if(dwl){const i=dwl.querySelector("input");if(e.target===i){try{i.showPicker()}catch(x){}}return}
  const pgb=e.target.closest("[data-upg]");if(pgb){uPage=+pgb.dataset.upg;render();return}
+ const ia=e.target.closest("[data-uimgadd]");if(ia){uFileFor=ia.dataset.uimgadd;$("#uFile").value="";$("#uFile").click();return}
+ const px=e.target.closest("[data-upx]");if(px){uPend=uPend.filter(o=>o.id!==px.dataset.upx);render();return}
+ const idl=e.target.closest("[data-uimgdel]");if(idl){const[iid,mid]=idl.dataset.uimgdel.split("|"),pid=cur().id;confirmDel("이미지를 삭제할까요?","이 이미지가 삭제됩니다.",()=>{updSave(a=>a.map(x=>x.id===iid?{...x,imgs:(x.imgs||[]).filter(m=>m.id!==mid)}:x),true);if(db&&db.storage)db.storage.remove([`${pid}/${iid}/${mid}.jpg`,`${pid}/${iid}/${mid}_t.jpg`]).catch(()=>{})});return}
+ const th=e.target.closest(".th img[data-ip]");if(th){const mp=th.dataset.ip.replace("_t.jpg",".jpg");imgUrls([mp]).then(()=>{const u=imgSrc(mp)||th.src;if(u){$("#bigImg").src=u;$("#dlgImg").showModal()}});return}
  if(e.target.closest("#uAddB"))return addUpd();
- const ud=e.target.closest("[data-udel]");if(ud){const id=ud.dataset.udel,x=(cur().updates||[]).find(z=>z.id===id);confirmDel("업데이트를 삭제할까요?",`“${x?x.text:""}” 항목이 삭제됩니다.`,()=>updSave(a=>a.filter(z=>z.id!==id),true));return}
+ const ud=e.target.closest("[data-udel]");if(ud){const id=ud.dataset.udel,x=(cur().updates||[]).find(z=>z.id===id);confirmDel("업데이트를 삭제할까요?",`“${x?x.text:""}” 항목이 삭제됩니다.`,()=>{const pid=cur().id,ps=x&&db&&db.storage?(x.imgs||[]).flatMap(m=>[`${pid}/${id}/${m.id}.jpg`,`${pid}/${id}/${m.id}_t.jpg`]):[];updSave(a=>a.filter(z=>z.id!==id),true);if(ps.length)db.storage.remove(ps).catch(()=>{})});return}
  const ms=e.target.closest("[data-mst]");if(ms){const p=cur();p.mstate=ms.dataset.mst;render();persist(p)}
 });
 document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.id==="uNText")addUpd()});
+document.addEventListener("input",e=>{if(e.target.id==="uNText")uNew.text=e.target.value});
+document.addEventListener("change",e=>{const t=e.target;if(t.id==="uFile"){const f=t.files;if(f&&f.length&&uFileFor)addImgs(uFileFor,f);return}if(t.id==="uNReg")uNew.reg=t.value;if(t.id==="uNDone")uNew.done=t.value});
+const hasFiles=e=>e.dataTransfer&&[...(e.dataTransfer.types||[])].includes("Files");
+document.addEventListener("dragover",e=>{const r=e.target.closest&&e.target.closest("[data-udrop]");if(r&&hasFiles(e)){e.preventDefault();r.classList.add("drag")}});
+document.addEventListener("dragleave",e=>{const r=e.target.closest&&e.target.closest("[data-udrop]");if(r&&!r.contains(e.relatedTarget))r.classList.remove("drag")});
+document.addEventListener("drop",e=>{const r=e.target.closest&&e.target.closest("[data-udrop]");if(r&&hasFiles(e)){e.preventDefault();r.classList.remove("drag");addImgs(r.dataset.udrop,e.dataTransfer.files)}});
+document.addEventListener("click",e=>{if(e.target.closest("#dlgImg"))$("#dlgImg").close()});
 document.addEventListener("change",e=>{const t=e.target;if(t.closest&&t.closest(".dw")){const sp=t.previousElementSibling;if(sp)sp.textContent=fd(t.value)}
  if(t.dataset.ut){const v=t.value.trim();if(!v){render();return}updSave(a=>a.map(x=>x.id===t.dataset.ut?{...x,text:v}:x))}
  else if(t.dataset.ur)updSave(a=>a.map(x=>x.id===t.dataset.ur?{...x,reg:t.value}:x));
@@ -413,7 +454,7 @@ function detailView(p){
  const row=(k,v)=>`<div class="kv"><span>${k}</span><strong>${v}</strong></div>`;
  const C=p.sub==="content",ms=p.mstate||"진행중",lv=[...(p.versions||[])].sort((a,b)=>(b.day||"").localeCompare(a.day||"")||(b.at||0)-(a.at||0))[0];
  const mTop=`<section class="card"><h3>프로젝트 상태</h3><div class="mseg">${MS.map(x=>`<button data-mst="${x}" aria-pressed="${x===ms}">${x}</button>`).join("")}</div><div class="kvs">${row("유형",C?"유지관리형 · 컨텐츠":"유지관리형 · 소프트웨어")}${row("시작일",dtv("start",p.start))}${C?"":row("현재 버전",lv?esc(lv.ver):"-")}</div></section>${updatesCard(p)}`;
- return `<div class="dgrid" ${M?'style="grid-template-columns:minmax(220px,270px) minmax(0,1fr);align-items:start"':""}>
+ return `<div class="dgrid" ${M?`style="grid-template-columns:${C?"minmax(0,1fr)":"minmax(220px,270px) minmax(0,1fr)"};align-items:start"`:""}>
   ${M?mTop:`  <section class="card"><h3>프로젝트 상태</h3>
    ${M?"":`<div class="dday ${ddOf(p)[1]}"><small>마감까지 남은 기간</small><strong>${ddOf(p)[0]}</strong><span>${fmt(p.end)} 마감</span></div>`}
    <div class="big"><strong id="pgV">${P}%</strong><span class="st ${st[1]}">${st[0]}</span></div>
@@ -577,6 +618,7 @@ function render(){
  $("#main").innerHTML=head(t)+(view==="dashboard"?dashboardView():view==="projects"?projectsView():view==="plan"?planView():settingsView());
  {const m=$("#main"),pr=view==="projects"&&detailId&&cur();["--g","--gd","--gt"].forEach(v=>m.style.removeProperty(v));if(pr){const c=PAL[(pr.color||0)%PAL.length][0];m.style.setProperty("--g",c);m.style.setProperty("--gd",`color-mix(in srgb,${c} 72%,#000)`);m.style.setProperty("--gt",`color-mix(in srgb,${c} 16%,#fff)`)}}
  const g=$("#gantt");if(g&&scope==="month"){const o=dn(new Date())-dn(new Date(mon.getFullYear(),mon.getMonth(),1));g.scrollLeft=o>=0?Math.max(0,o*52-120):0}
+ hydrateImgs();
 }
 function route(){const h=location.hash.slice(1);view=["dashboard","projects","plan","settings"].includes(h)?h:"dashboard";if(view!=="projects"){detailId=null;jEdit=vEdit=null}dateEdit=null;render()}
 addEventListener("hashchange",route);
@@ -695,7 +737,13 @@ function makeSupabase(cfg){
  const docRef=(col,id)=>({onSnapshot:(cb,fail)=>watch(col,cb,fail,id),
   set:async d=>{const r=await fetch(`${T}?on_conflict=col,id`,{method:"POST",headers:{...await hdr(),Prefer:"resolution=merge-duplicates,return=minimal"},body:JSON.stringify({col,id,data:d,updated_at:new Date().toISOString()})});await err(r);refresh(col)},
   delete:async()=>{const r=await fetch(`${T}?col=eq.${encodeURIComponent(col)}&id=eq.${encodeURIComponent(id)}`,{method:"DELETE",headers:await hdr()});await err(r);refresh(col)}});
- return{collection:col=>({onSnapshot:(cb,fail)=>watch(col,cb,fail),doc:id=>docRef(col,id||crypto.randomUUID())}),doc:path=>{const[c,i]=path.split("/");return docRef(c,i)}};
+ const B="pms-images",S=cfg.url+"/storage/v1",sh=async()=>{const t=await freshToken(cfg);if(!t){logout();throw new Error("로그인이 필요합니다.")}return{apikey:cfg.key,Authorization:"Bearer "+t}};
+ const storage={
+  async upload(path,blob){const r=await fetch(`${S}/object/${B}/${path}`,{method:"POST",headers:{...await sh(),"Content-Type":blob.type||"image/jpeg","x-upsert":"true"},body:blob});if(!r.ok){let m="";try{m=(await r.json()).message}catch(x){}throw new Error(m||"업로드 실패("+r.status+") — Storage 설정(supabase.sql)을 확인하세요")}},
+  async urls(paths){const r=await fetch(`${S}/object/sign/${B}`,{method:"POST",headers:{...await sh(),"Content-Type":"application/json"},body:JSON.stringify({expiresIn:86400,paths})});if(!r.ok)throw new Error("이미지 주소를 가져오지 못했습니다("+r.status+")");const a=await r.json();return a.filter(x=>x.signedURL&&!x.error).map(x=>({path:x.path,url:S+x.signedURL}))},
+  async remove(paths){await fetch(`${S}/object/${B}`,{method:"DELETE",headers:{...await sh(),"Content-Type":"application/json"},body:JSON.stringify({prefixes:paths})})}
+ };
+ return{storage,collection:col=>({onSnapshot:(cb,fail)=>watch(col,cb,fail),doc:id=>docRef(col,id||crypto.randomUUID())}),doc:path=>{const[c,i]=path.split("/");return docRef(c,i)}};
 }
 const SS="pms_session",getSession=()=>{try{return JSON.parse(localStorage.getItem(SS)||"null")}catch(x){return null}};
 const clearSession=()=>{try{localStorage.removeItem(SS)}catch(x){}};
