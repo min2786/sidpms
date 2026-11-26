@@ -53,3 +53,12 @@ Claude 안에서 열면 연결된 카카오톡 도구로 "나에게 보내기"�
 5. 앱 Monday Meeting → "녹음 시작" → "녹음 종료 · AI 정리". 요약·결정사항이 먼저 채워지고, 받아쓰기는 이어서 추가됩니다.
 - 정리가 성공하면 원본 음성은 자동 삭제됩니다. 실패하면 "다시 시도"로 재처리합니다.
 - 업로드 전에 앱이 멈추면 녹음은 폰에 임시 보관되며, 다시 열면 "정리하기" 버튼이 나옵니다.
+
+## 마케팅 프로젝트 · 인사이트 (키워드 순위 / 영상·SNS 지표)
+화면에서 키워드·게시물을 등록하면 매일 07:30(KST)에 GitHub Actions(`insight/collect.mjs`)가 **공식 API**로 조회해 기록합니다. 수동 입력도 가능합니다(수동값이 있는 날은 자동값이 덮어쓰지 않음).
+GitHub Secrets (이미 등록한 `SUPABASE_URL`, `SUPABASE_SERVICE_KEY`와 함께):
+- **네이버** `NAVER_CLIENT_ID`, `NAVER_CLIENT_SECRET` — https://developers.naver.com 에서 애플리케이션 등록(검색 API). 웹문서/블로그 검색 결과 300건 안에서 순위를 계산하며, 실제 통합검색 화면 순서와는 다를 수 있습니다.
+- **유튜브** `YOUTUBE_API_KEY` — Google Cloud Console에서 YouTube Data API v3 사용 설정 후 API 키 발급. 검색 순위(상위 100건)와 영상 조회수·좋아요.
+- **구글** `GSC_SA_JSON`(서비스 계정 키 JSON 전체), `GSC_SITE`(예: `sc-domain:내도메인.kr` 또는 `https://내도메인.kr/`) — 서비스 계정 이메일을 Search Console 속성의 사용자로 추가해야 합니다. 내 사이트의 키워드 평균 순위이며 약 3일 지연됩니다.
+- Actions 탭 → daily-insight → Run workflow 로 즉시 실행해 볼 수 있습니다.
+- 인스타그램/페이스북/틱톡 등은 화면에서 조회수·좋아요를 직접 입력합니다.

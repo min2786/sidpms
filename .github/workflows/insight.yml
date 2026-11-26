@@ -1,0 +1,20 @@
+name: daily-insight
+on:
+  schedule: [{cron: "30 22 * * *"}]   # 매일 07:30 KST
+  workflow_dispatch: {}
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: 20}
+      - run: node insight/collect.mjs
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          NAVER_CLIENT_ID: ${{ secrets.NAVER_CLIENT_ID }}
+          NAVER_CLIENT_SECRET: ${{ secrets.NAVER_CLIENT_SECRET }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          GSC_SA_JSON: ${{ secrets.GSC_SA_JSON }}
+          GSC_SITE: ${{ secrets.GSC_SITE }}
