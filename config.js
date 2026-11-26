@@ -8,4 +8,4 @@ window.SUPABASE_CONFIG = {
 
 // 카카오톡 전송용 JavaScript 키 (카카오 개발자 > 내 애플리케이션 > 앱 키 > JavaScript 키).
 // 도메인으로 제한되는 키라 공개되어도 됩니다. 비워 두면 웹에서 카톡 전송이 동작하지 않습니다.
-window.KAKAO_JS_KEY = "";
+window.KAKAO_JS_KEY = "25e765aae2c27c7b35fe014220f3b09d";
