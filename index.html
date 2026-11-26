@@ -192,6 +192,7 @@ input[type=range]::-moz-range-track{background:transparent}
 .create b svg{width:20px;height:20px}
 .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:0 0 16px}
 .tile{background:var(--side);border:1px solid var(--line);border-radius:12px;padding:12px 14px;min-width:0}
+.tile.car{grid-column:span 2;display:flex;align-items:center;gap:14px}.tile.car svg{flex:none}.tile .cr{flex:1;min-width:0}.tile .cr strong{font-size:20px;color:var(--gd)}.bat{height:8px;border-radius:5px;background:var(--line);margin-top:6px;overflow:hidden}.bat i{display:block;height:100%;background:var(--g);border-radius:5px}@media(max-width:520px){.tile.car{grid-column:auto}}
 .tile small{display:block;color:var(--ink2);font-size:11px;margin-bottom:2px}.tile strong{font-size:15px;overflow-wrap:anywhere}
 .fab svg{display:block;margin:auto}
 .lcard>*{align-self:stretch}.lcard>img{align-self:center}.lcard p{text-align:center}.lcard .lnk{text-align:center}
@@ -351,6 +352,7 @@ function schedCard(p){
  <div class="half"><div class="mh"><h3>메모</h3><span class="msv" id="memoSt"></span></div><textarea class="paper" id="memo" maxlength="5000" placeholder="자유롭게 메모하세요" aria-label="메모">${esc(p.memo||"")}</textarea></div></section>`;
 }
 function ddOf(p){if(isM(p))return["","ok"];const l=pd(p.end)-dn(new Date());return l>0?[`D-${l}`,l<=7?"soon":"ok"]:l===0?["D-DAY","soon"]:[`D+${-l}`,"late"]}
+const EV_KM=420; /* 완충 기준 주행거리(km) — 필요 시 수정 */
 const GR={L:["#e5484d","시간이 가장 오래 걸리는 업데이트"],M:["#f5a524","보통의 업데이트"],S:["#30a46c","간단한 업데이트"]},US=["긴급","진행","대기","취소","완료"],MS=["진행중","일시멈춤","완료"];
 let uNew={grade:"S",status:"대기"};
 const gdot=(k,on,att)=>`<button type="button" class="gd" aria-pressed="${on}" ${att} title="${k} · ${GR[k][1]}" aria-label="등급 ${k}" style="--c:${GR[k][0]}">${k}</button>`;
@@ -501,7 +503,9 @@ function planView(){
  const items=plans.filter(x=>x.kind===k&&x.start&&x.end).sort((a,b)=>a.start.localeCompare(b.start)||a.end.localeCompare(b.end));
  const mF=dn(new Date(Y,M,1)),mL=dn(new Date(Y,M+1,0)),inM=items.filter(x=>pd(x.end)>=mF&&pd(x.start)<=mL),up=items.find(x=>pd(x.end)>=today);
  const upT=up?`${esc(up.title)} · ${fmt(up.start)}`:"없음";
- const tiles=k==="work"?[["이번 달 일정",`${inM.length}건`],["다가오는 일정",upT]]:[[`${Y}년 사용 연차`,fmtD(items.filter(x=>x.start.slice(0,4)===String(Y)&&(x.type==="연차"||x.type==="반차")).reduce((a,x)=>a+pdays(x),0))+"일"],["이번 달 휴가",fmtD(inM.reduce((a,x)=>a+pdays(x),0))+"일"],["다가오는 휴가",upT]];
+ const dim=new Date(Y,M+1,0).getDate(),remD=mF>today?dim:mL<today?0:mL-today+1,pctB=Math.round(remD/dim*100),rng=Math.round(EV_KM*remD/dim);
+ const carT=`<div class="tile car"><svg viewBox="0 0 120 56" width="96" height="45" aria-hidden="true"><path d="M6 38c0-6 3-9 9-10l14-12c3-3 7-4 12-4h26c7 0 12 2 17 8l9 7c8 1 12 4 12 11v4c0 2-1 3-3 3h-6a11 11 0 0 0-22 0H42a11 11 0 0 0-22 0h-11c-2 0-3-1-3-3z" fill="var(--g)"/><path d="M36 28l10-9c2-2 5-3 8-3h13v12zM74 16c4 0 7 2 10 5l6 7H74z" fill="#eaf6ee"/><circle cx="31" cy="46" r="8.5" fill="#2b2f33"/><circle cx="31" cy="46" r="3.5" fill="#cfd4d9"/><circle cx="87" cy="46" r="8.5" fill="#2b2f33"/><circle cx="87" cy="46" r="3.5" fill="#cfd4d9"/></svg><div class="cr"><small>이번 달 주행 가능 거리</small><strong>${rng}km</strong><div class="bat" title="남은 ${remD}일 / ${dim}일"><i style="width:${pctB}%"></i></div></div></div>`;
+ const tiles=k==="work"?[[null,carT],["이번 달 일정",`${inM.length}건`],["다가오는 일정",upT]]:[[`${Y}년 사용 연차`,fmtD(items.filter(x=>x.start.slice(0,4)===String(Y)&&(x.type==="연차"||x.type==="반차")).reduce((a,x)=>a+pdays(x),0))+"일"],["이번 달 휴가",fmtD(inM.reduce((a,x)=>a+pdays(x),0))+"일"],["다가오는 휴가",upT]];
  const off=(new Date(Y,M,1).getDay()-ws+7)%7,n=Math.ceil((off+new Date(Y,M+1,0).getDate())/7);
  let g=`<div class="cal" style="--cols:7"><div class="dow">${Array.from({length:7},(_,i)=>{const d=(i+ws)%7;return `<div class="${dcls(d)}">${KN[d]}</div>`}).join("")}</div><div class="weeks">`;
  for(let w=0;w<n;w++){
@@ -515,7 +519,7 @@ function planView(){
  g+="</div></div>";
  const rows=inM.length?inM.map(x=>{const c=pcol(x),dd=pdays(x);return `<div class="prow"><span class="dot" style="background:${c[0]}"></span><div class="tx"><b>${esc(x.title)}</b><small>${fmt(x.start)}${x.start!==x.end?" – "+fmt(x.end):""} · ${k==="vacation"?fmtD(dd)+"일":dd+"일"}${x.note?" · "+esc(x.note):""}</small></div><span class="tag">${esc(x.type)}</span><button class="x ed" data-pedit="${esc(x.id)}" aria-label="수정" title="수정">✎</button><button class="x" data-pdel="${esc(x.id)}" aria-label="삭제" title="삭제">×</button></div>`}).join(""):`<div class="empty">이 달에 등록된 일정이 없습니다. 날짜를 누르거나 “일정 추가”를 눌러 등록하세요.</div>`;
  return `<div id="planwrap"><div class="ctl"><div class="seg">${["work","vacation"].map(t=>`<button data-ptab="${t}" aria-pressed="${k===t}">${PK[t]}</button>`).join("")}</div><span style="flex:1"></span><button class="ib" data-pm="-1" aria-label="이전 달">‹</button><h2 style="min-width:110px;text-align:center">${Y}년 ${M+1}월</h2><button class="ib" data-pm="1" aria-label="다음 달">›</button><button class="pill" data-pm="0">오늘</button><button class="btn" data-padd>+ 일정 추가</button></div>
- <div class="tiles">${tiles.map(([a,b])=>`<div class="tile"><small>${a}</small><strong>${b}</strong></div>`).join("")}</div>${g}
+ <div class="tiles">${tiles.map(([a,b])=>a===null?b:`<div class="tile"><small>${a}</small><strong>${b}</strong></div>`).join("")}</div>${g}
  <div class="row-ctl"><h2>${M+1}월 ${k==="work"?"업무 일정":"휴가 일정"}</h2></div>${rows}</div>`;
 }
 function fillTypes(k,sel){$("#pType").innerHTML=Object.keys(PT[k]).map(t=>`<option ${t===sel?"selected":""}>${t}</option>`).join("")}
