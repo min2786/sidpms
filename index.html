@@ -302,8 +302,8 @@ input[type=range]::-moz-range-track{background:transparent}
 <dialog id="dlg">
  <h2 id="dTitle">새 프로젝트 만들기</h2>
  <div class="fgrid" style="max-width:none">
-  <div id="tWrap"><div style="font-size:12px;color:var(--ink2);font-weight:600;margin-bottom:8px">프로젝트 유형</div><div class="tsel"><button type="button" data-ptype="general" aria-pressed="true">일반 프로젝트<small>시작일·마감일·D-day</small></button><button type="button" data-ptype="maintenance" aria-pressed="false">유지관리형 프로젝트<small>마감일·D-day 없음</small></button></div></div>
-  <div id="sWrap" hidden><div style="font-size:12px;color:var(--ink2);font-weight:600;margin-bottom:8px">유지관리 유형</div><div class="tsel" style="grid-template-columns:repeat(3,1fr)"><button type="button" data-psub="software" aria-pressed="true">소프트웨어</button><button type="button" data-psub="content" aria-pressed="false">컨텐츠</button><button type="button" data-psub="general" aria-pressed="false">일반</button></div><div id="sNote" style="display:none;margin-top:8px;font-size:13px;color:#a36a00;background:#fff4dc;border-radius:10px;padding:9px 12px">아직 개발 중입니다.</div></div>
+  <div id="tWrap"><div style="font-size:12px;color:var(--ink2);font-weight:600;margin-bottom:8px">프로젝트 유형</div><div class="tsel"><button type="button" data-ptype="general" aria-pressed="true">일반 프로젝트<small>시작일·마감일·D-day</small></button><button type="button" data-ptype="maintenance" aria-pressed="false">관리형 프로젝트<small>마감일·D-day 없음</small></button></div></div>
+  <div id="sWrap" hidden><div style="font-size:12px;color:var(--ink2);font-weight:600;margin-bottom:8px">관리 유형</div><div class="tsel" style="grid-template-columns:repeat(3,1fr)"><button type="button" data-psub="software" aria-pressed="true">소프트웨어</button><button type="button" data-psub="content" aria-pressed="false">컨텐츠</button><button type="button" data-psub="general" aria-pressed="false">일반</button></div><div id="sNote" style="display:none;margin-top:8px;font-size:13px;color:#a36a00;background:#fff4dc;border-radius:10px;padding:9px 12px">아직 개발 중입니다.</div></div>
   <label>프로젝트명<input class="in" id="fName" maxlength="80"></label>
   <div class="two" id="dRow">
    <label>시작일<input class="in" id="fStart" type="date"></label>
@@ -365,7 +365,7 @@ function calendar(){
   const base=dn(b0),lanes=[],bars=[];
   P.forEach(p=>{if(p.e<base||p.s>base+cols-1)return;const a=Math.max(p.s,base)-base,b=Math.min(p.e,base+cols-1)-base;let l=lanes.findIndex(x=>x<a);if(l<0){l=lanes.length;lanes.push(-1)}lanes[l]=b;
    const c=PAL[(p.color||0)%PAL.length],L=p.s>=base?20:0,R=p.e<=base+cols-1?20:0;
-   if(isM(p)){bars.push(`<button class="bar thin" data-id="${esc(p.id)}" title="${esc(p.name)} (${fmt(p.start)} ~ 유지관리)" style="grid-column:${a+1}/${b+2};grid-row:${l+1};color:${c[0]};--bc:${c[0]};--rl:${L}px;--rr:0px">${esc(p.name)}</button>`);return}
+   if(isM(p)){bars.push(`<button class="bar thin" data-id="${esc(p.id)}" title="${esc(p.name)} (${fmt(p.start)} ~ 관리)" style="grid-column:${a+1}/${b+2};grid-row:${l+1};color:${c[0]};--bc:${c[0]};--rl:${L}px;--rr:0px">${esc(p.name)}</button>`);return}
    bars.push(`<button class="bar" data-id="${esc(p.id)}" title="${esc(p.name)} (${fmt(p.start)} – ${fmt(p.end)})" style="grid-column:${a+1}/${b+2};grid-row:${l+1};background:${c[0]};color:${c[1]};border-radius:${L}px ${R}px ${R}px ${L}px">${esc(p.name)}</button>`)});
   let cells="";
   for(let c=0;c<cols;c++){const d=new Date(b0.getFullYear(),b0.getMonth(),b0.getDate()+c);cells+=`<div class="cell ${scope==="month"&&d.getMonth()!==m?"o":""} ${dn(d)===today?"t":""} ${dcls(d.getDay())}" data-d="${iso(d)}"><em>${d.getDate()===1?(d.getMonth()+1)+"월 1일":d.getDate()}</em></div>`}
@@ -383,7 +383,7 @@ function timeline(){
  const days=Array.from({length:n},(_,i)=>{const k=U(i).getUTCDay();return `<div class="d ${first+i===today?"today":""} ${dcls(k)}"><span>${KN[k]} ${U(i).getUTCDate()}</span></div>`}).join("");
  const now=today>=first&&today<=last?`<div class="now" style="left:${(today-first)*cw+cw/2-1}px"></div>`:"";
  const rows=P.map(p=>{const M=isM(p),s=pd(p.start),e=M?last:pd(p.end),c=PAL[(p.color||0)%PAL.length],pct=pg(p),a=Math.max(s,first)-first,b=Math.min(e,last)-first+1;
-  return `<div class="gr"><div class="gname"><button class="who" data-id="${esc(p.id)}"><span class="dot" style="background:${c[0]}"></span><div><strong>${esc(p.name)}</strong><small>${M?fmt(p.start)+" ~ 유지관리":fmt(p.start)+" – "+fmt(p.end)}</small></div></button></div><div class="tl" style="width:${n*cw}px">${now}<button class="tbar${M?" thin":""}" data-id="${esc(p.id)}" title="${esc(p.name)}" style="left:${a*cw+2}px;width:${(b-a)*cw-4}px;background:${c[0]};color:${c[1]}"><i></i><span>${esc(p.name)}</span></button>${!M&&b<n?`<em class="pc" style="left:${b*cw+8}px">${pct}%</em>`:""}</div></div>`}).join("");
+  return `<div class="gr"><div class="gname"><button class="who" data-id="${esc(p.id)}"><span class="dot" style="background:${c[0]}"></span><div><strong>${esc(p.name)}</strong><small>${M?fmt(p.start)+" ~ 관리":fmt(p.start)+" – "+fmt(p.end)}</small></div></button></div><div class="tl" style="width:${n*cw}px">${now}<button class="tbar${M?" thin":""}" data-id="${esc(p.id)}" title="${esc(p.name)}" style="left:${a*cw+2}px;width:${(b-a)*cw-4}px;background:${c[0]};color:${c[1]}"><i></i><span>${esc(p.name)}</span></button>${!M&&b<n?`<em class="pc" style="left:${b*cw+8}px">${pct}%</em>`:""}</div></div>`}).join("");
  return `<div class="gantt" id="gantt" style="--cw:${cw}px"><div class="gr gh"><div class="gname"></div><div class="tl" style="width:${n*cw}px">${days}</div></div>${rows||'<div class="empty">이 기간에 해당하는 프로젝트가 없습니다. 왼쪽의 Create new project 버튼으로 추가해 보세요.</div>'}</div>`;
 }
 function dashboardView(){return ctl()+(layout==="tl"?timeline():calendar())}
@@ -393,9 +393,9 @@ const dayKey=o=>{const d=new Date();return iso(new Date(d.getFullYear(),d.getMon
 function projectsView(){
  if(detailId){const p=cur();if(p)return detailView(p);detailId=null}
  const L=[...projects].sort((a,b)=>(a.start||"").localeCompare(b.start||""));
- const cardOf=p=>{const c=PAL[(p.color||0)%PAL.length],m=isM(p),days=m?0:pd(p.end)-pd(p.start)+1,dd=m?"":ddOf(p);return `<button class="pitem" data-id="${esc(p.id)}" style="--c:${c[0]}"><div class="ph"><div class="n"><span class="ttag ${m?"m":""}">${m?(p.sub==="content"?"유지관리 · 컨텐츠":"유지관리 · 소프트웨어"):"일반"}</span><br><strong>${esc(p.name)}</strong><br><small>${m?`${fmt(p.start)} 시작`:`${fmt(p.start)} – ${fmt(p.end)} · ${days}일`}</small></div>${m?"":`<span class="ddb ${dd[1]}">${dd[0]}</span>`}</div>${m?`<div class="pf"><span class="mst" data-s="${esc(p.mstate||"진행중")}"><i></i>${esc(p.mstate||"진행중")}</span></div>`:`<div class="pf"><div class="pbar"><i style="width:${pg(p)}%"></i></div><strong>${pg(p)}%</strong></div>`}</button>`};
+ const cardOf=p=>{const c=PAL[(p.color||0)%PAL.length],m=isM(p),days=m?0:pd(p.end)-pd(p.start)+1,dd=m?"":ddOf(p);return `<button class="pitem" data-id="${esc(p.id)}" style="--c:${c[0]}"><div class="ph"><div class="n"><span class="ttag ${m?"m":""}">${m?(p.sub==="content"?"관리 · 컨텐츠":"관리 · 소프트웨어"):"일반"}</span><br><strong>${esc(p.name)}</strong><br><small>${m?`${fmt(p.start)} 시작`:`${fmt(p.start)} – ${fmt(p.end)} · ${days}일`}</small></div>${m?"":`<span class="ddb ${dd[1]}">${dd[0]}</span>`}</div>${m?`<div class="pf"><span class="mst" data-s="${esc(p.mstate||"진행중")}"><i></i>${esc(p.mstate||"진행중")}</span></div>`:`<div class="pf"><div class="pbar"><i style="width:${pg(p)}%"></i></div><strong>${pg(p)}%</strong></div>`}</button>`};
  const sec=(t,arr,hint)=>`<section class="psec"><div class="psh"><h3>${t}</h3><span>${arr.length}</span></div>${arr.length?`<div class="plist">${arr.map(cardOf).join("")}</div>`:`<div class="pshint">${hint}</div>`}</section>`;
- return L.length?sec("일반 프로젝트",L.filter(p=>!isM(p)),"등록된 일반 프로젝트가 없습니다.")+sec("유지관리 프로젝트",L.filter(isM),"등록된 유지관리 프로젝트가 없습니다."):`<div class="empty">아직 프로젝트가 없습니다. 왼쪽의 Create new project 버튼으로 추가해 보세요.</div>`;
+ return L.length?sec("일반 프로젝트",L.filter(p=>!isM(p)),"등록된 일반 프로젝트가 없습니다.")+sec("관리형 프로젝트",L.filter(isM),"등록된 관리형 프로젝트가 없습니다."):`<div class="empty">아직 프로젝트가 없습니다. 왼쪽의 Create new project 버튼으로 추가해 보세요.</div>`;
 }
 let dateEdit=null,dcal=null,evDay=null,evEdit=null,jEdit=null,vEdit=null;
 const wk=["일","월","화","수","목","금","토"];
@@ -531,14 +531,14 @@ function detailView(p){
  const dtv=(key,val)=>dateEdit===key?`<span class="dte"><input class="in" id="dEditV" type="date" value="${esc(val)}" aria-label="${key==="start"?"시작일":"마감일"}"><button class="ib sm ok" data-dsave="${key}" aria-label="저장" title="저장">✓</button><button class="ib sm" data-dcancel aria-label="취소" title="취소">✕</button></span>`:`<span class="dtv"><span class="dtxt" data-dedit="${key}">${fmt(val)}</span><button class="ib sm ed" data-dedit="${key}" aria-label="${key==="start"?"시작일":"마감일"} 수정" title="날짜 수정"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></button></span>`;
  const row=(k,v)=>`<div class="kv"><span>${k}</span><strong>${v}</strong></div>`;
  const C=p.sub==="content",ms=p.mstate||"진행중",lv=[...(p.versions||[])].sort((a,b)=>(b.day||"").localeCompare(a.day||"")||(b.at||0)-(a.at||0))[0];
- const mTop=`<section class="card"><h3>프로젝트 상태</h3><div class="mseg">${MS.map(x=>`<button data-mst="${x}" aria-pressed="${x===ms}">${x}</button>`).join("")}</div><div class="kvs">${row("유형",C?"유지관리형 · 컨텐츠":"유지관리형 · 소프트웨어")}${row("시작일",dtv("start",p.start))}${C?"":row("현재 버전",lv?esc(lv.ver):"-")}${C?row("등록 이미지",(p.updates||[]).reduce((a,x)=>a+(x.imgs||[]).length,0)+"장"):""}</div>${C?imgStatBlock(p):""}</section>${updatesCard(p)}`;
+ const mTop=`<section class="card"><h3>프로젝트 상태</h3><div class="mseg">${MS.map(x=>`<button data-mst="${x}" aria-pressed="${x===ms}">${x}</button>`).join("")}</div><div class="kvs">${row("유형",C?"관리형 · 컨텐츠":"관리형 · 소프트웨어")}${row("시작일",dtv("start",p.start))}${C?"":row("현재 버전",lv?esc(lv.ver):"-")}${C?row("등록 이미지",(p.updates||[]).reduce((a,x)=>a+(x.imgs||[]).length,0)+"장"):""}</div>${C?imgStatBlock(p):""}</section>${updatesCard(p)}`;
  return `<div class="dgrid ${M?"mt":""}">
   ${M?mTop:`  <section class="card"><h3>프로젝트 상태</h3>
    ${M?"":`<div class="dday ${ddOf(p)[1]}"><small>마감까지 남은 기간</small><strong>${ddOf(p)[0]}</strong><span>${fmt(p.end)} 마감</span></div>`}
    <div class="big"><strong id="pgV">${P}%</strong><span class="st ${st[1]}">${st[0]}</span></div>
    <div class="pbar wide"><i id="pgB" style="width:${P}%"></i></div>
    <input type="range" id="pgR" min="0" max="100" step="5" value="${P}" style="--v:${P}%" aria-label="진행도">
-   <div class="kvs">${row("유형",M?"유지관리형":"일반")}${row("시작일",dtv("start",p.start))}${M?"":row("마감일",dtv("end",p.end))+row("전체 기간",`${e-s+1}일`)+row("남은 기간",dd)}${row("진행 일지",`${J.length}건`)}</div></section>
+   <div class="kvs">${row("유형",M?"관리형":"일반")}${row("시작일",dtv("start",p.start))}${M?"":row("마감일",dtv("end",p.end))+row("전체 기간",`${e-s+1}일`)+row("남은 기간",dd)}${row("진행 일지",`${J.length}건`)}</div></section>
   ${schedCard(p)}`}
   </div>${M?(C?"":versionCard(p))+`<div class="sch" style="margin-top:16px">${schedCard(p)}</div>`:`<section class="card jcard"><h3>일일 진행일지</h3>
    <div class="jform"><input class="in" id="jDay" type="date" value="${t}" aria-label="날짜"><textarea class="in" id="jText" rows="3" maxlength="1000" placeholder="이날 진행한 내용을 기록하세요 (Ctrl+Enter로 저장)"></textarea><button class="btn" id="jAdd">기록 추가</button></div>
