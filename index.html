@@ -139,6 +139,13 @@ dialog h2{margin:0 0 16px}
 .mtproc{display:flex;align-items:center;gap:10px;margin-top:10px;padding:12px;border-radius:10px;background:var(--gt);font-size:13px;line-height:1.5}.spin{flex:none;width:16px;height:16px;border-radius:50%;border:2px solid var(--line);border-top-color:var(--tg,#7cb518);animation:sp .8s linear infinite}@keyframes sp{to{transform:rotate(360deg)}}
 .mterr{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px;padding:10px 12px;border-radius:10px;background:#fdecea;color:#b3261e;font-size:13px;line-height:1.5}
 .mtd{margin-top:12px}.mtd summary{cursor:pointer;font-size:12px;color:var(--ink2);font-weight:700}.mtd .mtp{margin-top:8px;max-height:360px;overflow:auto;font-size:13px}
+.tsel3{grid-template-columns:repeat(3,1fr)}.tsel3 button{padding:9px 8px}.ttag.k{background:#fdebd6;color:#b45309}
+.mkf{display:grid;grid-template-columns:132px minmax(0,1fr) minmax(0,1fr) 104px;gap:8px;align-items:center;margin:12px 0;padding:10px;border-radius:12px;background:#f4f5f1}.mkf.edit{border:1px solid var(--line);background:var(--surf)}.mkf .in{min-width:0;width:100%}.mkf .kT{grid-column:span 2}.mkf .kB{justify-self:end;white-space:nowrap}.mkf .btn.kB{padding:8px 0;width:100%;font-size:18px;line-height:1}.mkf.edit .kB{grid-column:1/-1}.mkf .kB .btn{margin-left:6px}
+.mkit{display:flex;align-items:center;gap:10px;padding:12px 0;border-top:1px solid var(--line)}.mkch{flex:none;min-width:70px;text-align:center;font-size:11px;font-weight:700;padding:4px 8px;border-radius:8px;background:var(--gt);color:var(--gd)}.mkb{flex:1;min-width:0}.mkb b{display:block;font-size:14px;overflow-wrap:anywhere}.mkb small{color:var(--ink2);font-size:12px;overflow-wrap:anywhere}
+.mkss{display:flex;gap:4px;flex:none}.mks{border:0;border-radius:999px;padding:4px 10px;font-size:11px;font-weight:700;background:#eef0ea;color:#8a909a}.mks.on{background:var(--b);color:var(--c)}
+.mkt{grid-template-columns:repeat(4,1fr)}.mkt .ut b{font-size:16px;overflow-wrap:anywhere}.mkchart{margin:14px 0 4px}.mkchart>small{display:block;color:var(--ink2);font-weight:700;margin-bottom:6px}.mkcr{display:grid;grid-template-columns:84px 1fr 96px;gap:8px;align-items:center;font-size:12px;margin:5px 0}.mkcr i{height:8px;border-radius:4px;background:var(--line);overflow:hidden}.mkcr b{display:block;height:100%;background:var(--tg,#7cb518);border-radius:4px}.mkcr em{font-style:normal;text-align:right;color:var(--ink2)}
+.bud{display:flex;align-items:center;gap:4px}.bud .in{width:110px;text-align:right;padding:6px 8px}.bud em{font-style:normal;font-weight:600}
+@media(max-width:820px){.mkf{grid-template-columns:1fr 1fr}.mkf .kT,.mkf .kR{grid-column:1/-1}.mkf .btn.kB{grid-column:1/-1;width:100%;padding:10px 0}.mkf .kB:not(.btn){grid-column:1/-1}.mkit{flex-wrap:wrap;row-gap:8px}.mkb{flex:1 1 120px}.mkss{order:9;flex:1 1 100%}.utiles.mkt{grid-template-columns:1fr 1fr}.mkcr{grid-template-columns:70px 1fr 84px}}
 .kk{margin-left:10px;border:0;border-radius:10px;background:#fee500;color:#181600;font-size:11px;font-weight:700;padding:4px 10px;vertical-align:middle}.kk:disabled{opacity:.5}.prow .kk.kp{margin:0 8px 0 0;flex:none;white-space:nowrap}
 .mseg{max-width:460px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0 4px}.mseg button{border:1.5px solid var(--line);background:var(--surf);border-radius:12px;padding:12px 4px;font-weight:700;font-size:13px;color:var(--ink2)}.mseg button[data-mst="진행중"][aria-pressed=true]{border-color:#2e9e5b;background:#e3f4ea;color:#1f7a44}.mseg button[data-mst="일시멈춤"][aria-pressed=true]{border-color:#e5484d;background:#fde8e8;color:#b3262b}.mseg button[data-mst="완료"][aria-pressed=true]{border-color:#2b6fe0;background:#e6f0fd;color:#1a4fa8}
 .utiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:10px;margin:14px 0}.ut{border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:var(--side);position:relative}.ut b{font-size:26px;font-weight:700;display:block;line-height:1.1}.ut small{display:flex;align-items:center;gap:6px;color:var(--ink2);font-size:12px;margin-top:6px}.ut small i{width:8px;height:8px;border-radius:50%;background:var(--c)}.ut em{position:absolute;top:10px;right:10px;font-style:normal;font-size:10px;font-weight:700;background:var(--surf);border:1px solid var(--line);border-radius:10px;padding:1px 7px;color:var(--ink2)}
@@ -302,7 +309,7 @@ input[type=range]::-moz-range-track{background:transparent}
 <dialog id="dlg">
  <h2 id="dTitle">새 프로젝트 만들기</h2>
  <div class="fgrid" style="max-width:none">
-  <div id="tWrap"><div style="font-size:12px;color:var(--ink2);font-weight:600;margin-bottom:8px">프로젝트 유형</div><div class="tsel"><button type="button" data-ptype="general" aria-pressed="true">일반 프로젝트<small>시작일·마감일·D-day</small></button><button type="button" data-ptype="maintenance" aria-pressed="false">관리형 프로젝트<small>마감일·D-day 없음</small></button></div></div>
+  <div id="tWrap"><div style="font-size:12px;color:var(--ink2);font-weight:600;margin-bottom:8px">프로젝트 유형</div><div class="tsel tsel3"><button type="button" data-ptype="general" aria-pressed="true">일반 프로젝트<small>마감일·D-day</small></button><button type="button" data-ptype="maintenance" aria-pressed="false">관리형 프로젝트<small>마감일 없음</small></button><button type="button" data-ptype="marketing" aria-pressed="false">마케팅 프로젝트<small>예산·채널별 활동</small></button></div></div>
   <div id="sWrap" hidden><div style="font-size:12px;color:var(--ink2);font-weight:600;margin-bottom:8px">관리 유형</div><div class="tsel" style="grid-template-columns:repeat(3,1fr)"><button type="button" data-psub="software" aria-pressed="true">소프트웨어</button><button type="button" data-psub="content" aria-pressed="false">컨텐츠</button><button type="button" data-psub="general" aria-pressed="false">일반</button></div><div id="sNote" style="display:none;margin-top:8px;font-size:13px;color:#a36a00;background:#fff4dc;border-radius:10px;padding:9px 12px">아직 개발 중입니다.</div></div>
   <label>프로젝트명<input class="in" id="fName" maxlength="80"></label>
   <div class="two" id="dRow">
@@ -388,14 +395,14 @@ function timeline(){
 }
 function dashboardView(){return ctl()+(layout==="tl"?timeline():calendar())}
 let detailId=null;
-const isM=p=>p.type==="maintenance",pg=p=>Math.max(0,Math.min(100,+p.progress||0)),cur=()=>projects.find(x=>x.id===detailId);
+const isM=p=>p.type==="maintenance",isK=p=>p.type==="marketing",pg=p=>{if(isK(p)&&(p.camps||[]).length)return Math.round(p.camps.filter(x=>x.status==="완료").length/p.camps.length*100);return Math.max(0,Math.min(100,+p.progress||0))},cur=()=>projects.find(x=>x.id===detailId);
 const dayKey=o=>{const d=new Date();return iso(new Date(d.getFullYear(),d.getMonth(),d.getDate()+o))};
 function projectsView(){
  if(detailId){const p=cur();if(p)return detailView(p);detailId=null}
  const L=[...projects].sort((a,b)=>(a.start||"").localeCompare(b.start||""));
- const cardOf=p=>{const c=PAL[(p.color||0)%PAL.length],m=isM(p),days=m?0:pd(p.end)-pd(p.start)+1,dd=m?"":ddOf(p);return `<button class="pitem" data-id="${esc(p.id)}" style="--c:${c[0]}"><div class="ph"><div class="n"><span class="ttag ${m?"m":""}">${m?(p.sub==="content"?"관리 · 컨텐츠":"관리 · 소프트웨어"):"일반"}</span><br><strong>${esc(p.name)}</strong><br><small>${m?`${fmt(p.start)} 시작`:`${fmt(p.start)} – ${fmt(p.end)} · ${days}일`}</small></div>${m?"":`<span class="ddb ${dd[1]}">${dd[0]}</span>`}</div>${m?`<div class="pf"><span class="mst" data-s="${esc(p.mstate||"진행중")}"><i></i>${esc(p.mstate||"진행중")}</span></div>`:`<div class="pf"><div class="pbar"><i style="width:${pg(p)}%"></i></div><strong>${pg(p)}%</strong></div>`}</button>`};
+ const cardOf=p=>{const c=PAL[(p.color||0)%PAL.length],m=isM(p),days=m?0:pd(p.end)-pd(p.start)+1,dd=m?"":ddOf(p);return `<button class="pitem" data-id="${esc(p.id)}" style="--c:${c[0]}"><div class="ph"><div class="n"><span class="ttag ${m?"m":isK(p)?"k":""}">${m?(p.sub==="content"?"관리 · 컨텐츠":"관리 · 소프트웨어"):isK(p)?"마케팅":"일반"}</span><br><strong>${esc(p.name)}</strong><br><small>${m?`${fmt(p.start)} 시작`:`${fmt(p.start)} – ${fmt(p.end)} · ${days}일`}</small></div>${m?"":`<span class="ddb ${dd[1]}">${dd[0]}</span>`}</div>${m?`<div class="pf"><span class="mst" data-s="${esc(p.mstate||"진행중")}"><i></i>${esc(p.mstate||"진행중")}</span></div>`:`<div class="pf"><div class="pbar"><i style="width:${pg(p)}%"></i></div><strong>${pg(p)}%</strong>${isK(p)?`<span class="mst" data-s="${esc(p.mstate||"진행중")}"><i></i>${esc(p.mstate||"진행중")}</span>`:""}</div>`}</button>`};
  const sec=(t,arr,hint)=>`<section class="psec"><div class="psh"><h3>${t}</h3><span>${arr.length}</span></div>${arr.length?`<div class="plist">${arr.map(cardOf).join("")}</div>`:`<div class="pshint">${hint}</div>`}</section>`;
- return L.length?sec("일반 프로젝트",L.filter(p=>!isM(p)),"등록된 일반 프로젝트가 없습니다.")+sec("관리형 프로젝트",L.filter(isM),"등록된 관리형 프로젝트가 없습니다."):`<div class="empty">아직 프로젝트가 없습니다. 왼쪽의 Create new project 버튼으로 추가해 보세요.</div>`;
+ return L.length?sec("일반 프로젝트",L.filter(p=>!isM(p)&&!isK(p)),"등록된 일반 프로젝트가 없습니다.")+sec("관리형 프로젝트",L.filter(isM),"등록된 관리형 프로젝트가 없습니다.")+sec("마케팅 프로젝트",L.filter(isK),"등록된 마케팅 프로젝트가 없습니다."):`<div class="empty">아직 프로젝트가 없습니다. 왼쪽의 Create new project 버튼으로 추가해 보세요.</div>`;
 }
 let dateEdit=null,dcal=null,evDay=null,evEdit=null,jEdit=null,vEdit=null;
 const wk=["일","월","화","수","목","금","토"];
@@ -530,6 +537,7 @@ function detailView(p){
  const lab=k=>{const[a,b,c]=k.split("-").map(Number);return (k===t?"오늘 · ":k===y?"어제 · ":"")+`${b}월 ${c}일 (${KN[new Date(a,b-1,c).getDay()]})`};
  const dtv=(key,val)=>dateEdit===key?`<span class="dte"><input class="in" id="dEditV" type="date" value="${esc(val)}" aria-label="${key==="start"?"시작일":"마감일"}"><button class="ib sm ok" data-dsave="${key}" aria-label="저장" title="저장">✓</button><button class="ib sm" data-dcancel aria-label="취소" title="취소">✕</button></span>`:`<span class="dtv"><span class="dtxt" data-dedit="${key}">${fmt(val)}</span><button class="ib sm ed" data-dedit="${key}" aria-label="${key==="start"?"시작일":"마감일"} 수정" title="날짜 수정"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></button></span>`;
  const row=(k,v)=>`<div class="kv"><span>${k}</span><strong>${v}</strong></div>`;
+ if(isK(p))return mkView(p,{dtv,row,e,s,today});
  const C=p.sub==="content",ms=p.mstate||"진행중",lv=[...(p.versions||[])].sort((a,b)=>(b.day||"").localeCompare(a.day||"")||(b.at||0)-(a.at||0))[0];
  const mTop=`<section class="card"><h3>프로젝트 상태</h3><div class="mseg">${MS.map(x=>`<button data-mst="${x}" aria-pressed="${x===ms}">${x}</button>`).join("")}</div><div class="kvs">${row("유형",C?"관리형 · 컨텐츠":"관리형 · 소프트웨어")}${row("시작일",dtv("start",p.start))}${C?"":row("현재 버전",lv?esc(lv.ver):"-")}${C?row("등록 이미지",(p.updates||[]).reduce((a,x)=>a+(x.imgs||[]).length,0)+"장"):""}</div>${C?imgStatBlock(p):""}</section>${updatesCard(p)}`;
  return `<div class="dgrid ${M?"mt":""}">
@@ -741,6 +749,45 @@ async function mtRetry(id){
  if(!m.audio){toast("녹음 파일이 남아 있지 않아 다시 정리할 수 없습니다.");return}
  try{m.st="processing";m.err="";m.updatedAt=Date.now();if(view==="meeting")render();await db.fn("transcribe",{id,force:true});toast("다시 정리를 시작했습니다")}catch(e){toast("요청 실패: "+(e&&e.message||e))}
 }
+/* marketing project */
+const MKCH=["인스타그램","블로그","유튜브","페이스북","카카오","네이버 광고","구글 광고","이메일·문자","오프라인","기타"];
+const MKS={"기획":["#e8eef8","#3b5aa8"],"진행":["#e3f4d6","#2e7d1f"],"완료":["#dbe8ff","#1f5fd1"],"중단":["#fde2e1","#b3261e"]};
+let mkEdit=null,mkMore=10;
+const won=n=>(Math.round(+n||0)).toLocaleString("ko-KR")+"원",numIn=v=>Math.max(0,parseInt(String(v||"").replace(/[^\d]/g,""),10)||0);
+function mkForm(x){
+ const v=k=>esc(x&&x[k]!=null?x[k]:"");
+ return `<div class="mkf${x?" edit":""}"><select class="in kC" aria-label="채널">${MKCH.map(c=>`<option ${x&&x.ch===c?"selected":""}>${c}</option>`).join("")}</select><input class="in kT" maxlength="120" placeholder="활동 내용" value="${v("text")}" aria-label="활동 내용"><select class="in kS" aria-label="상태">${Object.keys(MKS).map(c=>`<option ${(x?x.status:"기획")===c?"selected":""}>${c}</option>`).join("")}</select><input class="in kD" type="date" value="${x?x.day||"":iso(new Date())}" aria-label="실행일"><input class="in kM" inputmode="numeric" placeholder="집행비(원)" value="${x&&x.cost?x.cost:""}" aria-label="집행비"><input class="in kR" maxlength="80" placeholder="성과 (예: 조회 1.2만, 전환 35건)" value="${v("res")}" aria-label="성과">${x?`<span class="kB"><button class="btn sec sm" data-mkc>취소</button><button class="btn sm" data-mksave="${esc(x.id)}">저장</button></span>`:`<button class="btn kB" data-mkadd aria-label="추가" title="추가">+</button>`}</div>`;
+}
+function mkView(p,h){
+ const {dtv,row}=h,L=[...(p.camps||[])].sort((a,b)=>(b.day||"").localeCompare(a.day||"")||(b.at||0)-(a.at||0)),ms=p.mstate||"진행중";
+ const spent=L.reduce((a,x)=>a+(+x.cost||0),0),bud=+p.budget||0,rate=bud?Math.round(spent/bud*100):0,left=bud-spent,P=pg(p);
+ const cnt=k=>L.filter(x=>x.status===k).length,byCh={};L.forEach(x=>{const o=byCh[x.ch]||(byCh[x.ch]={n:0,c:0});o.n++;o.c+=+x.cost||0});
+ const chs=Object.entries(byCh).sort((a,b)=>b[1].c-a[1].c||b[1].n-a[1].n),mx=Math.max(1,...chs.map(([,o])=>spent?o.c:o.n));
+ const top=`<section class="card"><h3>프로젝트 상태</h3><div class="mseg">${MS.map(x=>`<button data-mst="${x}" aria-pressed="${x===ms}">${x}</button>`).join("")}</div>
+  <div class="dday ${ddOf(p)[1]}" style="margin-top:12px"><small>종료까지 남은 기간</small><strong>${ms==="완료"?"완료":ddOf(p)[0]}</strong><span>${fmt(p.end)} 종료</span></div>
+  <div class="kvs">${row("유형","마케팅")}${row("시작일",dtv("start",p.start))}${row("종료일",dtv("end",p.end))}${row("활동 완료율",`${P}%`)}
+  <div class="kv"><span>예산</span><strong class="bud"><input class="in" id="mkBud" inputmode="numeric" value="${bud?bud.toLocaleString("ko-KR"):""}" placeholder="0" aria-label="예산(원)"><em>원</em></strong></div>${row("집행액",won(spent))}${row("잔액",`<span style="color:${left<0?"#d23a40":"inherit"}">${bud?won(left):"-"}</span>`)}</div>
+  ${bud?`<div class="pbar wide" title="예산 집행률 ${rate}%" style="margin-top:10px"><i style="width:${Math.min(100,rate)}%;${rate>100?"background:#d23a40":""}"></i></div><small style="color:var(--ink2)">예산 집행률 ${rate}%</small>`:""}</section>`;
+ const list=L.slice(0,mkMore).map(x=>x.id===mkEdit?mkForm(x):`<div class="mkit"><span class="mkch">${esc(x.ch||"기타")}</span><div class="mkb"><b>${esc(x.text)}</b><small>${x.day?fmt(x.day).slice(2):""}${x.cost?" · "+won(x.cost):""}${x.res?" · "+esc(x.res):""}</small></div><div class="mkss">${Object.keys(MKS).map(k=>`<button class="mks${x.status===k?" on":""}" data-mkst="${esc(x.id)}|${k}" style="--b:${MKS[k][0]};--c:${MKS[k][1]}" aria-pressed="${x.status===k}">${k}</button>`).join("")}</div><button class="x ed" data-mked="${esc(x.id)}" aria-label="수정" title="수정">✎</button><button class="x" data-mkdel="${esc(x.id)}" aria-label="삭제" title="삭제">×</button></div>`).join("");
+ const main=`<section class="card ucard"><h3>캠페인 활동</h3>
+  <div class="utiles mkt"><div class="ut" style="--c:var(--tg,#7cb518);cursor:default"><b>${L.length}건</b><small><i></i>전체 활동</small></div><div class="ut" style="--c:var(--tg,#7cb518);cursor:default"><b>${cnt("진행")}건</b><small><i></i>진행</small></div><div class="ut" style="--c:var(--tg,#7cb518);cursor:default"><b>${cnt("완료")}건</b><small><i></i>완료</small></div><div class="ut" style="--c:var(--tg,#7cb518);cursor:default"><b>${won(spent)}</b><small><i></i>집행액</small></div></div>
+  ${chs.length?`<div class="mkchart"><small>채널별 ${spent?"집행비":"활동 수"}</small>${chs.map(([c,o])=>{const v=spent?o.c:o.n;return `<div class="mkcr"><span>${esc(c)}</span><i><b style="width:${Math.max(3,v/mx*100)}%"></b></i><em>${spent?won(o.c):o.n+"건"}</em></div>`}).join("")}</div>`:""}
+  ${mkEdit?"":mkForm(null)}
+  ${L.length?list+(L.length>mkMore?`<button class="btn sec" data-mkmore style="width:100%;margin-top:8px">더 보기 (${L.length-mkMore}건)</button>`:""):`<div class="empty">아직 등록된 활동이 없습니다. 채널과 활동 내용을 입력해 + 를 눌러 추가하세요.</div>`}</section>`;
+ return `<div class="dgrid mt">${top}${main}</div><div class="sch" style="margin-top:16px">${schedCard(p)}</div>`;
+}
+function mkClick(b){
+ const p=cur();if(!p)return;const d=b.dataset;
+ const read=f=>({ch:f.querySelector(".kC").value,text:f.querySelector(".kT").value.trim(),status:f.querySelector(".kS").value,day:f.querySelector(".kD").value,cost:numIn(f.querySelector(".kM").value),res:f.querySelector(".kR").value.trim()});
+ if(d.mkadd!==undefined){const o=read(b.closest(".mkf"));if(!o.text){b.closest(".mkf").querySelector(".kT").focus();return}p.camps=[...(p.camps||[]),{id:Math.random().toString(36).slice(2,9),...o,at:Date.now()}];render();persist(p);return}
+ if(d.mkst){const[id,st]=d.mkst.split("|");p.camps=(p.camps||[]).map(x=>x.id===id?{...x,status:st}:x);render();persist(p);return}
+ if(d.mked){mkEdit=d.mked;render();return}
+ if(d.mkc!==undefined){mkEdit=null;render();return}
+ if(d.mksave){const o=read(b.closest(".mkf"));if(!o.text){toast("활동 내용을 입력해 주세요.");return}p.camps=(p.camps||[]).map(x=>x.id===d.mksave?{...x,...o}:x);mkEdit=null;render();persist(p);return}
+ if(d.mkdel){const id=d.mkdel,x=(p.camps||[]).find(z=>z.id===id);confirmDel("활동을 삭제할까요?",`“${x?x.text:""}” 활동이 삭제됩니다.`,()=>{p.camps=(p.camps||[]).filter(z=>z.id!==id);render();persist(p)});return}
+ if(d.mkmore!==undefined){mkMore+=10;render()}
+}
+document.addEventListener("change",e=>{if(e.target.id!=="mkBud")return;const p=cur();if(!p)return;p.budget=numIn(e.target.value);render();persist(p)});
 /* plan */
 const PT={work:{"회의":5,"마감":7,"출장":6,"교육":2,"기타":4},vacation:{"연차":0,"반차":1,"병가":7,"경조사":6,"기타":4}};
 const PK={work:"회사 업무 스케줄",vacation:"개인 휴가 스케줄"};
@@ -832,11 +879,11 @@ let pType="general";
 let pSub="software";
 function setSub(v){pSub=v;document.querySelectorAll("[data-psub]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.psub===v)));const dev=pType==="maintenance"&&v==="general";$("#sNote").style.display=dev?"block":"none";$("#save").disabled=dev}
 function setType(t){pType=t;$("#sWrap").hidden=t!=="maintenance";setSub(pSub);document.querySelectorAll("[data-ptype]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.ptype===t)));$("#eWrap").style.display=t==="maintenance"?"none":"";$("#dRow").style.gridTemplateColumns=t==="maintenance"?"1fr":""}
-document.addEventListener("click",e=>{const sb=e.target.closest("[data-psub]");if(sb){setSub(sb.dataset.psub);return}const b=e.target.closest("[data-ptype]");if(b){setType(b.dataset.ptype);if(b.dataset.ptype==="general"&&!$("#fEnd").value&&$("#fStart").value){const t=$("#fStart").value;$("#fEnd").value=iso(new Date(+t.slice(0,4),+t.slice(5,7)-1,+t.slice(8)+13))}}});
+document.addEventListener("click",e=>{const sb=e.target.closest("[data-psub]");if(sb){setSub(sb.dataset.psub);return}const b=e.target.closest("[data-ptype]");if(b){setType(b.dataset.ptype);if(b.dataset.ptype!=="maintenance"&&!$("#fEnd").value&&$("#fStart").value){const t=$("#fStart").value;$("#fEnd").value=iso(new Date(+t.slice(0,4),+t.slice(5,7)-1,+t.slice(8)+13))}}});
 function openDlg(date,id){
  editId=id||null;const p=editId&&projects.find(x=>x.id===editId);$("#dErr").textContent="";
  $("#dTitle").textContent=p?"프로젝트 수정":"새 프로젝트 만들기";$("#save").textContent=p?"변경사항 저장":"프로젝트 만들기";$("#del").hidden=!p;
- pSub=p&&p.sub||"software";setType(p&&isM(p)?"maintenance":"general");
+ pSub=p&&p.sub||"software";setType(p?(p.type==="maintenance"||p.type==="marketing"?p.type:"general"):"general");
  const s=p?p.start:date||iso(new Date());
  $("#fName").value=p?p.name:"";selColor=p&&p.color!=null?p.color:null;drawColors();$("#fStart").value=s;$("#fEnd").value=p&&p.end?p.end:iso(new Date(+s.slice(0,4),+s.slice(5,7)-1,+s.slice(8)+13));
  $("#dlg").showModal();$("#fName").focus();
@@ -849,8 +896,8 @@ $("#save").onclick=async()=>{
  if(!name||!start||(!M&&!end)){er.textContent="모든 항목을 입력해 주세요.";return}
  if(!M&&end<start){er.textContent="마감일은 시작일 이후여야 합니다.";return}
  const old=editId&&projects.find(x=>x.id===editId);
- if(old){Object.assign(old,{name,start,type:pType,color:selColor!=null?selColor:old.color});if(M)old.sub=pSub;if(M)delete old.end;else old.end=end;if(!(await persist(old)))return;$("#dlg").close();render();toast("프로젝트가 수정되었습니다");return}
- const data={name,start,...(M?{type:"maintenance",sub:pSub}:{type:"general",end}),color:selColor!=null?selColor:Math.floor(Math.random()*PAL.length),progress:0,journal:[],updatedAt:Date.now()};
+ if(old){Object.assign(old,{name,start,type:pType,color:selColor!=null?selColor:old.color});if(pType==="marketing"){old.camps=old.camps||[];old.budget=old.budget||0;old.mstate=old.mstate||"진행중"}if(M)old.sub=pSub;if(M)delete old.end;else old.end=end;if(!(await persist(old)))return;$("#dlg").close();render();toast("프로젝트가 수정되었습니다");return}
+ const data={name,start,...(M?{type:"maintenance",sub:pSub}:{type:pType,end,...(pType==="marketing"?{mstate:"진행중",budget:0,camps:[]}:{})}),color:selColor!=null?selColor:Math.floor(Math.random()*PAL.length),progress:0,journal:[],updatedAt:Date.now()};
  try{
   if(db){await db.collection("projects").doc().set(data)}
   else{projects.push({id:"l"+Date.now(),...data});toast("클라우드에 연결되지 않았습니다. 이번 세션에서만 저장됩니다.")}
@@ -884,6 +931,7 @@ document.addEventListener("click",async e=>{
  if(e.target.closest("[data-vcancel]")){vEdit=null;render();return}
  const vs=e.target.closest("[data-vsave]");if(vs){const ver=$("#vEditV").value.trim(),t=$("#vEditT").value.trim(),d=$("#vEditD").value;if(!ver){$("#vEditV").focus();return}const p=cur();p.versions=(p.versions||[]).map(z=>z.id===vs.dataset.vsave?{...z,ver,t,day:d||z.day}:z);vEdit=null;render();persist(p);toast("버전이 수정되었습니다");return}
  if(e.target.id==="jAdd")return addJ();
+ const mk=e.target.closest("[data-mkadd],[data-mkst],[data-mked],[data-mkdel],[data-mksave],[data-mkc],[data-mkmore]");if(mk)return mkClick(mk);
  const kk=e.target.closest("[data-kk],[data-kv],[data-kp]");if(kk)return sendKakao(kk);
  const dm=e.target.closest("[data-dm]");if(dm){dcal=new Date(dcal.getFullYear(),dcal.getMonth()+ +dm.dataset.dm,1);render();return}
  const ed=e.target.closest("[data-ed]");if(ed){evDay=ed.dataset.ed;evEdit=null;const[a,m,d]=evDay.split("-").map(Number);$("#eTitle").textContent=`${m}월 ${d}일 일정 추가`;$("#eDay").value=evDay;$("#eText").value="";$("#dlgE").showModal();$("#eText").focus();return}
