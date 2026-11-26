@@ -19,7 +19,7 @@ button{cursor:pointer}
 .side{background:var(--side);border-right:1px solid var(--line);padding:22px 20px;display:flex;flex-direction:column;gap:26px;position:sticky;top:0;height:100vh}
 .dtv,.dte{display:inline-flex;align-items:center;gap:6px}.dte .in{padding:5px 8px;font-size:12px;width:auto}
 .ib.sm.ed{width:26px;height:26px;border-radius:8px;color:var(--ink2)}.ib.sm.ed:hover{color:var(--gd);background:var(--gt)}.ib.sm.ok{background:var(--gd);color:#fff;border-color:var(--gd)}
-.logo a{display:inline-block;border-radius:8px}.logo img{height:38px;display:block}
+.logo a{display:inline-block;border-radius:8px}a.mlogo{display:none;border-radius:8px}.logo img{height:38px;display:block}
 nav{display:flex;flex-direction:column;gap:6px}
 nav a{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:12px;color:var(--ink2);text-decoration:none;font-weight:600}
 nav a svg{width:18px;height:18px;flex:none}
@@ -193,7 +193,7 @@ input[type=range]::-moz-range-track{background:transparent}
  nav a{flex-direction:column;gap:2px;font-size:11px;padding:6px 8px;flex:1;align-items:center}
  main{padding:14px 12px 100px;height:auto;overflow:visible}
  .top h1{font-size:20px}
- .top>div:first-child{display:none!important}.top .ws{margin-left:auto}.gname{width:140px}.who small{display:none}.who strong{max-width:84px}.seg button{padding:7px 10px}
+ .mlogo{display:block!important}.top h1{display:none}.top .ws{margin-left:auto}.gname{width:140px}.who small{display:none}.who strong{max-width:84px}.seg button{padding:7px 10px}
  .cell{padding:4px}.cell em{min-width:20px;height:20px;font-size:11px}
  .ev{inset:28px 0 auto 0;grid-auto-rows:22px}
  .bar{font-size:10px;padding:0 6px;margin:0 1px}.bar small{display:none}
@@ -261,7 +261,7 @@ let mon=new Date(),scope="month",layout="tl";
 
 function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("on"),2800)}
 function setCloud(s){const c=$("#cloud");c.className="cloud "+s;c.lastChild.textContent={on:"데이터베이스 연결됨",off:"연결 안 됨 · 저장되지 않음",connecting:"연결 중…"}[s]}
-const head=t=>`<div class="top"><div style="display:flex;align-items:center;gap:12px"><h1>${t}</h1></div><div class="ws"><span class="nm" title="${esc(settings.workspace)}">${esc(settings.workspace)}</span>${window.__sb&&getSession()?'<button class="lo" data-logout>로그아웃</button>':""}</div></div>`;
+const head=t=>`<div class="top"><div style="display:flex;align-items:center;gap:12px"><a href="#dashboard" data-home aria-label="대시보드로 이동" class="mlogo"><img style="height:30px;display:block" src="${$(".logo img").src}" alt="SID"></a><h1>${t}</h1></div><div class="ws"><span class="nm" title="${esc(settings.workspace)}">${esc(settings.workspace)}</span>${window.__sb&&getSession()?'<button class="lo" data-logout>로그아웃</button>':""}</div></div>`;
 
 const KN=["일","월","화","수","목","금","토"],dcls=k=>k===0?"sun":k===6?"sat":"";
 const ws0=()=>new Date(mon.getFullYear(),mon.getMonth(),mon.getDate()-(mon.getDay()-settings.weekStart+7)%7);
