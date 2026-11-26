@@ -201,6 +201,7 @@ input[type=range]::-moz-range-track{background:transparent}
 .split .sg{grid-template-columns:1fr}.split .evl{max-height:240px}
 .paper{flex:1;width:100%;min-height:320px;margin-top:10px;border:1px solid #e6e2c8;border-radius:12px;background-color:#fffef6;background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 31px,#d8dbc6 31px,#d8dbc6 32px);background-attachment:local;line-height:32px;padding:0 14px;font:inherit;font-size:14px;line-height:32px;resize:vertical;color:var(--ink)}
 .paper:focus{outline:1px solid #7a808a;outline-offset:0}
+.paper.mview{white-space:pre-wrap;overflow-wrap:anywhere;overflow:auto;cursor:text;resize:none;height:320px;flex:none}.paper.mview a{color:#1a64d8;text-decoration:underline;text-underline-offset:2px;cursor:pointer;word-break:break-all}.paper.mview a:hover{color:#0f4aa8}
 .msv{font-size:11px;color:var(--ink2)}
 .x.ed{font-size:14px}
 .jitem.edit{flex-direction:column;align-items:stretch}.jitem.edit .in{margin-bottom:6px}.jeb{display:flex;gap:6px;justify-content:flex-end}.btn.sm{padding:6px 14px;font-size:12px}
@@ -349,7 +350,7 @@ function schedCard(p){
  return `<section class="card split"><div class="half"><div class="mh"><h3>일정</h3><div><button class="ib sm" data-dm="-1" aria-label="이전 달">‹</button><button class="ib sm" data-dm="1" aria-label="다음 달">›</button></div></div>
  <div class="sg"><div class="mini"><div class="mt">${Y}년 ${M+1}월</div><div class="mw">${wk.map((w,i)=>`<b class="${i===0?"sun":i===6?"sat":""}">${w}</b>`).join("")}</div><div class="mg">${cells}</div></div>
  <div class="evl"><div class="mt">일정 목록 <small>최신순</small></div>${L.length?L.map(x=>{const[a,m,d]=x.day.split("-").map(Number);return `<div class="ev2"><div class="dt"><strong>${d}</strong><small>${m}월</small></div><div class="tx"><b>${esc(x.t)}</b><small>${a}.${String(m).padStart(2,"0")}.${String(d).padStart(2,"0")} (${wk[new Date(a,m-1,d).getDay()]})</small></div><button class="x ed" data-eedit="${x.id}" aria-label="수정" title="수정">✎</button><button class="x" data-ex="${x.id}" aria-label="삭제" title="삭제">×</button></div>`}).join(""):'<div class="empty" style="padding:24px 0">날짜를 눌러 일정을 추가하세요.</div>'}</div></div></div>
- <div class="half"><div class="mh"><h3>메모</h3><span class="msv" id="memoSt"></span></div><textarea class="paper" id="memo" maxlength="5000" placeholder="자유롭게 메모하세요" aria-label="메모">${esc(p.memo||"")}</textarea></div></section>`;
+ <div class="half"><div class="mh"><h3>메모</h3><span class="msv" id="memoSt"></span></div><textarea class="paper" id="memo" maxlength="5000" placeholder="자유롭게 메모하세요" aria-label="메모" ${hasUrl(p.memo)?"hidden":""}>${esc(p.memo||"")}</textarea><div class="paper mview" id="memoView" tabindex="0" role="textbox" aria-label="메모 (링크는 클릭하면 새 창으로 열립니다. 본문을 누르면 편집)" ${hasUrl(p.memo)?"":"hidden"}>${linkify(p.memo)}</div></div></section>`;
 }
 function ddOf(p){if(isM(p))return["","ok"];const l=pd(p.end)-dn(new Date());return l>0?[`D-${l}`,l<=7?"soon":"ok"]:l===0?["D-DAY","soon"]:[`D+${-l}`,"late"]}
 const EV_KM=420; /* 완충 기준 주행거리(km) — 필요 시 수정 */
@@ -433,6 +434,10 @@ function settingsView(){
  <label>anon public key<input class="in" id="sbKey" type="password" placeholder="eyJ..." value="${esc((sbCfg()||{}).key||"")}"></label>
  <div style="display:flex;gap:8px"><button class="btn" id="sbSave">연결 저장</button><button class="btn sec" id="sbOff">연결 해제</button></div>`}</div>`;
 }
+const URLRE=/(https?:\/\/[^\s<>"']+|www\.[^\s<>"']+)/gi;
+const hasUrl=t=>!!t&&(URLRE.lastIndex=0,URLRE.test(t));
+function linkify(t){return esc(t||"").replace(URLRE,m=>{let u=m,tail="";const mm=u.match(/[.,;:!?)\]}]+$/);if(mm){tail=mm[0];u=u.slice(0,-tail.length)}const h=/^www\./i.test(u)?"https://"+u:u;return `<a href="${h}" target="_blank" rel="noopener noreferrer">${u}</a>${tail}`})}
+function memoShow(edit){const ta=$("#memo"),v=$("#memoView");if(!ta||!v)return;if(edit){v.hidden=true;ta.hidden=false;ta.focus();ta.setSelectionRange(ta.value.length,ta.value.length)}else if(hasUrl(ta.value)){v.innerHTML=linkify(ta.value);ta.hidden=true;v.hidden=false}}
 async function saveMemo(){const p=cur();if(!p)return;p.memo=memoV;const ok=await persist(p);const st=$("#memoSt");if(st)st.textContent=ok?"저장됨":"저장 실패"}
 async function persist(p){
  const {id,...d}=p;d.updatedAt=Date.now();
@@ -659,6 +664,9 @@ document.addEventListener("change",e=>{
  if(t.id==="pgR"){const p=cur();p.progress=+t.value;persist(p)}
 });
 let memoT=null,memoV="";
+document.addEventListener("focusout",e=>{if(e.target.id==="memo")memoShow(false)});
+document.addEventListener("click",e=>{const v=e.target.closest&&e.target.closest("#memoView");if(v&&!e.target.closest("a"))memoShow(true)});
+document.addEventListener("keydown",e=>{if(e.target.id==="memoView"&&e.key==="Enter")memoShow(true)});
 document.addEventListener("input",e=>{if(e.target.id==="memo"){memoV=e.target.value;$("#memoSt").textContent="저장 중…";clearTimeout(memoT);memoT=setTimeout(saveMemo,900)}
  if(e.target.id==="pgR"){$("#pgV").textContent=e.target.value+"%";$("#pgB").style.width=e.target.value+"%";e.target.style.setProperty("--v",e.target.value+"%")}});
 document.addEventListener("keydown",e=>{if(e.target.id==="dEditV"){if(e.key==="Enter"){const b=document.querySelector("[data-dsave]");b&&b.click()}if(e.key==="Escape"){dateEdit=null;render()}}
