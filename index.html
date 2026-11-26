@@ -17,7 +17,9 @@ button{cursor:pointer}
 :focus-visible{outline:2px solid var(--gd);outline-offset:2px}
 .app{display:grid;grid-template-columns:248px 1fr;min-height:100vh}
 .side{background:var(--side);border-right:1px solid var(--line);padding:22px 20px;display:flex;flex-direction:column;gap:26px;position:sticky;top:0;height:100vh}
-.logo img{height:38px;display:block}
+.dtv,.dte{display:inline-flex;align-items:center;gap:6px}.dte .in{padding:5px 8px;font-size:12px;width:auto}
+.ib.sm.ed{width:26px;height:26px;border-radius:8px;color:var(--ink2)}.ib.sm.ed:hover{color:var(--gd);background:var(--gt)}.ib.sm.ok{background:var(--gd);color:#fff;border-color:var(--gd)}
+.logo a,a.mlogo{display:inline-block;border-radius:8px}.logo img{height:38px;display:block}
 nav{display:flex;flex-direction:column;gap:6px}
 nav a{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:12px;color:var(--ink2);text-decoration:none;font-weight:600}
 nav a svg{width:18px;height:18px;flex:none}
@@ -206,11 +208,11 @@ input[type=range]::-moz-range-track{background:transparent}
 <body>
 <div class="app">
  <aside class="side">
-  <div class="logo"><img src="data:image/png;base64,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" alt="SID"></div>
+  <div class="logo"><a href="#dashboard" data-home aria-label="대시보드로 이동" title="대시보드"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAAAmCAYAAABESIy4AAAKSUlEQVR4AeRaDXBU1RX+zn37kk3AJiB/BhHFUhACdKqZ+lPMJlQCdaqtI22dcVo71XbaatuZtg61P4PVFjujVRlAWxyspbVWjS1ixaAkG1CYSlBBoCQSJIb8kNCoJCS72ffe9btJNm5+d5NgCOTN/faee9+55977vfPOu/e9VRjAse/oAzmlRx95q6xqtT5Uter9w9WrfjeA5qNaNWGitx+8dpl4kULAXWCrNCix0pVE7qo69sfNo5rBBCevEtRDq3v8t7WNf0Vd02NoChfCUsnwSTIseEvq6u6/MVE7o1UvIaILD142SyQy26ds8tSMEy3/Qohk+6xUKFpIttwreKLXtLdi7biDlevmr9ArqNmryllZGQgELidWEr8MBHJvT2jy2nNDCgJLFJJUKvy+CXDc/0J7lbBZVqJa0Mvx9pE1l1hKHxSVvCevvHplLypnbZXWcg0gy4l7Af17hQSORXPerFBKFViiSbYHWyURJ6HQxLIFZZ3Y2N3MgaNrL1eW3s9OJmm4GJs0+/ai0ksndNcbLWWV6ETFqfouH351NlvY8gFS7FlI9k2nh9f/fEzaPbti7bxTvWqxwN2poEWgeS8ouDqc4kSQGqs3mmTS1j7d/+zLmrJlb1b25n1ZWZtKLu1ByMLM6veaW+suFlT8Itlq3jTWvmC9bZVn+dN/dX+7hfbf8uqHlpPbAp/xfqXp8eYOSEbEqSq/JnP3e+1ao+9Xvbjn8+e/tC/rFR9QoxWCZP71JL+q37x33sYt+6/43oHKR2dGacnJrG+af/GH982Y/sF14yZt+M6Y9AdLouferX54CUneL5CV7SEmSnIKVUIIOW8/T2HUJmVZ7hYBFnVjIFWp5Ou4pHv0RHhv2TvV/6gsO7o2v7zqqbsP1+bferhmwzfLq/+0/NDRRx56t/bh5ypqHqxXojfTi+f4xIMhWokLn/LDttLQFCo8qd0jXTy/W39nfZE3t3qCs/yQ6JYUY2sSGkOvw/WOnW8pdYNGzW/gVa5TaHjCJy0rk3yhH/vgfdUSPcEisRZJVm2IkOQxJNyPk6GnEXZe/v7VcypqunUwqopqSebrf8jL3JUO156s4C1kaH2ADLdoBlpbjSEZxxCOHKBnnkPihGgPCYZUi8rtAOujcGGrcW3lUPgJhFuLbsuaWbMBvRyjqUpFJ5u3YEcdH1avLp6362chK2kyeX7DVi5XFTYibhm05lJOKSgBoUnkx1CGcN4bFvV91gQohNAaXtcI/cZlC2Y2PBbtYzhzbhS+kZ2dU06UcsNw/3D23VtfnUTHnrx+9muNnv/9Ky3xypIsPsx0LTyvFj7xdxIcJbyN5LZw4cFSE6H0B3CdtaW2VTrj09M/3B1rd3hldSHXljOIzwD60uHtu2dvqmdVe82XZh4KWz7vDkv56KFN0CRacaNiiFV0d5Nbgg7iXeb0ZF0Pz13z2pTzDszJyGg83m7p9Pzy5ttGglcD8jB3aetxmo8+iTbjumrmni0kc4clDosNJFwTgPFmi+FCwaPsQIwnox7irCmeOKX8CyI8wRanMxUWFu4IBoN3BIOFPykuLjztz4h+iTZEWeLlW6IgaGQxApJI6DYorjRE6MlogM9bW5I+pSJApRGRFi5cODE3N3cxY/WSRYsWzU9wULJixQo1VJi+eEeJyaNQUaGvPEk5O9gIgjDh0YMBZUIH319AxlFuQZK3rjY10rC0Lxumng+lfwYCOZqoplwVD9R7LwHUUqc5O3tRlukjFpZl5XqeLgBks+u6D6GfIxAI/JDj2U/UFhUVVwaDxRVDQSCQc9jz8NPYLuMSrX1SRmKbFUOFGLC1ySHnQAlg68f5EDy8TPqJyYFA4EURfI1NTTqPckY8UHFaAphMnRTCT3RJ0jbILlW9FgKBnBcAWS2COcQkIgPA+UPERbTzKdroTKpT6kOYO+1AA0muFVj0aCE0ABsiYxgunoWl3/61Pd55lZW9JnpJMSD0dnlKa3UlH1CU9ZeZDxmczPXEjX6/j28JMeAjJyfnTja6lohNERbCWqN1sDDtCZfoTKpT6k/Q3gmRVJLLNyIMGxDGZY9fWbziPfYE596+mgbaPflqntee59xZXLx1ZzAYfIl44VSgqKjoeSK/oKCggX0MOJHIm2Ia1SglV4XDoTTXdab5fOqCwSIYLOIdpru8f0+MaKBVibkTBFrOhehSiLsJWo27J2ag3UXRWuaaSq0RsW271cgjBUuXLk3muEyY6BiS/oFZqezcubNl+/bt9Vu3bj02WHQYbOrI27KEiNZiW2Z1AfhJcgt05DlouCXJ59blt1np/cfEmN7PjIDalpYWEUHn/EXkf/gEj86O+utDyfgUpTJIrg3HeZkvmY5wzTEp3tpU+rM5Qs51OgO/IHXKn8TY4hL9tAa9eXqaUrNI8luIOK9CM0ZzMC8S/SUtwutBDeZJWuupFEdtikv0jLKMcbbvc+MZZhGObIWrPbLn35s2qfxQPNYYAyujOlzTrufD8evZ2bk3Mf/WEHALbdzGFcMNjLPmwRHtYkTncYlOT7llis83N6Ul/ArfK78DDX4B9+RgIrMS0Y/E6C0A5CnWPcn8L0PA47TxZ17E/JaWUAN3f7k4A464RCf7509zveM42bodnh5Dj1bwPKlNZG7BYJDE4isk5QD132dex/zYUEAb1UQzbZhk8U75G+8OvymMZMQl2nXDFzWFdyDkHIOHNDhaENGS8FKN69yNxcVFcydOnDCxqekEd1x6SKCtqfToNJL6FmHSeVpbPbbg5sRIQlyiQ5FDM0+ES6BlPEkGHE/gepIy0Ek888wz7u7duyP0cmcoMP2a9oDu3I1alh7weIyd4URcouubC2Y7HuBxLg5JjniKe1NlvnEN5zh79CV06x6VI7giLtEhp/kijbH0ZMCQHNGKObeHp3lSXC6eCev0Tpb6Jbrozc+me0id2kqPjtCTO0iGo9W8TgtntjBsF6tfopuTJU1Dj3VIcisRiYYOV1342qH5maeT46GGjsbGRvN2zYnOgXfIhVH5k8i7Et2tB1/EPc5L/n+zNzWrjVbXhI12eI66pJv6sBY9D8nRDh3HqY/KiebmwUzdUqItcZm4KhAIcEUELFu2zKLsGyyMQa2lC7ddCkYhFnkL9p6E1k+SbBh4/DUhpJXe3epaU2J1e5P5CWkyd3Hf5oBvZn7TqQB3hNfR3i0iuMH0qTXe2LZt25tGHjj06pg2swA5HAjkHK2vP16htQwatHEEwHKiLXGs9/VLtNHKm1fyI+b5BGkGjHe7XEvTw/v951FeXt541/VKRPR6QDYwf/JUQGtspL3HAW5R+XzW2r2Vco/EUGB8o0d9bAWXic/S3l0xdTZl806Ga3VkkKBBgTams23H6wF9M/cSif0/Oi9z141s+EWIrOfoN5HuO/IyS56lwT5TOBw2HmeuC4nBRk7o+VMEvszSHIPczRf0U/vyZhGJfDw4ie4kP67qkIqLi1Z6nms+3q4B5N+EIf9pjnXQAGAcc6vWajEv5t9ZxkcAAAD//5oeGJUAAAAGSURBVAMA/wIawECqgZoAAAAASUVORK5CYII=" alt="SID"></a></div>
   <nav aria-label="Main">
    <a href="#dashboard" data-v="dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg>Dashboard</a>
    <a href="#projects" data-v="projects"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 6.5A2.5 2.5 0 0 1 5.5 4H10l2 2.5h6.5A2.5 2.5 0 0 1 21 9v8.5a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5v-11Z"/></svg>Projects</a>
-   <a href="#plan" data-v="plan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M3 10h18M8 3v4M16 3v4M9 15l2 2 4-4"/></svg>Plan</a>
+   <a href="#plan" data-v="plan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M3 10h18M8 3v4M16 3v4M9 15l2 2 4-4"/></svg>Plans</a>
    <a href="#settings" data-v="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>Settings</a>
   </nav>
   <button class="create" data-new><span>Create<br>new project</span><b><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="3" width="12" height="15" rx="2"/><path d="M5 7v12a2 2 0 0 0 2 2h9"/><path d="M12 8h4M12 12h4"/></svg></b></button>
@@ -260,7 +262,7 @@ let mon=new Date(),scope="month",layout="tl";
 
 function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("on"),2800)}
 function setCloud(s){const c=$("#cloud");c.className="cloud "+s;c.lastChild.textContent={on:"데이터베이스 연결됨",off:"연결 안 됨 · 저장되지 않음",connecting:"연결 중…"}[s]}
-const head=t=>`<div class="top"><div style="display:flex;align-items:center;gap:12px"><img class="mlogo" style="height:30px" src="${$(".logo img").src}" alt="SID"><h1>${t}</h1></div><div class="ws"><span class="nm" title="${esc(settings.workspace)}">${esc(settings.workspace)}</span>${window.__sb&&getSession()?'<button class="lo" data-logout>로그아웃</button>':""}</div></div>`;
+const head=t=>`<div class="top"><div style="display:flex;align-items:center;gap:12px"><a href="#dashboard" data-home aria-label="대시보드로 이동" class="mlogo"><img style="height:30px;display:block" src="${$(".logo img").src}" alt="SID"></a><h1>${t}</h1></div><div class="ws"><span class="nm" title="${esc(settings.workspace)}">${esc(settings.workspace)}</span>${window.__sb&&getSession()?'<button class="lo" data-logout>로그아웃</button>':""}</div></div>`;
 
 const KN=["일","월","화","수","목","금","토"],dcls=k=>k===0?"sun":k===6?"sat":"";
 const ws0=()=>new Date(mon.getFullYear(),mon.getMonth(),mon.getDate()-(mon.getDay()-settings.weekStart+7)%7);
@@ -311,7 +313,7 @@ function projectsView(){
  const L=[...projects].sort((a,b)=>(a.start||"").localeCompare(b.start||""));
  return L.length?`<div class="plist">${L.map(p=>{const c=PAL[(p.color||0)%PAL.length],days=pd(p.end)-pd(p.start)+1;return `<button class="pitem" data-id="${esc(p.id)}"><span class="dot" style="background:${c[0]}"></span><div class="n"><strong>${esc(p.name)}</strong><br><small>${fmt(p.start)} – ${fmt(p.end)} · ${days}일</small></div><span class="ddb ${ddOf(p)[1]}">${ddOf(p)[0]}</span><div class="pbar"><i style="width:${pg(p)}%"></i></div><strong>${pg(p)}%</strong></button>`}).join("")}</div>`:`<div class="empty">아직 프로젝트가 없습니다. 왼쪽의 Create new project 버튼으로 추가해 보세요.</div>`;
 }
-let dcal=null,evDay=null,evEdit=null,jEdit=null;
+let dateEdit=null,dcal=null,evDay=null,evEdit=null,jEdit=null;
 const wk=["일","월","화","수","목","금","토"];
 function schedCard(p){
  const b=dcal||(dcal=new Date(new Date().getFullYear(),new Date().getMonth(),1)),Y=b.getFullYear(),M=b.getMonth(),E=p.events||[],t=dayKey(0);
@@ -330,6 +332,7 @@ function detailView(p){
  const dd=left>0?`D-${left}`:left===0?"오늘 마감":`마감 ${-left}일 지남`;
  const J=[...(p.journal||[])].sort((a,b)=>b.day.localeCompare(a.day)||b.at-a.at),days=[...new Set(J.map(x=>x.day))];
  const lab=k=>{const[a,b,c]=k.split("-").map(Number);return (k===t?"오늘 · ":k===y?"어제 · ":"")+`${b}월 ${c}일 (${KN[new Date(a,b-1,c).getDay()]})`};
+ const dtv=(key,val)=>dateEdit===key?`<span class="dte"><input class="in" id="dEditV" type="date" value="${esc(val)}" aria-label="${key==="start"?"시작일":"마감일"}"><button class="ib sm ok" data-dsave="${key}" aria-label="저장" title="저장">✓</button><button class="ib sm" data-dcancel aria-label="취소" title="취소">✕</button></span>`:`<span class="dtv">${fmt(val)}<button class="ib sm ed" data-dedit="${key}" aria-label="${key==="start"?"시작일":"마감일"} 수정" title="날짜 수정"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></button></span>`;
  const row=(k,v)=>`<div class="kv"><span>${k}</span><strong>${v}</strong></div>`;
  return `<div class="dgrid">
   <section class="card"><h3>프로젝트 상태</h3>
@@ -337,7 +340,7 @@ function detailView(p){
    <div class="big"><strong id="pgV">${P}%</strong><span class="st ${st[1]}">${st[0]}</span></div>
    <div class="pbar wide"><i id="pgB" style="width:${P}%"></i></div>
    <input type="range" id="pgR" min="0" max="100" step="5" value="${P}" style="--v:${P}%" aria-label="진행도">
-   <div class="kvs">${row("시작일",fmt(p.start))}${row("마감일",fmt(p.end))}${row("전체 기간",`${e-s+1}일`)}${row("남은 기간",dd)}${row("진행 일지",`${J.length}건`)}</div></section>
+   <div class="kvs">${row("시작일",dtv("start",p.start))}${row("마감일",dtv("end",p.end))}${row("전체 기간",`${e-s+1}일`)}${row("남은 기간",dd)}${row("진행 일지",`${J.length}건`)}</div></section>
   ${schedCard(p)}
  
   </div>
@@ -474,12 +477,12 @@ $("#pYes").onclick=async()=>{
 
 function render(){
  document.querySelectorAll("nav a").forEach(a=>a.dataset.v===view?a.setAttribute("aria-current","page"):a.removeAttribute("aria-current"));
- let t={dashboard:"Dashboard",projects:"Projects",plan:"Plan",settings:"Settings"}[view];if(view==="projects"&&detailId&&cur())t=`${esc(cur().name)}<button class="pill sm" id="editP">✎ 수정</button>`;
+ let t={dashboard:"Dashboard",projects:"Projects",plan:"Plans",settings:"Settings"}[view];if(view==="projects"&&detailId&&cur())t=`${esc(cur().name)}<button class="pill sm" id="editP">✎ 수정</button>`;
  $("#main").innerHTML=head(t)+(view==="dashboard"?dashboardView():view==="projects"?projectsView():view==="plan"?planView():settingsView());
  {const m=$("#main"),pr=view==="projects"&&detailId&&cur();["--g","--gd","--gt"].forEach(v=>m.style.removeProperty(v));if(pr){const c=PAL[(pr.color||0)%PAL.length][0];m.style.setProperty("--g",c);m.style.setProperty("--gd",`color-mix(in srgb,${c} 72%,#000)`);m.style.setProperty("--gt",`color-mix(in srgb,${c} 16%,#fff)`)}}
  const g=$("#gantt");if(g&&scope==="month"){const o=dn(new Date())-dn(new Date(mon.getFullYear(),mon.getMonth(),1));g.scrollLeft=o>=0?Math.max(0,o*52-120):0}
 }
-function route(){const h=location.hash.slice(1);view=["dashboard","projects","plan","settings"].includes(h)?h:"dashboard";if(view!=="projects"){detailId=null;jEdit=null}render()}
+function route(){const h=location.hash.slice(1);view=["dashboard","projects","plan","settings"].includes(h)?h:"dashboard";if(view!=="projects"){detailId=null;jEdit=null}dateEdit=null;render()}
 addEventListener("hashchange",route);
 
 /* dialog */
@@ -514,6 +517,12 @@ $("#del").onclick=()=>{const id=editId,p=projects.find(x=>x.id===id);confirmDel(
  projects=projects.filter(z=>z.id!==id);$("#dlg").close();detailId=null;render();toast("프로젝트가 삭제되었습니다")})};
 
 document.addEventListener("click",async e=>{
+ if(e.target.closest("[data-home]")){detailId=null;jEdit=null;dateEdit=null;if(location.hash==="#dashboard"||!location.hash){e.preventDefault();render()}return}
+ const de=e.target.closest("[data-dedit]");if(de){dateEdit=de.dataset.dedit;render();const i=$("#dEditV");if(i){i.focus();try{i.showPicker&&i.showPicker()}catch(x){}}return}
+ if(e.target.closest("[data-dcancel]")){dateEdit=null;render();return}
+ const dsv=e.target.closest("[data-dsave]");if(dsv){const v=$("#dEditV").value,k=dsv.dataset.dsave,p=cur();if(!v){toast("날짜를 선택해 주세요.");return}
+  const ns=k==="start"?v:p.start,ne=k==="end"?v:p.end;if(ne<ns){toast(k==="start"?"시작일은 마감일 이전이어야 합니다.":"마감일은 시작일 이후여야 합니다.");return}
+  p.start=ns;p.end=ne;dateEdit=null;render();if(await persist(p))toast("날짜가 수정되었습니다");return}
  const lo=e.target.closest("[data-logout]");if(lo){logout();return}
  const nv=e.target.closest("nav a[data-v]");if(nv){detailId=null;jEdit=null;if(location.hash==="#"+nv.dataset.v)render();return}
  if(e.target.closest("#planwrap")&&await planClick(e))return;
@@ -553,7 +562,8 @@ document.addEventListener("change",e=>{
 let memoT=null,memoV="";
 document.addEventListener("input",e=>{if(e.target.id==="memo"){memoV=e.target.value;$("#memoSt").textContent="저장 중…";clearTimeout(memoT);memoT=setTimeout(saveMemo,900)}
  if(e.target.id==="pgR"){$("#pgV").textContent=e.target.value+"%";$("#pgB").style.width=e.target.value+"%";e.target.style.setProperty("--v",e.target.value+"%")}});
-document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.id==="eText")addEv();if(e.key==="Enter"&&(e.ctrlKey||e.metaKey)&&e.target.id==="jText")addJ()});
+document.addEventListener("keydown",e=>{if(e.target.id==="dEditV"){if(e.key==="Enter"){const b=document.querySelector("[data-dsave]");b&&b.click()}if(e.key==="Escape"){dateEdit=null;render()}}
+ if(e.key==="Enter"&&e.target.id==="eText")addEv();if(e.key==="Enter"&&(e.ctrlKey||e.metaKey)&&e.target.id==="jText")addJ()});
 
 if(window.KAKAO_JS_KEY&&!window.claude)loadKakao();
 /* cloud */
