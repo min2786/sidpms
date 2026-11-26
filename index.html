@@ -309,7 +309,7 @@ input[type=range]::-moz-range-track{background:transparent}
 <dialog id="dlg">
  <h2 id="dTitle">새 프로젝트 만들기</h2>
  <div class="fgrid" style="max-width:none">
-  <div id="tWrap"><div style="font-size:12px;color:var(--ink2);font-weight:600;margin-bottom:8px">프로젝트 유형</div><div class="tsel tsel3"><button type="button" data-ptype="general" aria-pressed="true">일반 프로젝트<small>마감일·D-day</small></button><button type="button" data-ptype="maintenance" aria-pressed="false">관리형 프로젝트<small>마감일 없음</small></button><button type="button" data-ptype="marketing" aria-pressed="false">마케팅 프로젝트<small>예산·채널별 활동</small></button></div></div>
+  <div id="tWrap"><div style="font-size:12px;color:var(--ink2);font-weight:600;margin-bottom:8px">프로젝트 유형</div><div class="tsel tsel3"><button type="button" data-ptype="general" aria-pressed="true">일반 프로젝트<small>마감일·D-day</small></button><button type="button" data-ptype="maintenance" aria-pressed="false">관리형 프로젝트<small>마감일 없음</small></button><button type="button" data-ptype="marketing" aria-pressed="false">마케팅 프로젝트<small>마감일 없음·예산</small></button></div></div>
   <div id="sWrap" hidden><div style="font-size:12px;color:var(--ink2);font-weight:600;margin-bottom:8px">관리 유형</div><div class="tsel" style="grid-template-columns:repeat(3,1fr)"><button type="button" data-psub="software" aria-pressed="true">소프트웨어</button><button type="button" data-psub="content" aria-pressed="false">컨텐츠</button><button type="button" data-psub="general" aria-pressed="false">일반</button></div><div id="sNote" style="display:none;margin-top:8px;font-size:13px;color:#a36a00;background:#fff4dc;border-radius:10px;padding:9px 12px">아직 개발 중입니다.</div></div>
   <label>프로젝트명<input class="in" id="fName" maxlength="80"></label>
   <div class="two" id="dRow">
@@ -366,13 +366,13 @@ function calendar(){
  const ws=settings.weekStart,today=dn(new Date()),cols=scope==="day"?1:7,y=mon.getFullYear(),m=mon.getMonth(),bases=[];
  if(scope==="month"){const off=(new Date(y,m,1).getDay()-ws+7)%7,n=Math.ceil((off+new Date(y,m+1,0).getDate())/7);for(let w=0;w<n;w++)bases.push(new Date(y,m,1-off+w*7))}
  else bases.push(scope==="week"?ws0():new Date(y,m,mon.getDate()));
- const P=projects.filter(p=>p.start&&(p.end||isM(p))).map(p=>({...p,s:pd(p.start),e:isM(p)?pd(p.start)+36500:pd(p.end)})).sort((a,b)=>a.s-b.s||(b.e-b.s)-(a.e-a.s));
+ const P=projects.filter(p=>p.start&&(p.end||isO(p))).map(p=>({...p,s:pd(p.start),e:isO(p)?pd(p.start)+36500:pd(p.end)})).sort((a,b)=>a.s-b.s||(b.e-b.s)-(a.e-a.s));
  let h=`<div class="cal" style="--cols:${cols}"><div class="dow">${Array.from({length:cols},(_,i)=>{const k=cols===1?mon.getDay():(i+ws)%7;return `<div class="${dcls(k)}">${KN[k]}</div>`}).join("")}</div><div class="weeks">`;
  bases.forEach(b0=>{
   const base=dn(b0),lanes=[],bars=[];
   P.forEach(p=>{if(p.e<base||p.s>base+cols-1)return;const a=Math.max(p.s,base)-base,b=Math.min(p.e,base+cols-1)-base;let l=lanes.findIndex(x=>x<a);if(l<0){l=lanes.length;lanes.push(-1)}lanes[l]=b;
    const c=PAL[(p.color||0)%PAL.length],L=p.s>=base?20:0,R=p.e<=base+cols-1?20:0;
-   if(isM(p)){bars.push(`<button class="bar thin" data-id="${esc(p.id)}" title="${esc(p.name)} (${fmt(p.start)} ~ 관리)" style="grid-column:${a+1}/${b+2};grid-row:${l+1};color:${c[0]};--bc:${c[0]};--rl:${L}px;--rr:0px">${esc(p.name)}</button>`);return}
+   if(isO(p)){bars.push(`<button class="bar thin" data-id="${esc(p.id)}" title="${esc(p.name)} (${fmt(p.start)} ~ ${isK(p)?"마케팅":"관리"})" style="grid-column:${a+1}/${b+2};grid-row:${l+1};color:${c[0]};--bc:${c[0]};--rl:${L}px;--rr:0px">${esc(p.name)}</button>`);return}
    bars.push(`<button class="bar" data-id="${esc(p.id)}" title="${esc(p.name)} (${fmt(p.start)} – ${fmt(p.end)})" style="grid-column:${a+1}/${b+2};grid-row:${l+1};background:${c[0]};color:${c[1]};border-radius:${L}px ${R}px ${R}px ${L}px">${esc(p.name)}</button>`)});
   let cells="";
   for(let c=0;c<cols;c++){const d=new Date(b0.getFullYear(),b0.getMonth(),b0.getDate()+c);cells+=`<div class="cell ${scope==="month"&&d.getMonth()!==m?"o":""} ${dn(d)===today?"t":""} ${dcls(d.getDay())}" data-d="${iso(d)}"><em>${d.getDate()===1?(d.getMonth()+1)+"월 1일":d.getDate()}</em></div>`}
@@ -386,21 +386,21 @@ function timeline(){
  else if(scope==="week"){first=dn(ws0());n=7;cw=120}
  else{first=dn(mon);n=1;cw=420}
  const last=first+n-1,U=i=>new Date((first+i)*864e5);
- const P=projects.filter(p=>p.start&&(p.end||isM(p))&&(isM(p)||pd(p.end)>=first)&&pd(p.start)<=last).sort((a,b)=>a.start.localeCompare(b.start));
+ const P=projects.filter(p=>p.start&&(p.end||isO(p))&&(isO(p)||pd(p.end)>=first)&&pd(p.start)<=last).sort((a,b)=>a.start.localeCompare(b.start));
  const days=Array.from({length:n},(_,i)=>{const k=U(i).getUTCDay();return `<div class="d ${first+i===today?"today":""} ${dcls(k)}"><span>${KN[k]} ${U(i).getUTCDate()}</span></div>`}).join("");
  const now=today>=first&&today<=last?`<div class="now" style="left:${(today-first)*cw+cw/2-1}px"></div>`:"";
- const rows=P.map(p=>{const M=isM(p),s=pd(p.start),e=M?last:pd(p.end),c=PAL[(p.color||0)%PAL.length],pct=pg(p),a=Math.max(s,first)-first,b=Math.min(e,last)-first+1;
+ const rows=P.map(p=>{const M=isO(p),s=pd(p.start),e=M?last:pd(p.end),c=PAL[(p.color||0)%PAL.length],pct=pg(p),a=Math.max(s,first)-first,b=Math.min(e,last)-first+1;
   return `<div class="gr"><div class="gname"><button class="who" data-id="${esc(p.id)}"><span class="dot" style="background:${c[0]}"></span><div><strong>${esc(p.name)}</strong><small>${M?fmt(p.start)+" ~ 관리":fmt(p.start)+" – "+fmt(p.end)}</small></div></button></div><div class="tl" style="width:${n*cw}px">${now}<button class="tbar${M?" thin":""}" data-id="${esc(p.id)}" title="${esc(p.name)}" style="left:${a*cw+2}px;width:${(b-a)*cw-4}px;background:${c[0]};color:${c[1]}"><i></i><span>${esc(p.name)}</span></button>${!M&&b<n?`<em class="pc" style="left:${b*cw+8}px">${pct}%</em>`:""}</div></div>`}).join("");
  return `<div class="gantt" id="gantt" style="--cw:${cw}px"><div class="gr gh"><div class="gname"></div><div class="tl" style="width:${n*cw}px">${days}</div></div>${rows||'<div class="empty">이 기간에 해당하는 프로젝트가 없습니다. 왼쪽의 Create new project 버튼으로 추가해 보세요.</div>'}</div>`;
 }
 function dashboardView(){return ctl()+(layout==="tl"?timeline():calendar())}
 let detailId=null;
-const isM=p=>p.type==="maintenance",isK=p=>p.type==="marketing",pg=p=>{if(isK(p)&&(p.camps||[]).length)return Math.round(p.camps.filter(x=>x.status==="완료").length/p.camps.length*100);return Math.max(0,Math.min(100,+p.progress||0))},cur=()=>projects.find(x=>x.id===detailId);
+const isM=p=>p.type==="maintenance",isK=p=>p.type==="marketing",isO=p=>p.type==="maintenance"||p.type==="marketing",pg=p=>{if(isK(p)&&(p.camps||[]).length)return Math.round(p.camps.filter(x=>x.status==="완료").length/p.camps.length*100);return Math.max(0,Math.min(100,+p.progress||0))},cur=()=>projects.find(x=>x.id===detailId);
 const dayKey=o=>{const d=new Date();return iso(new Date(d.getFullYear(),d.getMonth(),d.getDate()+o))};
 function projectsView(){
  if(detailId){const p=cur();if(p)return detailView(p);detailId=null}
  const L=[...projects].sort((a,b)=>(a.start||"").localeCompare(b.start||""));
- const cardOf=p=>{const c=PAL[(p.color||0)%PAL.length],m=isM(p),days=m?0:pd(p.end)-pd(p.start)+1,dd=m?"":ddOf(p);return `<button class="pitem" data-id="${esc(p.id)}" style="--c:${c[0]}"><div class="ph"><div class="n"><span class="ttag ${m?"m":isK(p)?"k":""}">${m?(p.sub==="content"?"관리 · 컨텐츠":"관리 · 소프트웨어"):isK(p)?"마케팅":"일반"}</span><br><strong>${esc(p.name)}</strong><br><small>${m?`${fmt(p.start)} 시작`:`${fmt(p.start)} – ${fmt(p.end)} · ${days}일`}</small></div>${m?"":`<span class="ddb ${dd[1]}">${dd[0]}</span>`}</div>${m?`<div class="pf"><span class="mst" data-s="${esc(p.mstate||"진행중")}"><i></i>${esc(p.mstate||"진행중")}</span></div>`:`<div class="pf"><div class="pbar"><i style="width:${pg(p)}%"></i></div><strong>${pg(p)}%</strong>${isK(p)?`<span class="mst" data-s="${esc(p.mstate||"진행중")}"><i></i>${esc(p.mstate||"진행중")}</span>`:""}</div>`}</button>`};
+ const cardOf=p=>{const c=PAL[(p.color||0)%PAL.length],m=isO(p),days=m?0:pd(p.end)-pd(p.start)+1,dd=m?"":ddOf(p);return `<button class="pitem" data-id="${esc(p.id)}" style="--c:${c[0]}"><div class="ph"><div class="n"><span class="ttag ${isK(p)?"k":m?"m":""}">${isK(p)?"마케팅":m?(p.sub==="content"?"관리 · 컨텐츠":"관리 · 소프트웨어"):"일반"}</span><br><strong>${esc(p.name)}</strong><br><small>${m?`${fmt(p.start)} 시작`:`${fmt(p.start)} – ${fmt(p.end)} · ${days}일`}</small></div>${m?"":`<span class="ddb ${dd[1]}">${dd[0]}</span>`}</div>${m?`<div class="pf"><span class="mst" data-s="${esc(p.mstate||"진행중")}"><i></i>${esc(p.mstate||"진행중")}</span></div>`:`<div class="pf"><div class="pbar"><i style="width:${pg(p)}%"></i></div><strong>${pg(p)}%</strong></div>`}</button>`};
  const sec=(t,arr,hint)=>`<section class="psec"><div class="psh"><h3>${t}</h3><span>${arr.length}</span></div>${arr.length?`<div class="plist">${arr.map(cardOf).join("")}</div>`:`<div class="pshint">${hint}</div>`}</section>`;
  return L.length?sec("일반 프로젝트",L.filter(p=>!isM(p)&&!isK(p)),"등록된 일반 프로젝트가 없습니다.")+sec("관리형 프로젝트",L.filter(isM),"등록된 관리형 프로젝트가 없습니다.")+sec("마케팅 프로젝트",L.filter(isK),"등록된 마케팅 프로젝트가 없습니다."):`<div class="empty">아직 프로젝트가 없습니다. 왼쪽의 Create new project 버튼으로 추가해 보세요.</div>`;
 }
@@ -416,7 +416,7 @@ function schedCard(p){
  <div class="evl"><div class="mt">일정 목록 <small>최신순</small></div>${L.length?L.map(x=>{const[a,m,d]=x.day.split("-").map(Number);return `<div class="ev2"><div class="dt"><strong>${d}</strong><small>${m}월</small></div><div class="tx"><b>${esc(x.t)}</b><small>${a}.${String(m).padStart(2,"0")}.${String(d).padStart(2,"0")} (${wk[new Date(a,m-1,d).getDay()]})</small></div><button class="x ed" data-eedit="${x.id}" aria-label="수정" title="수정">✎</button><button class="x" data-ex="${x.id}" aria-label="삭제" title="삭제">×</button></div>`}).join(""):'<div class="empty" style="padding:24px 0">날짜를 눌러 일정을 추가하세요.</div>'}</div></div></div>
  <div class="half"><div class="mh"><h3>메모</h3><span class="msv" id="memoSt"></span></div><textarea class="paper" id="memo" maxlength="5000" placeholder="자유롭게 메모하세요" aria-label="메모" ${hasUrl(p.memo)?"hidden":""}>${esc(p.memo||"")}</textarea><div class="paper mview" id="memoView" tabindex="0" role="textbox" aria-label="메모 (링크는 클릭하면 새 창으로 열립니다. 본문을 누르면 편집)" ${hasUrl(p.memo)?"":"hidden"}>${linkify(p.memo)}</div></div></section>`;
 }
-function ddOf(p){if(isM(p))return["","ok"];const l=pd(p.end)-dn(new Date());return l>0?[`D-${l}`,l<=7?"soon":"ok"]:l===0?["D-DAY","soon"]:[`D+${-l}`,"late"]}
+function ddOf(p){if(isO(p))return["","ok"];const l=pd(p.end)-dn(new Date());return l>0?[`D-${l}`,l<=7?"soon":"ok"]:l===0?["D-DAY","soon"]:[`D+${-l}`,"late"]}
 const EV_KM=420; /* 완충 기준 주행거리(km) — 필요 시 수정 */
 const GR={L:["#e5484d","시간이 가장 오래 걸리는 업데이트"],M:["#f5a524","보통의 업데이트"],S:["#30a46c","간단한 업데이트"]},US=["긴급","진행","대기","취소","완료"],USC=["제작중","대기","완료"],MS=["진행중","일시멈춤","완료"];
 let uNew={grade:"S",status:"대기"};
@@ -530,7 +530,7 @@ document.addEventListener("change",e=>{const t=e.target;if(t.closest&&t.closest(
  else if(t.dataset.ud)updSave(a=>a.map(x=>x.id===t.dataset.ud?{...x,done:t.value}:x));
 });
 function detailView(p){
- const t=dayKey(0),y=dayKey(-1),today=dn(new Date()),M=isM(p),s=pd(p.start),e=M?s:pd(p.end),left=e-today,P=pg(p);
+ const t=dayKey(0),y=dayKey(-1),today=dn(new Date()),M=isM(p),s=pd(p.start),e=isO(p)?s:pd(p.end),left=e-today,P=pg(p);
  const st=P>=100?["완료","done"]:!M&&today>e?["기한 초과","late"]:today<s?["시작 전","wait"]:["진행 중","go"];
  const dd=left>0?`D-${left}`:left===0?"오늘 마감":`마감 ${-left}일 지남`;
  const J=[...(p.journal||[])].sort((a,b)=>b.day.localeCompare(a.day)||b.at-a.at),days=[...new Set(J.map(x=>x.day))];
@@ -764,8 +764,7 @@ function mkView(p,h){
  const cnt=k=>L.filter(x=>x.status===k).length,byCh={};L.forEach(x=>{const o=byCh[x.ch]||(byCh[x.ch]={n:0,c:0});o.n++;o.c+=+x.cost||0});
  const chs=Object.entries(byCh).sort((a,b)=>b[1].c-a[1].c||b[1].n-a[1].n),mx=Math.max(1,...chs.map(([,o])=>spent?o.c:o.n));
  const top=`<section class="card"><h3>프로젝트 상태</h3><div class="mseg">${MS.map(x=>`<button data-mst="${x}" aria-pressed="${x===ms}">${x}</button>`).join("")}</div>
-  <div class="dday ${ddOf(p)[1]}" style="margin-top:12px"><small>종료까지 남은 기간</small><strong>${ms==="완료"?"완료":ddOf(p)[0]}</strong><span>${fmt(p.end)} 종료</span></div>
-  <div class="kvs">${row("유형","마케팅")}${row("시작일",dtv("start",p.start))}${row("종료일",dtv("end",p.end))}${row("활동 완료율",`${P}%`)}
+  <div class="kvs">${row("유형","마케팅")}${row("시작일",dtv("start",p.start))}${row("활동 완료율",`${P}%`)}
   <div class="kv"><span>예산</span><strong class="bud"><input class="in" id="mkBud" inputmode="numeric" value="${bud?bud.toLocaleString("ko-KR"):""}" placeholder="0" aria-label="예산(원)"><em>원</em></strong></div>${row("집행액",won(spent))}${row("잔액",`<span style="color:${left<0?"#d23a40":"inherit"}">${bud?won(left):"-"}</span>`)}</div>
   ${bud?`<div class="pbar wide" title="예산 집행률 ${rate}%" style="margin-top:10px"><i style="width:${Math.min(100,rate)}%;${rate>100?"background:#d23a40":""}"></i></div><small style="color:var(--ink2)">예산 집행률 ${rate}%</small>`:""}</section>`;
  const list=L.slice(0,mkMore).map(x=>x.id===mkEdit?mkForm(x):`<div class="mkit"><span class="mkch">${esc(x.ch||"기타")}</span><div class="mkb"><b>${esc(x.text)}</b><small>${x.day?fmt(x.day).slice(2):""}${x.cost?" · "+won(x.cost):""}${x.res?" · "+esc(x.res):""}</small></div><div class="mkss">${Object.keys(MKS).map(k=>`<button class="mks${x.status===k?" on":""}" data-mkst="${esc(x.id)}|${k}" style="--b:${MKS[k][0]};--c:${MKS[k][1]}" aria-pressed="${x.status===k}">${k}</button>`).join("")}</div><button class="x ed" data-mked="${esc(x.id)}" aria-label="수정" title="수정">✎</button><button class="x" data-mkdel="${esc(x.id)}" aria-label="삭제" title="삭제">×</button></div>`).join("");
@@ -878,8 +877,8 @@ addEventListener("hashchange",route);
 let pType="general";
 let pSub="software";
 function setSub(v){pSub=v;document.querySelectorAll("[data-psub]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.psub===v)));const dev=pType==="maintenance"&&v==="general";$("#sNote").style.display=dev?"block":"none";$("#save").disabled=dev}
-function setType(t){pType=t;$("#sWrap").hidden=t!=="maintenance";setSub(pSub);document.querySelectorAll("[data-ptype]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.ptype===t)));$("#eWrap").style.display=t==="maintenance"?"none":"";$("#dRow").style.gridTemplateColumns=t==="maintenance"?"1fr":""}
-document.addEventListener("click",e=>{const sb=e.target.closest("[data-psub]");if(sb){setSub(sb.dataset.psub);return}const b=e.target.closest("[data-ptype]");if(b){setType(b.dataset.ptype);if(b.dataset.ptype!=="maintenance"&&!$("#fEnd").value&&$("#fStart").value){const t=$("#fStart").value;$("#fEnd").value=iso(new Date(+t.slice(0,4),+t.slice(5,7)-1,+t.slice(8)+13))}}});
+function setType(t){pType=t;$("#sWrap").hidden=t!=="maintenance";setSub(pSub);document.querySelectorAll("[data-ptype]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.ptype===t)));$("#eWrap").style.display=t!=="general"?"none":"";$("#dRow").style.gridTemplateColumns=t!=="general"?"1fr":""}
+document.addEventListener("click",e=>{const sb=e.target.closest("[data-psub]");if(sb){setSub(sb.dataset.psub);return}const b=e.target.closest("[data-ptype]");if(b){setType(b.dataset.ptype);if(b.dataset.ptype==="general"&&!$("#fEnd").value&&$("#fStart").value){const t=$("#fStart").value;$("#fEnd").value=iso(new Date(+t.slice(0,4),+t.slice(5,7)-1,+t.slice(8)+13))}}});
 function openDlg(date,id){
  editId=id||null;const p=editId&&projects.find(x=>x.id===editId);$("#dErr").textContent="";
  $("#dTitle").textContent=p?"프로젝트 수정":"새 프로젝트 만들기";$("#save").textContent=p?"변경사항 저장":"프로젝트 만들기";$("#del").hidden=!p;
@@ -891,13 +890,13 @@ function openDlg(date,id){
 $("#cancel").onclick=()=>$("#dlg").close();
 $("#save").onclick=async()=>{
  const name=$("#fName").value.trim(),start=$("#fStart").value,end=$("#fEnd").value,er=$("#dErr");
- const M=pType==="maintenance";
- if(M&&pSub==="general"){er.textContent="아직 개발 중입니다.";return}
+ const M=pType!=="general";
+ if(pType==="maintenance"&&pSub==="general"){er.textContent="아직 개발 중입니다.";return}
  if(!name||!start||(!M&&!end)){er.textContent="모든 항목을 입력해 주세요.";return}
  if(!M&&end<start){er.textContent="마감일은 시작일 이후여야 합니다.";return}
  const old=editId&&projects.find(x=>x.id===editId);
- if(old){Object.assign(old,{name,start,type:pType,color:selColor!=null?selColor:old.color});if(pType==="marketing"){old.camps=old.camps||[];old.budget=old.budget||0;old.mstate=old.mstate||"진행중"}if(M)old.sub=pSub;if(M)delete old.end;else old.end=end;if(!(await persist(old)))return;$("#dlg").close();render();toast("프로젝트가 수정되었습니다");return}
- const data={name,start,...(M?{type:"maintenance",sub:pSub}:{type:pType,end,...(pType==="marketing"?{mstate:"진행중",budget:0,camps:[]}:{})}),color:selColor!=null?selColor:Math.floor(Math.random()*PAL.length),progress:0,journal:[],updatedAt:Date.now()};
+ if(old){Object.assign(old,{name,start,type:pType,color:selColor!=null?selColor:old.color});if(pType==="marketing"){old.camps=old.camps||[];old.budget=old.budget||0;old.mstate=old.mstate||"진행중"}if(pType==="maintenance")old.sub=pSub;if(M)delete old.end;else old.end=end;if(!(await persist(old)))return;$("#dlg").close();render();toast("프로젝트가 수정되었습니다");return}
+ const data={name,start,...(pType==="maintenance"?{type:"maintenance",sub:pSub}:pType==="marketing"?{type:"marketing",mstate:"진행중",budget:0,camps:[]}:{type:"general",end}),color:selColor!=null?selColor:Math.floor(Math.random()*PAL.length),progress:0,journal:[],updatedAt:Date.now()};
  try{
   if(db){await db.collection("projects").doc().set(data)}
   else{projects.push({id:"l"+Date.now(),...data});toast("클라우드에 연결되지 않았습니다. 이번 세션에서만 저장됩니다.")}
@@ -918,8 +917,8 @@ document.addEventListener("click",async e=>{
  const de=e.target.closest("[data-dedit]");if(de){dateEdit=de.dataset.dedit;render();const i=$("#dEditV");if(i){i.focus();try{i.showPicker&&i.showPicker()}catch(x){}}return}
  if(e.target.closest("[data-dcancel]")){dateEdit=null;render();return}
  const dsv=e.target.closest("[data-dsave]");if(dsv){const v=$("#dEditV").value,k=dsv.dataset.dsave,p=cur();if(!v){toast("날짜를 선택해 주세요.");return}
-  const ns=k==="start"?v:p.start,ne=k==="end"?v:p.end;if(!isM(p)&&ne<ns){toast(k==="start"?"시작일은 마감일 이전이어야 합니다.":"마감일은 시작일 이후여야 합니다.");return}
-  p.start=ns;if(!isM(p))p.end=ne;dateEdit=null;render();if(await persist(p))toast("날짜가 수정되었습니다");return}
+  const ns=k==="start"?v:p.start,ne=k==="end"?v:p.end;if(!isO(p)&&ne<ns){toast(k==="start"?"시작일은 마감일 이전이어야 합니다.":"마감일은 시작일 이후여야 합니다.");return}
+  p.start=ns;if(!isO(p))p.end=ne;dateEdit=null;render();if(await persist(p))toast("날짜가 수정되었습니다");return}
  const lo=e.target.closest("[data-logout]");if(lo){logout();return}
  const nv=e.target.closest("nav a[data-v]");if(nv){detailId=null;jEdit=vEdit=null;if(location.hash==="#"+nv.dataset.v)render();return}
  if(e.target.closest("#planwrap")&&await planClick(e))return;
