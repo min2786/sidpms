@@ -256,12 +256,13 @@ const pd=s=>{const[a,b,c]=s.split("-").map(Number);return Math.floor(Date.UTC(a,
 const dn=d=>Math.floor(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())/864e5);
 const iso=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
 const fmt=s=>s.replace(/-/g,".");
-let db=null,projects=[],settings={workspace:"RonasIT",weekStart:0,theme:0},view="dashboard",editId=null,selColor=null;
+let db=null,projects=[],settings={workspace:"",weekStart:0,theme:0},settingsLoaded=false,view="dashboard",editId=null,selColor=null;
 let mon=new Date(),scope="month",layout="tl";
 
 function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("on"),2800)}
 function setCloud(s){const c=$("#cloud");c.className="cloud "+s;c.lastChild.textContent={on:"데이터베이스 연결됨",off:"연결 안 됨 · 저장되지 않음",connecting:"연결 중…"}[s]}
-const head=t=>`<div class="top"><div style="display:flex;align-items:center;gap:12px"><a href="#dashboard" data-home aria-label="대시보드로 이동" class="mlogo"><img style="height:30px;display:block" src="${$(".logo img").src}" alt="SID"></a><h1>${t}</h1></div><div class="ws"><span class="nm" title="${esc(settings.workspace)}">${esc(settings.workspace)}</span>${window.__sb&&getSession()?'<button class="lo" data-logout>로그아웃</button>':""}</div></div>`;
+function userName(){let e="";try{const x=getSession();e=x&&x.email?x.email.split("@")[0]:""}catch(_){}return (settings.workspace||"").trim()||e}
+const head=t=>`<div class="top"><div style="display:flex;align-items:center;gap:12px"><a href="#dashboard" data-home aria-label="대시보드로 이동" class="mlogo"><img style="height:30px;display:block" src="${$(".logo img").src}" alt="SID"></a><h1>${t}</h1></div><div class="ws">${settingsLoaded&&userName()?`<span class="nm" title="${esc(userName())}">${esc(userName())}</span>`:""}${window.__sb&&getSession()?'<button class="lo" data-logout>로그아웃</button>':""}</div></div>`;
 
 const KN=["일","월","화","수","목","금","토"],dcls=k=>k===0?"sun":k===6?"sat":"";
 const ws0=()=>new Date(mon.getFullYear(),mon.getMonth(),mon.getDate()-(mon.getDay()-settings.weekStart+7)%7);
@@ -349,7 +350,7 @@ function detailView(p){
   </section>`;
 }
 function settingsView(){
- return `<div class="fgrid"><div><div class="lbl">테마 색상</div><div class="swrow">${THEMES.map((t,i)=>`<button class="sw" data-t="${i}" aria-pressed="${(settings.theme||0)===i}" aria-label="${t.n}" title="${t.n}" style="background:${t.g}"></button>`).join("")}</div></div><label>사용자 이름<input class="in" id="sWs" value="${esc(settings.workspace)}"></label>
+ return `<div class="fgrid"><div><div class="lbl">테마 색상</div><div class="swrow">${THEMES.map((t,i)=>`<button class="sw" data-t="${i}" aria-pressed="${(settings.theme||0)===i}" aria-label="${t.n}" title="${t.n}" style="background:${t.g}"></button>`).join("")}</div></div><label>사용자 이름<input class="in" id="sWs" value="${esc(userName())}"></label>
  <label>한 주의 시작 요일<select class="in" id="sWk"><option value="0">일요일</option><option value="1" ${settings.weekStart===1?"selected":""}>월요일</option></select></label>
  <div><button class="btn" id="sSave">변경사항 저장</button></div>
  ${(sbCfg()||{}).builtin?"":` <hr style="border:0;border-top:1px solid var(--line);width:100%">
@@ -549,7 +550,7 @@ document.addEventListener("click",async e=>{
  if(e.target.id==="sbSave"){const u=$("#sbUrl").value.trim(),k=$("#sbKey").value.trim();if(!/^https:\/\/.+/.test(u)||!k){toast("Project URL(https://...)과 anon key를 입력해 주세요.");return}localStorage.setItem(SB_KEY,JSON.stringify({url:u,key:k}));toast("연결 정보를 저장했습니다. 새로고침합니다.");setTimeout(()=>location.reload(),600);return}
  if(e.target.id==="sbOff"){localStorage.removeItem(SB_KEY);toast("연결을 해제했습니다. 새로고침합니다.");setTimeout(()=>location.reload(),600);return}
  if(e.target.id==="sSave"){
-  settings={...settings,workspace:$("#sWs").value.trim()||"Workspace",weekStart:+$("#sWk").value};
+  settings={...settings,workspace:$("#sWs").value.trim(),weekStart:+$("#sWk").value};
   try{if(db)await db.doc("settings/main").set(settings);toast(db?"설정이 저장되었습니다":"클라우드에 연결되지 않았습니다. 이번 세션에서만 저장됩니다.")}catch(x){toast("설정을 저장하지 못했습니다.")}
   render();
  }
@@ -630,11 +631,11 @@ async function startCloud(){
  const cfg=sbCfg();
  if(cfg){db=makeSupabase(cfg);window.__sb=true}
  else{try{db=window.claude?await window.claude.use("db"):null}catch(x){db=null}}
- if(!db){setCloud("off");return}
- const fail=e=>{setCloud("off");if(window.__sb)toast("데이터베이스 연결 오류: "+(e&&e.message||"확인 필요"))};
+ if(!db){setCloud("off");settingsLoaded=true;if(view!=="settings")render();return}
+ const fail=e=>{setCloud("off");if(!settingsLoaded){settingsLoaded=true;if(view!=="settings")render()}if(window.__sb)toast("데이터베이스 연결 오류: "+(e&&e.message||"확인 필요"))};
  db.collection("projects").onSnapshot(s=>{projects=s.docs.map(d=>({id:d.id,...d.data()}));setCloud("on");if(!$("#dlg").open&&view!=="settings"&&!(detailId&&document.activeElement&&/^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName)))render()},fail);
  db.collection("plans").onSnapshot(s=>{plans=s.docs.map(d=>({id:d.id,...d.data()}));if(view==="plan"&&!$("#dlgP").open&&!(document.activeElement&&/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName)))render()},fail);
- db.doc("settings/main").onSnapshot(s=>{if(s.exists){settings={...settings,...s.data()};applyTheme();if(view!=="settings")render()}},fail);
+ db.doc("settings/main").onSnapshot(s=>{if(s.exists){settings={...settings,...s.data()};applyTheme()}settingsLoaded=true;if(view!=="settings")render()},fail);
 }
 (async()=>{
  const cfg=sbCfg();
