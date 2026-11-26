@@ -123,6 +123,14 @@ dialog h2{margin:0 0 16px}
 .dday.soon{background:#fff1e0;color:#c2570c}.dday.late{background:#fde8e4;color:#b3402a}
 .ddb{font-weight:800;font-size:13px;padding:4px 12px;border-radius:12px;background:var(--gt);color:var(--gd);flex:none}.ddb.soon{background:#fff1e0;color:#c2570c}.ddb.late{background:#fde8e4;color:#b3402a}
 .kk{margin-left:10px;border:0;border-radius:10px;background:#fee500;color:#181600;font-size:11px;font-weight:700;padding:4px 10px;vertical-align:middle}.kk:disabled{opacity:.5}
+.mseg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0 4px}.mseg button{border:1.5px solid var(--line);background:var(--surf);border-radius:12px;padding:12px 4px;font-weight:700;font-size:13px;color:var(--ink2)}.mseg button[aria-pressed=true]{border-color:var(--g);background:var(--gt);color:var(--gd)}.mseg button[data-mst="일시멈춤"][aria-pressed=true]{border-color:#e0a030;background:#fff4dc;color:#a36a00}.mseg button[data-mst="완료"][aria-pressed=true]{border-color:#5b6bd6;background:#e9ecfb;color:#3a47a8}
+.utiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(104px,1fr));gap:10px;margin:14px 0}.ut{border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:var(--side);position:relative}.ut b{font-size:26px;font-weight:700;display:block;line-height:1.1}.ut small{display:flex;align-items:center;gap:6px;color:var(--ink2);font-size:12px;margin-top:6px}.ut small i{width:8px;height:8px;border-radius:50%;background:var(--c)}.ut em{position:absolute;top:10px;right:10px;font-style:normal;font-size:10px;font-weight:700;background:var(--surf);border:1px solid var(--line);border-radius:10px;padding:1px 7px;color:var(--ink2)}
+.uwrap{overflow-x:auto}.ugrid{display:grid;grid-template-columns:80px minmax(140px,1fr) 88px 126px 126px 34px;gap:8px;align-items:center;min-width:640px}.ugrid.uh{font-size:12px;color:var(--ink2);font-weight:700;padding:8px 0;border-bottom:1px solid var(--line)}.ugrid.ur{padding:7px 0;border-bottom:1px solid var(--line)}.ugrid .in{padding:7px 8px;font-size:12px;border-radius:10px;min-width:0}.ugrid select.in{padding:7px 6px}
+.ugrid.uadd{padding:12px 0;border-bottom:1px solid var(--line);background:transparent}
+.tl3{display:flex;gap:4px}.gd{width:22px;height:22px;border-radius:50%;border:0;background:var(--c);color:#fff;font-size:11px;font-weight:800;display:grid;place-items:center;opacity:.28;flex:none;padding:0;transition:opacity .12s,transform .12s}.gd[aria-pressed=true]{opacity:1;box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 28%,transparent)}.gd.one{opacity:1;width:26px;height:26px;font-size:12px}.gd:hover{transform:scale(1.1)}
+.stv{font-weight:700}.stv[data-s="진행"]{color:#2b7de9}.stv[data-s="대기"]{color:#8a8f98}.stv[data-s="취소"]{color:#d9482b}.stv[data-s="완료"]{color:#2f9e5a}
+.ux{border:0;background:transparent;color:var(--ink2);font-size:18px;border-radius:8px;width:30px;height:30px}.ux:hover{background:#fde8e4;color:#b3402a}
+.sch{margin-bottom:16px}.uhead{display:flex;align-items:baseline;justify-content:space-between;gap:8px}.uhead small{color:var(--ink2)}
 .jcard{margin-top:16px}.jcard .jform textarea{min-height:90px}
 .top h1 .ib{width:34px;height:34px;font-size:18px;flex:none}
 .mh{display:flex;justify-content:space-between;align-items:center}.ib.sm{width:28px;height:28px;font-size:15px;border-radius:9px;margin-left:6px}
@@ -335,6 +343,36 @@ function schedCard(p){
  <div class="half"><div class="mh"><h3>메모</h3><span class="msv" id="memoSt"></span></div><textarea class="paper" id="memo" maxlength="5000" placeholder="자유롭게 메모하세요" aria-label="메모">${esc(p.memo||"")}</textarea></div></section>`;
 }
 function ddOf(p){if(isM(p))return["","ok"];const l=pd(p.end)-dn(new Date());return l>0?[`D-${l}`,l<=7?"soon":"ok"]:l===0?["D-DAY","soon"]:[`D+${-l}`,"late"]}
+const GR={L:["#e5484d","시간이 가장 오래 걸리는 업데이트"],M:["#f5a524","보통의 업데이트"],S:["#30a46c","간단한 업데이트"]},US=["진행","대기","취소","완료"],MS=["진행중","일시멈춤","완료"];
+let uNew={grade:"M",status:"대기"};
+const gdot=(k,on,att)=>`<button type="button" class="gd ${on==="one"?"one":""}" ${on!=="one"?`aria-pressed="${on}"`:""} ${att} title="${k} · ${GR[k][1]}" aria-label="등급 ${k}" style="--c:${GR[k][0]}">${k}</button>`;
+function updatesCard(p){
+ const U=p.updates||[],n=U.length,c=k=>U.filter(x=>x.status===k).length,pc=v=>n?Math.round(v/n*100)+"%":"0%";
+ const tile=(l,v,col,pt)=>`<div class="ut" style="--c:${col}"><b>${v}</b><small><i></i>${l}</small>${pt?`<em>${pc(v)}</em>`:""}</div>`;
+ const t=dayKey(0),L=[...U].sort((a,b)=>(b.reg||"").localeCompare(a.reg||"")||(b.at||0)-(a.at||0));
+ return `<section class="card ucard"><div class="uhead"><h3>업데이트 현황</h3><small>L 오래 걸림 · M 보통 · S 간단</small></div>
+ <div class="utiles">${tile("전체",n,"#e08a2e",0)}${tile("진행",c("진행"),"#2b7de9",1)}${tile("대기",c("대기"),"#9aa0a8",1)}${tile("완료",c("완료"),"#2f9e5a",1)}${tile("취소",c("취소"),"#d9482b",1)}</div>
+ <div class="uwrap"><div class="ugrid uh"><span>등급</span><span>프로젝트 내용</span><span>현재 상태</span><span>등록일</span><span>완료일</span><span></span></div>
+ <div class="ugrid uadd" id="uAdd"><div class="tl3">${["L","M","S"].map(k=>gdot(k,uNew.grade===k,'data-ung="'+k+'"')).join("")}</div><input class="in" id="uNText" maxlength="200" placeholder="업데이트 내용을 입력하세요"><select class="in" id="uNSt">${US.map(x=>`<option ${x===uNew.status?"selected":""}>${x}</option>`).join("")}</select><input class="in" id="uNReg" type="date" value="${t}" aria-label="등록일"><input class="in" id="uNDone" type="date" ${uNew.status==="완료"?`value="${t}"`:"disabled"} aria-label="완료일"><button class="btn sm" id="uAddB" aria-label="추가" title="추가">＋</button></div>
+ ${L.length?L.map(x=>`<div class="ugrid ur">${gdot(x.grade,"one",'data-ugc="'+esc(x.id)+'"')}<input class="in" data-ut="${esc(x.id)}" value="${esc(x.text)}" maxlength="200" aria-label="프로젝트 내용"><select class="in stv" data-us="${esc(x.id)}" data-s="${esc(x.status)}">${US.map(s=>`<option ${s===x.status?"selected":""}>${s}</option>`).join("")}</select><input class="in" type="date" data-ur="${esc(x.id)}" value="${esc(x.reg||"")}" aria-label="등록일">${x.status==="완료"?`<input class="in" type="date" data-ud="${esc(x.id)}" value="${esc(x.done||"")}" aria-label="완료일">`:`<span style="color:var(--ink2);padding-left:10px">-</span>`}<button class="ux" data-udel="${esc(x.id)}" aria-label="삭제" title="삭제">×</button></div>`).join(""):`<div class="empty" style="padding:26px 0">아직 등록된 업데이트가 없습니다. 위 입력줄에서 추가해 보세요.</div>`}</div></section>`;
+}
+async function updSave(fn,rerender){const p=cur();if(!p)return;p.updates=fn([...(p.updates||[])].map(x=>({...x})));if(rerender)render();await persist(p)}
+async function addUpd(){const tx=$("#uNText").value.trim();if(!tx){$("#uNText").focus();return}const st=$("#uNSt").value,reg=$("#uNReg").value||dayKey(0),done=st==="완료"?($("#uNDone").value||dayKey(0)):"";const g=uNew.grade;uNew={grade:g,status:"대기"};await updSave(a=>[...a,{id:"u"+Date.now().toString(36)+Math.random().toString(36).slice(2,5),grade:g,text:tx,status:st,reg,done,at:Date.now()}],true)}
+document.addEventListener("click",e=>{
+ const g=e.target.closest("[data-ung]");if(g){uNew.grade=g.dataset.ung;document.querySelectorAll("[data-ung]").forEach(b=>b.setAttribute("aria-pressed",String(b===g)));return}
+ const gc=e.target.closest("[data-ugc]");if(gc){const o=["L","M","S"];updSave(a=>a.map(x=>x.id===gc.dataset.ugc?{...x,grade:o[(o.indexOf(x.grade)+1)%3]}:x),true);return}
+ if(e.target.closest("#uAddB"))return addUpd();
+ const ud=e.target.closest("[data-udel]");if(ud){const id=ud.dataset.udel,x=(cur().updates||[]).find(z=>z.id===id);confirmDel("업데이트를 삭제할까요?",`“${x?x.text:""}” 항목이 삭제됩니다.`,()=>updSave(a=>a.filter(z=>z.id!==id),true));return}
+ const ms=e.target.closest("[data-mst]");if(ms){const p=cur();p.mstate=ms.dataset.mst;render();persist(p)}
+});
+document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.id==="uNText")addUpd()});
+document.addEventListener("change",e=>{const t=e.target;
+ if(t.id==="uNSt"){uNew.status=t.value;const d=$("#uNDone");d.disabled=t.value!=="완료";d.value=t.value==="완료"?dayKey(0):""}
+ else if(t.dataset.ut){const v=t.value.trim();if(!v){render();return}updSave(a=>a.map(x=>x.id===t.dataset.ut?{...x,text:v}:x))}
+ else if(t.dataset.us){const v=t.value;updSave(a=>a.map(x=>x.id===t.dataset.us?{...x,status:v,done:v==="완료"?(x.done||dayKey(0)):""}:x),true)}
+ else if(t.dataset.ur)updSave(a=>a.map(x=>x.id===t.dataset.ur?{...x,reg:t.value}:x));
+ else if(t.dataset.ud)updSave(a=>a.map(x=>x.id===t.dataset.ud?{...x,done:t.value}:x));
+});
 function detailView(p){
  const t=dayKey(0),y=dayKey(-1),today=dn(new Date()),M=isM(p),s=pd(p.start),e=M?s:pd(p.end),left=e-today,P=pg(p);
  const st=P>=100?["완료","done"]:!M&&today>e?["기한 초과","late"]:today<s?["시작 전","wait"]:["진행 중","go"];
@@ -343,16 +381,17 @@ function detailView(p){
  const lab=k=>{const[a,b,c]=k.split("-").map(Number);return (k===t?"오늘 · ":k===y?"어제 · ":"")+`${b}월 ${c}일 (${KN[new Date(a,b-1,c).getDay()]})`};
  const dtv=(key,val)=>dateEdit===key?`<span class="dte"><input class="in" id="dEditV" type="date" value="${esc(val)}" aria-label="${key==="start"?"시작일":"마감일"}"><button class="ib sm ok" data-dsave="${key}" aria-label="저장" title="저장">✓</button><button class="ib sm" data-dcancel aria-label="취소" title="취소">✕</button></span>`:`<span class="dtv">${fmt(val)}<button class="ib sm ed" data-dedit="${key}" aria-label="${key==="start"?"시작일":"마감일"} 수정" title="날짜 수정"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></button></span>`;
  const row=(k,v)=>`<div class="kv"><span>${k}</span><strong>${v}</strong></div>`;
- return `<div class="dgrid">
-  <section class="card"><h3>프로젝트 상태</h3>
+ const ms=p.mstate||"진행중";
+ const mTop=`<section class="card"><h3>프로젝트 상태</h3><div class="mseg">${MS.map(x=>`<button data-mst="${x}" aria-pressed="${x===ms}">${x}</button>`).join("")}</div><div class="kvs">${row("유형","유지관리형")}${row("시작일",dtv("start",p.start))}</div></section>${updatesCard(p)}`;
+ return `<div class="dgrid" ${M?'style="grid-template-columns:minmax(220px,270px) minmax(0,1fr)"':""}>
+  ${M?mTop:`  <section class="card"><h3>프로젝트 상태</h3>
    ${M?"":`<div class="dday ${ddOf(p)[1]}"><small>마감까지 남은 기간</small><strong>${ddOf(p)[0]}</strong><span>${fmt(p.end)} 마감</span></div>`}
    <div class="big"><strong id="pgV">${P}%</strong><span class="st ${st[1]}">${st[0]}</span></div>
    <div class="pbar wide"><i id="pgB" style="width:${P}%"></i></div>
    <input type="range" id="pgR" min="0" max="100" step="5" value="${P}" style="--v:${P}%" aria-label="진행도">
    <div class="kvs">${row("유형",M?"유지관리형":"일반")}${row("시작일",dtv("start",p.start))}${M?"":row("마감일",dtv("end",p.end))+row("전체 기간",`${e-s+1}일`)+row("남은 기간",dd)}${row("진행 일지",`${J.length}건`)}</div></section>
-  ${schedCard(p)}
- 
-  </div>
+  ${schedCard(p)}`}
+  </div>${M?`<div class="sch" style="margin-top:16px">${schedCard(p)}</div>`:""}
   <section class="card jcard"><h3>일일 진행일지</h3>
    <div class="jform"><input class="in" id="jDay" type="date" value="${t}" aria-label="날짜"><textarea class="in" id="jText" rows="3" maxlength="1000" placeholder="이날 진행한 내용을 기록하세요 (Ctrl+Enter로 저장)"></textarea><button class="btn" id="jAdd">기록 추가</button></div>
    ${days.length?days.map(k=>`<div class="jday"><h4>${lab(k)}<button class="kk" data-kk="${k}" title="카카오톡 나에게 보내기">카톡 전송</button></h4>${J.filter(x=>x.day===k).map(x=>x.id===jEdit?`<div class="jitem edit"><input class="in" id="jEditD" type="date" value="${x.day}"><textarea class="in" id="jEditT" rows="3" maxlength="1000">${esc(x.t)}</textarea><div class="jeb"><button class="btn sec sm" data-jcancel>취소</button><button class="btn sm" data-jsave="${x.id}">저장</button></div></div>`:`<div class="jitem"><p>${esc(x.t)}</p><button class="x ed" data-je="${x.id}" aria-label="수정" title="수정">✎</button><button class="x" data-jd="${x.id}" aria-label="삭제" title="삭제">×</button></div>`).join("")}</div>`).join(""):'<div class="empty">아직 기록이 없습니다. 오늘의 진행 상황을 남겨 보세요.</div>'}
