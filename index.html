@@ -34,7 +34,7 @@ main{padding:22px 28px 28px;min-width:0;display:flex;flex-direction:column;heigh
 .top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
 .top h1{margin:0;font-size:24px;letter-spacing:-.01em}
 .ws{display:flex;align-items:center;gap:10px;font-weight:700}
-.ws .nm{height:34px;padding:0 16px;border-radius:17px;background:var(--gd);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:13px;white-space:nowrap;max-width:240px;overflow:hidden;text-overflow:ellipsis}
+.ws .nm{height:34px;padding:0 16px;border-radius:17px;background:var(--g);color:#fff;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:13px;white-space:nowrap;max-width:240px;overflow:hidden;text-overflow:ellipsis}
 .ws .lo{height:34px;padding:0 16px;border-radius:17px;border:1px solid var(--line);background:var(--surf);color:var(--ink);display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:600}
 .ws .lo:hover{border-color:var(--g);color:var(--gd)}
 .ctl{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap}
@@ -326,7 +326,7 @@ let mon=new Date(),scope="month",layout="tl";
 function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("on"),2800)}
 function setCloud(s){const c=$("#cloud");c.className="cloud "+s;c.lastChild.textContent={on:"데이터베이스 연결됨",off:"연결 안 됨 · 저장되지 않음",connecting:"연결 중…"}[s]}
 function userName(){let e="";try{const x=getSession();e=x&&x.email?x.email.split("@")[0]:""}catch(_){}return (settings.workspace||"").trim()||e}
-const head=t=>`<div class="top"><div style="display:flex;align-items:center;gap:12px"><a href="#dashboard" data-home aria-label="대시보드로 이동" class="mlogo"><img style="height:30px;display:block" src="${$(".logo img").src}" alt="SID"></a><h1>${t}</h1></div><div class="ws">${settingsLoaded&&userName()?`<span class="nm" title="${esc(userName())}">${esc(userName())}</span>`:""}${window.__sb&&getSession()?'<button class="lo" data-logout>로그아웃</button>':""}</div></div>`;
+const head=t=>`<div class="top"><div style="display:flex;align-items:center;gap:12px"><a href="#dashboard" data-home aria-label="대시보드로 이동" class="mlogo"><img style="height:30px;display:block" src="${$(".logo img").src}" alt="SID"></a><h1>${t}</h1></div><div class="ws">${settingsLoaded&&userName()?`<a class="nm" href="#settings" title="설정으로 이동" aria-label="설정으로 이동">${esc(userName())}</a>`:""}${window.__sb&&getSession()?'<button class="lo" data-logout>로그아웃</button>':""}</div></div>`;
 
 const KN=["일","월","화","수","목","금","토"],dcls=k=>k===0?"sun":k===6?"sat":"";
 const ws0=()=>new Date(mon.getFullYear(),mon.getMonth(),mon.getDate()-(mon.getDay()-settings.weekStart+7)%7);
