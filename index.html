@@ -58,12 +58,17 @@ main{padding:22px 28px 28px;min-width:0;display:flex;flex-direction:column;heigh
 .bar small{font-weight:500;opacity:.8;margin-left:6px}
 .bar:hover{filter:brightness(.95)}
 .empty{color:var(--ink2);text-align:center;padding:40px 0}
-.plist{display:grid;gap:10px}
-.pitem{display:flex;align-items:center;gap:14px;width:100%;text-align:left;border:1px solid var(--line);background:var(--surf);border-radius:14px;padding:14px 16px}
-.pitem:hover{border-color:var(--g)}
-.pitem .dot{width:12px;height:36px;border-radius:6px;flex:none}
-.pitem .n{flex:1;min-width:0}.pitem small{color:var(--ink2)}
-.pitem .d{text-align:right;font-size:13px}
+.plist{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.pitem{display:flex;flex-direction:column;gap:10px;width:100%;text-align:left;border:1px solid var(--line);background:var(--surf);border-radius:14px;padding:16px;border-top:4px solid var(--c,var(--g));transition:box-shadow .15s,transform .15s}
+.pitem:hover{border-color:var(--c,var(--g));box-shadow:0 6px 18px rgba(0,0,0,.08);transform:translateY(-2px)}
+.pitem .ph{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.pitem .n{min-width:0;font-size:15px;overflow-wrap:anywhere}.pitem small{color:var(--ink2);font-size:12px}
+.pitem .pf{display:flex;align-items:center;gap:10px;margin-top:auto}.pitem .pf .pbar{flex:1}
+.ttag{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:8px;background:var(--gt);color:var(--gd);margin-bottom:6px}.ttag.m{background:#e8eefc;color:#2f55b8}
+.tsel{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tsel button{border:1.5px solid var(--line);background:var(--surf);border-radius:12px;padding:10px;text-align:left;font-size:13px;font-weight:700}
+.tsel button small{display:block;font-weight:500;color:var(--ink2);margin-top:2px;font-size:11px}
+.tsel button[aria-pressed=true]{border-color:var(--g);background:var(--gt)}
 .fgrid{display:grid;gap:14px;max-width:460px}
 label{display:grid;gap:6px;font-size:12px;color:var(--ink2);font-weight:600}
 .in{border:1px solid var(--line);background:var(--surf);border-radius:12px;padding:10px 12px;width:100%}
@@ -152,7 +157,8 @@ input[type=range]::-moz-range-track{background:transparent}
 .x{border:0;background:none;color:var(--ink2);font-size:18px;line-height:1}
 .addr{display:flex;gap:6px}.addr .in{padding:8px 10px;font-size:13px}.addr .btn{padding:8px 12px}
 @media(max-width:1100px){.sg{grid-template-columns:1fr}}
-@media(max-width:820px){.dgrid{grid-template-columns:1fr}.pitem .pbar{display:none}.col{flex-basis:240px}}
+@media(max-width:820px){.dgrid{grid-template-columns:1fr}.col{flex-basis:240px}}
+@media(max-width:520px){.plist{grid-template-columns:1fr}}
 .big .st{padding:3px 12px;border-radius:12px;font-weight:700;font-size:12px;background:var(--gt);color:var(--gd)}
 .big .st.late{background:#fde8e4;color:#b3402a}.big .st.wait{background:var(--line);color:var(--ink2)}
 .kvs{margin-top:18px}.kv{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-top:1px solid var(--line);font-size:13px}.kv span{color:var(--ink2)}
@@ -198,7 +204,6 @@ input[type=range]::-moz-range-track{background:transparent}
  .ev{inset:28px 0 auto 0;grid-auto-rows:22px}
  .bar{font-size:10px;padding:0 6px;margin:0 1px}.bar small{display:none}
  .dow div{padding:8px 2px;text-align:center}
- .pitem .d{display:none}
  .fab{display:block;position:fixed;right:16px;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:21;width:52px;height:52px;border-radius:50%;border:0;background:var(--gd);color:#fff;font-size:28px;box-shadow:0 8px 20px rgba(79,125,12,.45)}
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
@@ -224,10 +229,11 @@ input[type=range]::-moz-range-track{background:transparent}
 <dialog id="dlg">
  <h2 id="dTitle">새 프로젝트 만들기</h2>
  <div class="fgrid" style="max-width:none">
+  <div id="tWrap"><div style="font-size:12px;color:var(--ink2);font-weight:600;margin-bottom:8px">프로젝트 유형</div><div class="tsel"><button type="button" data-ptype="general" aria-pressed="true">일반 프로젝트<small>시작일·마감일·D-day</small></button><button type="button" data-ptype="maintenance" aria-pressed="false">유지관리형 프로젝트<small>마감일·D-day 없음</small></button></div></div>
   <label>프로젝트명<input class="in" id="fName" maxlength="80"></label>
-  <div class="two">
+  <div class="two" id="dRow">
    <label>시작일<input class="in" id="fStart" type="date"></label>
-   <label>마감일<input class="in" id="fEnd" type="date"></label>
+   <label id="eWrap">마감일<input class="in" id="fEnd" type="date"></label>
   </div>
   <div><div style="font-size:12px;color:var(--ink2);font-weight:600;margin-bottom:8px">프로젝트 색상 <span id="cHint" style="font-weight:500"></span></div><div class="swrow" id="pColors"></div></div>
  </div>
@@ -306,12 +312,12 @@ function timeline(){
 }
 function dashboardView(){return ctl()+(layout==="tl"?timeline():calendar())}
 let detailId=null;
-const pg=p=>Math.max(0,Math.min(100,+p.progress||0)),cur=()=>projects.find(x=>x.id===detailId);
+const isM=p=>p.type==="maintenance",pg=p=>Math.max(0,Math.min(100,+p.progress||0)),cur=()=>projects.find(x=>x.id===detailId);
 const dayKey=o=>{const d=new Date();return iso(new Date(d.getFullYear(),d.getMonth(),d.getDate()+o))};
 function projectsView(){
  if(detailId){const p=cur();if(p)return detailView(p);detailId=null}
  const L=[...projects].sort((a,b)=>(a.start||"").localeCompare(b.start||""));
- return L.length?`<div class="plist">${L.map(p=>{const c=PAL[(p.color||0)%PAL.length],days=pd(p.end)-pd(p.start)+1;return `<button class="pitem" data-id="${esc(p.id)}"><span class="dot" style="background:${c[0]}"></span><div class="n"><strong>${esc(p.name)}</strong><br><small>${fmt(p.start)} – ${fmt(p.end)} · ${days}일</small></div><span class="ddb ${ddOf(p)[1]}">${ddOf(p)[0]}</span><div class="pbar"><i style="width:${pg(p)}%"></i></div><strong>${pg(p)}%</strong></button>`}).join("")}</div>`:`<div class="empty">아직 프로젝트가 없습니다. 왼쪽의 Create new project 버튼으로 추가해 보세요.</div>`;
+ return L.length?`<div class="plist">${L.map(p=>{const c=PAL[(p.color||0)%PAL.length],m=isM(p),days=m?0:pd(p.end)-pd(p.start)+1,dd=m?"":ddOf(p);return `<button class="pitem" data-id="${esc(p.id)}" style="--c:${c[0]}"><div class="ph"><div class="n"><span class="ttag ${m?"m":""}">${m?"유지관리":"일반"}</span><br><strong>${esc(p.name)}</strong><br><small>${m?`${fmt(p.start)} 시작`:`${fmt(p.start)} – ${fmt(p.end)} · ${days}일`}</small></div>${m?"":`<span class="ddb ${dd[1]}">${dd[0]}</span>`}</div><div class="pf"><div class="pbar"><i style="width:${pg(p)}%"></i></div><strong>${pg(p)}%</strong></div></button>`}).join("")}</div>`:`<div class="empty">아직 프로젝트가 없습니다. 왼쪽의 Create new project 버튼으로 추가해 보세요.</div>`;
 }
 let dateEdit=null,dcal=null,evDay=null,evEdit=null,jEdit=null;
 const wk=["일","월","화","수","목","금","토"];
@@ -325,10 +331,10 @@ function schedCard(p){
  <div class="evl"><div class="mt">일정 목록 <small>최신순</small></div>${L.length?L.map(x=>{const[a,m,d]=x.day.split("-").map(Number);return `<div class="ev2"><div class="dt"><strong>${d}</strong><small>${m}월</small></div><div class="tx"><b>${esc(x.t)}</b><small>${a}.${String(m).padStart(2,"0")}.${String(d).padStart(2,"0")} (${wk[new Date(a,m-1,d).getDay()]})</small></div><button class="x ed" data-eedit="${x.id}" aria-label="수정" title="수정">✎</button><button class="x" data-ex="${x.id}" aria-label="삭제" title="삭제">×</button></div>`}).join(""):'<div class="empty" style="padding:24px 0">날짜를 눌러 일정을 추가하세요.</div>'}</div></div></div>
  <div class="half"><div class="mh"><h3>메모</h3><span class="msv" id="memoSt"></span></div><textarea class="paper" id="memo" maxlength="5000" placeholder="자유롭게 메모하세요" aria-label="메모">${esc(p.memo||"")}</textarea></div></section>`;
 }
-function ddOf(p){const l=pd(p.end)-dn(new Date());return l>0?[`D-${l}`,l<=7?"soon":"ok"]:l===0?["D-DAY","soon"]:[`D+${-l}`,"late"]}
+function ddOf(p){if(isM(p))return["","ok"];const l=pd(p.end)-dn(new Date());return l>0?[`D-${l}`,l<=7?"soon":"ok"]:l===0?["D-DAY","soon"]:[`D+${-l}`,"late"]}
 function detailView(p){
- const t=dayKey(0),y=dayKey(-1),today=dn(new Date()),s=pd(p.start),e=pd(p.end),left=e-today,P=pg(p);
- const st=P>=100?["완료","done"]:today>e?["기한 초과","late"]:today<s?["시작 전","wait"]:["진행 중","go"];
+ const t=dayKey(0),y=dayKey(-1),today=dn(new Date()),M=isM(p),s=pd(p.start),e=M?s:pd(p.end),left=e-today,P=pg(p);
+ const st=P>=100?["완료","done"]:!M&&today>e?["기한 초과","late"]:today<s?["시작 전","wait"]:["진행 중","go"];
  const dd=left>0?`D-${left}`:left===0?"오늘 마감":`마감 ${-left}일 지남`;
  const J=[...(p.journal||[])].sort((a,b)=>b.day.localeCompare(a.day)||b.at-a.at),days=[...new Set(J.map(x=>x.day))];
  const lab=k=>{const[a,b,c]=k.split("-").map(Number);return (k===t?"오늘 · ":k===y?"어제 · ":"")+`${b}월 ${c}일 (${KN[new Date(a,b-1,c).getDay()]})`};
@@ -336,11 +342,11 @@ function detailView(p){
  const row=(k,v)=>`<div class="kv"><span>${k}</span><strong>${v}</strong></div>`;
  return `<div class="dgrid">
   <section class="card"><h3>프로젝트 상태</h3>
-   <div class="dday ${ddOf(p)[1]}"><small>마감까지 남은 기간</small><strong>${ddOf(p)[0]}</strong><span>${fmt(p.end)} 마감</span></div>
+   ${M?"":`<div class="dday ${ddOf(p)[1]}"><small>마감까지 남은 기간</small><strong>${ddOf(p)[0]}</strong><span>${fmt(p.end)} 마감</span></div>`}
    <div class="big"><strong id="pgV">${P}%</strong><span class="st ${st[1]}">${st[0]}</span></div>
    <div class="pbar wide"><i id="pgB" style="width:${P}%"></i></div>
    <input type="range" id="pgR" min="0" max="100" step="5" value="${P}" style="--v:${P}%" aria-label="진행도">
-   <div class="kvs">${row("시작일",dtv("start",p.start))}${row("마감일",dtv("end",p.end))}${row("전체 기간",`${e-s+1}일`)}${row("남은 기간",dd)}${row("진행 일지",`${J.length}건`)}</div></section>
+   <div class="kvs">${row("유형",M?"유지관리형":"일반")}${row("시작일",dtv("start",p.start))}${M?"":row("마감일",dtv("end",p.end))+row("전체 기간",`${e-s+1}일`)+row("남은 기간",dd)}${row("진행 일지",`${J.length}건`)}</div></section>
   ${schedCard(p)}
  
   </div>
@@ -486,21 +492,26 @@ function route(){const h=location.hash.slice(1);view=["dashboard","projects","pl
 addEventListener("hashchange",route);
 
 /* dialog */
+let pType="general";
+function setType(t){pType=t;document.querySelectorAll("[data-ptype]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.ptype===t)));$("#eWrap").style.display=t==="maintenance"?"none":"";$("#dRow").style.gridTemplateColumns=t==="maintenance"?"1fr":""}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-ptype]");if(b&&!editId)setType(b.dataset.ptype)});
 function openDlg(date,id){
  editId=id||null;const p=editId&&projects.find(x=>x.id===editId);$("#dErr").textContent="";
  $("#dTitle").textContent=p?"프로젝트 수정":"새 프로젝트 만들기";$("#save").textContent=p?"변경사항 저장":"프로젝트 만들기";$("#del").hidden=!p;
+ setType(p&&isM(p)?"maintenance":"general");$("#tWrap").style.display=p?"none":"";
  const s=p?p.start:date||iso(new Date());
- $("#fName").value=p?p.name:"";selColor=p&&p.color!=null?p.color:null;drawColors();$("#fStart").value=s;$("#fEnd").value=p?p.end:iso(new Date(+s.slice(0,4),+s.slice(5,7)-1,+s.slice(8)+13));
+ $("#fName").value=p?p.name:"";selColor=p&&p.color!=null?p.color:null;drawColors();$("#fStart").value=s;$("#fEnd").value=p&&p.end?p.end:iso(new Date(+s.slice(0,4),+s.slice(5,7)-1,+s.slice(8)+13));
  $("#dlg").showModal();$("#fName").focus();
 }
 $("#cancel").onclick=()=>$("#dlg").close();
 $("#save").onclick=async()=>{
  const name=$("#fName").value.trim(),start=$("#fStart").value,end=$("#fEnd").value,er=$("#dErr");
- if(!name||!start||!end){er.textContent="모든 항목을 입력해 주세요.";return}
- if(end<start){er.textContent="마감일은 시작일 이후여야 합니다.";return}
+ const M=pType==="maintenance";
+ if(!name||!start||(!M&&!end)){er.textContent="모든 항목을 입력해 주세요.";return}
+ if(!M&&end<start){er.textContent="마감일은 시작일 이후여야 합니다.";return}
  const old=editId&&projects.find(x=>x.id===editId);
- if(old){Object.assign(old,{name,start,end,color:selColor!=null?selColor:old.color});if(!(await persist(old)))return;$("#dlg").close();render();toast("프로젝트가 수정되었습니다");return}
- const data={name,start,end,color:selColor!=null?selColor:Math.floor(Math.random()*PAL.length),progress:0,journal:[],updatedAt:Date.now()};
+ if(old){Object.assign(old,{name,start,color:selColor!=null?selColor:old.color},isM(old)?{}:{end});if(!(await persist(old)))return;$("#dlg").close();render();toast("프로젝트가 수정되었습니다");return}
+ const data={name,start,...(M?{type:"maintenance"}:{type:"general",end}),color:selColor!=null?selColor:Math.floor(Math.random()*PAL.length),progress:0,journal:[],updatedAt:Date.now()};
  try{
   if(db){await db.collection("projects").doc().set(data)}
   else{projects.push({id:"l"+Date.now(),...data});toast("클라우드에 연결되지 않았습니다. 이번 세션에서만 저장됩니다.")}
@@ -521,8 +532,8 @@ document.addEventListener("click",async e=>{
  const de=e.target.closest("[data-dedit]");if(de){dateEdit=de.dataset.dedit;render();const i=$("#dEditV");if(i){i.focus();try{i.showPicker&&i.showPicker()}catch(x){}}return}
  if(e.target.closest("[data-dcancel]")){dateEdit=null;render();return}
  const dsv=e.target.closest("[data-dsave]");if(dsv){const v=$("#dEditV").value,k=dsv.dataset.dsave,p=cur();if(!v){toast("날짜를 선택해 주세요.");return}
-  const ns=k==="start"?v:p.start,ne=k==="end"?v:p.end;if(ne<ns){toast(k==="start"?"시작일은 마감일 이전이어야 합니다.":"마감일은 시작일 이후여야 합니다.");return}
-  p.start=ns;p.end=ne;dateEdit=null;render();if(await persist(p))toast("날짜가 수정되었습니다");return}
+  const ns=k==="start"?v:p.start,ne=k==="end"?v:p.end;if(!isM(p)&&ne<ns){toast(k==="start"?"시작일은 마감일 이전이어야 합니다.":"마감일은 시작일 이후여야 합니다.");return}
+  p.start=ns;if(!isM(p))p.end=ne;dateEdit=null;render();if(await persist(p))toast("날짜가 수정되었습니다");return}
  const lo=e.target.closest("[data-logout]");if(lo){logout();return}
  const nv=e.target.closest("nav a[data-v]");if(nv){detailId=null;jEdit=null;if(location.hash==="#"+nv.dataset.v)render();return}
  if(e.target.closest("#planwrap")&&await planClick(e))return;
