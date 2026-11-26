@@ -28,3 +28,11 @@ Claude 안에서 열면 연결된 카카오톡 도구로 "나에게 보내기"�
 유지관리형 > 컨텐츠 프로젝트의 컨텐츠 현황에서 이미지를 끌어다 놓거나 "＋ 이미지" 버튼으로 올립니다.
 긴 변 500px(JPEG)로 자동 최적화되고, 110×110 섬네일로 표시됩니다.
 사용하려면 `supabase.sql`의 **Storage 설정 부분(맨 아래)을 SQL Editor에서 한 번 더 실행**하세요(비공개 버킷 `pms-images` + 로그인 사용자 정책).
+
+## 웹푸시 알림 (매일 오전 9시)
+1. 내 컴퓨터에서 `node push/gen-keys.mjs` 실행 → PUBLIC/PRIVATE 키 출력
+2. PUBLIC 키를 `config.js`의 `PUSH_PUBLIC_KEY`에 입력 후 커밋
+3. GitHub 저장소 Settings → Secrets and variables → Actions에 등록:
+   `SUPABASE_URL`, `SUPABASE_SERVICE_KEY`(service_role, Supabase에서 복사), `VAPID_PUBLIC`, `VAPID_PRIVATE`, `VAPID_SUBJECT`(예: mailto:내이메일)
+4. 폰에서 앱 설정 → "이 기기에서 알림 받기" (아이폰은 먼저 Safari에서 홈 화면에 추가)
+5. Actions 탭 → daily-push → Run workflow 로 즉시 테스트
