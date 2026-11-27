@@ -76,10 +76,3 @@ GitHub Secrets (이미 등록한 `SUPABASE_URL`, `SUPABASE_SERVICE_KEY`와 함�
 2. Supabase → Authentication → Providers → Google 켜기, Client ID와 Secret 입력.
 3. Supabase → Authentication → URL Configuration: Site URL과 Redirect URLs에 `https://min2786.github.io/sidpms/` 추가.
 
-## 카카오 로그인 켜기
-
-1. [Kakao Developers](https://developers.kakao.com) → 내 애플리케이션 → 앱 생성 → 제품 설정 **카카오 로그인** 활성화.
-2. **Redirect URI**에 `https://<프로젝트ID>.supabase.co/auth/v1/callback` 등록.
-3. 동의항목에서 **닉네임**, **카카오계정(이메일)** 을 설정 (이메일이 없으면 Supabase가 로그인을 거부합니다).
-4. Supabase 대시보드 → Authentication → Providers → **Kakao** 켜고 REST API 키(Client ID)와 Client Secret 입력.
-5. Authentication → URL Configuration의 Redirect URLs에 `https://min2786.github.io/sidpms/` 추가.
