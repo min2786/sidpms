@@ -63,12 +63,18 @@ main{padding:22px 28px 28px;min-width:0;display:flex;flex-direction:column;heigh
 .bar small{font-weight:500;opacity:.8;margin-left:6px}
 .bar:hover{filter:brightness(.95)}
 .empty{color:var(--ink2);text-align:center;padding:40px 0}
-.plist{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
-.pitem{display:flex;flex-direction:column;gap:10px;width:100%;text-align:left;border:1px solid var(--line);background:var(--surf);border-radius:14px;padding:16px;border-top:4px solid var(--c,var(--g));transition:box-shadow .15s,transform .15s}
-.pitem:hover{border-color:var(--c,var(--g));box-shadow:0 6px 18px rgba(0,0,0,.08);transform:translateY(-2px)}
-.pitem .ph{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
-.pitem .n{min-width:0;font-size:15px;overflow-wrap:anywhere}.pitem small{color:var(--ink2);font-size:12px}
-.pitem .pf{display:flex;align-items:center;gap:10px;margin-top:auto}.pitem .pf .pbar{flex:1}
+.plist{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:20px}
+.pitem{position:relative;display:flex;flex-direction:column;gap:6px;width:100%;min-height:176px;text-align:left;border:0;color:#23262b;border-radius:24px;padding:20px 20px 16px;background:linear-gradient(180deg,color-mix(in srgb,var(--c) 14%,#fff),color-mix(in srgb,var(--c) 32%,#fff));box-shadow:0 14px 22px -14px color-mix(in srgb,var(--c) 70%,transparent);transition:box-shadow .18s,transform .18s}
+.pitem:hover{box-shadow:0 18px 28px -12px color-mix(in srgb,var(--c) 80%,transparent);transform:translateY(-3px)}
+.pitem .pt{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:24px}
+.pitem .ttag{margin:0;background:rgba(255,255,255,.6);color:#3a3f46}.pitem .ddb{background:rgba(255,255,255,.65);color:#23262b;padding:3px 10px;font-size:12px}.pitem .ddb.soon{color:#c2570c}.pitem .ddb.late{color:#b3402a}
+.pitem .pn{display:block;margin-top:6px;font-size:20px;font-weight:800;line-height:1.22;letter-spacing:-.01em;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pitem .pdt{color:rgba(35,38,43,.68);font-size:12.5px}
+.pitem .pb{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-top:auto;padding-top:10px}
+.pitem .pf{display:flex;align-items:center;gap:8px;min-width:0;flex:1;font-size:12px}.pitem .pf .pbar{flex:1;width:auto;max-width:110px;background:rgba(255,255,255,.65)}.pitem .pf .pbar i{background:#23262b}
+.pitem .mst{background:rgba(255,255,255,.7)}
+.avs{display:flex;align-items:center;flex:none;padding-left:8px}.av{width:30px;height:30px;border-radius:50%;margin-left:-8px;border:2px solid rgba(255,255,255,.9);background:#fff;color:#3a3f46;font-size:12px;font-weight:800;display:grid;place-items:center;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.12)}.av img{width:100%;height:100%;object-fit:cover}.av.more{background:#2b2d2f;color:#fff;font-size:11px;border-color:transparent}
+.psec{margin-top:6px}
 .ttag{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:8px;background:var(--gt);color:var(--gd);margin-bottom:6px}.ttag.m{background:#e8eefc;color:#2f55b8}
 .tsel{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .tsel button{border:1.5px solid var(--line);background:var(--surf);border-radius:12px;padding:10px;text-align:left;font-size:13px;font-weight:700}
@@ -411,7 +417,8 @@ const dayKey=o=>{const d=new Date();return iso(new Date(d.getFullYear(),d.getMon
 function projectsView(){
  if(detailId){const p=cur();if(p)return detailView(p);detailId=null}
  const L=[...projects].sort((a,b)=>(a.start||"").localeCompare(b.start||""));
- const cardOf=p=>{const c=PAL[(p.color||0)%PAL.length],m=isO(p),days=m?0:pd(p.end)-pd(p.start)+1,dd=m?"":ddOf(p);return `<button class="pitem" data-id="${esc(p.id)}" style="--c:${c[0]}"><div class="ph"><div class="n"><span class="ttag ${isK(p)?"k":m?"m":""}">${isK(p)?"마케팅":m?(p.sub==="content"?"관리 · 컨텐츠":"관리 · 소프트웨어"):"일반"}</span><br><strong>${esc(p.name)}</strong><br><small>${m?`${fmt(p.start)} 시작`:`${fmt(p.start)} – ${fmt(p.end)} · ${days}일`}</small></div>${m?"":`<span class="ddb ${dd[1]}">${dd[0]}</span>`}</div>${m?`<div class="pf"><span class="mst" data-s="${esc(p.mstate||"진행중")}"><i></i>${esc(p.mstate||"진행중")}</span></div>`:`<div class="pf"><div class="pbar"><i style="width:${pg(p)}%"></i></div><strong>${pg(p)}%</strong></div>`}</button>`};
+ const avOf=p=>{const M=(p.members&&p.members.length?p.members:[{name:userName()||"?"}]),sh=M.slice(0,2),x=M.length-sh.length;return `<div class="avs" title="${esc(M.map(m=>m.name||"").join(", "))}">${sh.map(m=>`<span class="av">${m.photo?`<img src="${esc(m.photo)}" alt="">`:esc((m.name||"?").trim().charAt(0).toUpperCase())}</span>`).join("")}${x>0?`<span class="av more">${x}+</span>`:""}</div>`};
+ const cardOf=p=>{const c=PAL[(p.color||0)%PAL.length],m=isO(p),days=m?0:pd(p.end)-pd(p.start)+1,dd=m?"":ddOf(p);return `<button class="pitem" data-id="${esc(p.id)}" style="--c:${c[0]}"><div class="pt"><span class="ttag ${isK(p)?"k":m?"m":""}">${isK(p)?"마케팅":m?(p.sub==="content"?"관리 · 컨텐츠":"관리 · 소프트웨어"):"일반"}</span>${m?"":`<span class="ddb ${dd[1]}">${dd[0]}</span>`}</div><strong class="pn">${esc(p.name)}</strong><small class="pdt">${m?`${fmt(p.start)} 시작`:`${fmt(p.start)} – ${fmt(p.end)} · ${days}일`}</small><div class="pb">${m?`<div class="pf"><span class="mst" data-s="${esc(p.mstate||"진행중")}"><i></i>${esc(p.mstate||"진행중")}</span></div>`:`<div class="pf"><div class="pbar"><i style="width:${pg(p)}%"></i></div><strong>${pg(p)}%</strong></div>`}${avOf(p)}</div></button>`};
  const sec=(t,arr,hint)=>`<section class="psec"><div class="psh"><h3>${t}</h3><span>${arr.length}</span></div>${arr.length?`<div class="plist">${arr.map(cardOf).join("")}</div>`:`<div class="pshint">${hint}</div>`}</section>`;
  return L.length?sec("일반 프로젝트",L.filter(p=>!isM(p)&&!isK(p)),"등록된 일반 프로젝트가 없습니다.")+sec("관리형 프로젝트",L.filter(isM),"등록된 관리형 프로젝트가 없습니다.")+sec("마케팅 프로젝트",L.filter(isK),"등록된 마케팅 프로젝트가 없습니다."):`<div class="empty">아직 프로젝트가 없습니다. 왼쪽의 Create new project 버튼으로 추가해 보세요.</div>`;
 }
