@@ -70,8 +70,8 @@ GitHub Secrets (이미 등록한 `SUPABASE_URL`, `SUPABASE_SERVICE_KEY`와 함�
 - 전송량(egress)·API 요청 수는 Supabase 대시보드에서만 제공되어 링크로 안내합니다. GitHub Pages는 방문 통계를 제공하지 않습니다.
 - 역할/공유 설정은 현재 **기록만** 되며 접근을 막지 않습니다(다음 단계에서 RLS로 적용).
 
-## 카카오 로그인
+## 구글 로그인
 
-1. [Kakao Developers](https://developers.kakao.com) → 내 애플리케이션 → 카카오 로그인 활성화, Redirect URI에 `https://<프로젝트>.supabase.co/auth/v1/callback` 등록. 동의항목은 닉네임(필수)과 이메일(가능하면)을 켭니다.
-2. Supabase → Authentication → Providers → Kakao 켜기, REST API 키(Client ID)와 Client Secret 입력.
+1. [Google Cloud Console](https://console.cloud.google.com) → OAuth 동의 화면(외부) 설정 → 사용자 인증 정보 → OAuth 클라이언트 ID(웹 애플리케이션) 생성. 승인된 리디렉션 URI에 `https://<프로젝트>.supabase.co/auth/v1/callback` 추가.
+2. Supabase → Authentication → Providers → Google 켜기, Client ID와 Secret 입력.
 3. Supabase → Authentication → URL Configuration: Site URL과 Redirect URLs에 `https://min2786.github.io/sidpms/` 추가.

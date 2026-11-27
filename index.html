@@ -272,8 +272,7 @@ input[type=range]::-moz-range-track{background:transparent}
 .tile small{display:block;color:var(--ink2);font-size:11px;margin-bottom:2px}.tile strong{font-size:15px;overflow-wrap:anywhere}
 .fab svg{display:block;margin:auto}
 .lcard>*{align-self:stretch}.lcard>img{align-self:flex-start}.lcard h2{margin:14px 0 0;font-size:28px;font-weight:800;letter-spacing:-.02em}.lcard p{text-align:left;font-size:14px;line-height:1.55;margin:0 0 26px}.lcard .lnk{text-align:center}
-.lkk{position:relative;display:flex;align-items:center;justify-content:center;gap:0;height:50px;border:0;border-radius:12px;background:#fee500;color:#191919;font-size:14.5px;font-weight:700;margin-top:18px;width:100%}.lkk svg{position:absolute;left:16px}.lkk:hover{filter:brightness(.97)}.lkk:disabled{opacity:.6}
-.lbub{position:absolute;left:50%;top:-12px;transform:translateX(-50%);background:#3b4a7a;color:#fff;font-size:10.5px;font-weight:700;padding:3px 10px;border-radius:999px;white-space:nowrap;pointer-events:none}.lbub::after{content:"";position:absolute;left:50%;bottom:-3px;width:7px;height:7px;background:inherit;transform:translateX(-50%) rotate(45deg)}
+.lkk{display:flex;align-items:center;justify-content:center;height:50px;border:1px solid #dadce0;border-radius:12px;background:#fff;color:#1f1f1f;font-size:14.5px;font-weight:600;margin-top:8px;width:100%;transition:background .15s,box-shadow .15s}.lkk:hover{background:#f8f9fa;box-shadow:0 1px 4px rgba(0,0,0,.1)}.lkk:disabled{opacity:.6}
 .lor{display:flex;align-items:center;gap:12px;color:#9aa1ab;font-size:12px;margin:10px 0 2px}.lor::before,.lor::after{content:"";flex:1;height:1px;background:#e6e9ed}
 .lcard .in{border-radius:12px;height:46px;background:#fff}.lcard .btn{height:46px;border-radius:12px}
 .split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0}
@@ -1184,13 +1183,13 @@ function showLogin(cfg){
  let mode="in";const L=$("#login");L.hidden=false;
  const draw=(msg,ok)=>{
   L.innerHTML=`<form class="lcard" id="lform" novalidate><img src="${$(".logo img").src}" alt="SID" style="height:38px"><h2>로그인</h2><p>프로젝트 관리 시스템에 접속하려면<br>로그인이 필요합니다.</p>
-  ${cfg?`<button class="lkk" id="lKakao" type="button"><span class="lbub">⚡ 3초만에 빠른 시작</span><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="#191919" d="M12 3.5c-5.2 0-9.4 3.3-9.4 7.4 0 2.6 1.7 4.9 4.3 6.2l-1 3.6c-.1.3.3.6.6.4l4.3-2.8c.4 0 .8.1 1.2.1 5.2 0 9.4-3.3 9.4-7.5S17.2 3.5 12 3.5z"/></svg>카카오로 계속하기</button><div class="lor">또는 이메일로</div>`:`<label>Supabase Project URL<input class="in" id="lUrl" placeholder="https://xxxx.supabase.co" autocomplete="off"></label><label>anon public key<input class="in" id="lKey" type="password" autocomplete="off"></label>`}
+  ${cfg?`<button class="lkk" id="lGoogle" type="button"><span>Google로 계속하기</span></button><div class="lor">또는 이메일로</div>`:`<label>Supabase Project URL<input class="in" id="lUrl" placeholder="https://xxxx.supabase.co" autocomplete="off"></label><label>anon public key<input class="in" id="lKey" type="password" autocomplete="off"></label>`}
   <label>이메일<input class="in" id="lMail" type="email" autocomplete="username" required></label>
   <label>비밀번호<input class="in" id="lPw" type="password" autocomplete="${mode==="in"?"current-password":"new-password"}" minlength="6" required></label>
   <div class="err" id="lErr" role="alert" style="${ok?"color:var(--gd)":""}">${msg||""}</div>
   <button class="btn" id="lGo" type="submit">${mode==="in"?"로그인":"가입하기"}</button>
   <button class="lnk" id="lSw" type="button">${mode==="in"?"계정이 없으신가요? 회원가입":"이미 계정이 있습니다. 로그인"}</button></form>`;
-  if($("#lKakao"))$("#lKakao").onclick=()=>{$("#lKakao").disabled=true;location.href=cfg.url+"/auth/v1/authorize?provider=kakao&redirect_to="+encodeURIComponent(location.origin+location.pathname)};
+  if($("#lGoogle"))$("#lGoogle").onclick=()=>{$("#lGoogle").disabled=true;location.href=cfg.url+"/auth/v1/authorize?provider=google&redirect_to="+encodeURIComponent(location.origin+location.pathname)};
   $("#lSw").onclick=()=>{mode=mode==="in"?"up":"in";draw()};
   $("#lform").onsubmit=async e=>{
    e.preventDefault();const em=$("#lMail").value.trim(),pw=$("#lPw").value,er=$("#lErr");
@@ -1227,7 +1226,7 @@ async function startCloud(){
   const q=new URLSearchParams(location.hash.replace(/^#/,""));
   if(q.get("access_token")){setSession({access_token:q.get("access_token"),refresh_token:q.get("refresh_token"),expires_in:q.get("expires_in")});
    const t=q.get("access_token");fetch(cfg.url+"/auth/v1/user",{headers:{apikey:cfg.key,Authorization:"Bearer "+t}}).then(r=>r.json()).then(u=>{const s=getSession();if(s&&u&&u.email){s.email=u.email;localStorage.setItem(SS,JSON.stringify(s))}}).catch(()=>{})}
-  else oerr=q.get("error_description")||"카카오 로그인에 실패했습니다.";
+  else oerr=q.get("error_description")||"구글 로그인에 실패했습니다.";
   history.replaceState(null,"",location.pathname+location.search+"#dashboard");
  }
  if(cfg){if(await freshToken(cfg))startCloud();else{showLogin(cfg);if(oerr)$("#lErr").textContent=oerr.replace(/\+/g," ")}}
