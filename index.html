@@ -1159,7 +1159,7 @@ function makeSupabase(cfg){
   async urls(paths){const r=await fetch(`${S}/object/sign/${B}`,{method:"POST",headers:{...await sh(),"Content-Type":"application/json"},body:JSON.stringify({expiresIn:86400,paths})});if(!r.ok)throw new Error("이미지 주소를 가져오지 못했습니다("+r.status+")");const a=await r.json();return a.filter(x=>x.signedURL&&!x.error).map(x=>({path:x.path,url:S+x.signedURL}))},
   async remove(paths,bk=B){await fetch(`${S}/object/${bk}`,{method:"DELETE",headers:{...await sh(),"Content-Type":"application/json"},body:JSON.stringify({prefixes:paths})})}
  };
- const rpc=async(name,args)=>{const r=await fetch(`${cfg.url}/rest/v1/rpc/${name}`,{method:"POST",headers:await hdr(),body:JSON.stringify(args||{})});if(!r.ok){let m={};try{m=await r.json()}catch(x){}const e=new Error(m.message||m.hint||("RPC "+r.status));e.status=r.status;e.code=m.code;throw e}return r.json()};
+ const rpc=async(name,args)=>{const r=await fetch(`${cfg.url}/rest/v1/rpc/${name}`,{method:"POST",headers:await hdr(),body:JSON.stringify(args||{})});if(!r.ok){let m={};try{m=await r.json()}catch(x){}const e=new Error(m.message||m.hint||("RPC "+r.status));e.status=r.status;e.code=m.code;throw e}const t=await r.text();if(!t)return null;try{return JSON.parse(t)}catch(x){return null}};
  const fn=async(name,body)=>{const r=await fetch(`${cfg.url}/functions/v1/${name}`,{method:"POST",headers:await hdr(),body:JSON.stringify(body)});if(!r.ok){let m="";try{m=(await r.json()).error}catch(x){}throw new Error(m||"서버 함수 호출 실패("+r.status+") — Edge Function 배포를 확인하세요")}return r.json()};
  return{storage,fn,rpc,collection:col=>({onSnapshot:(cb,fail)=>watch(col,cb,fail),doc:id=>docRef(col,id||crypto.randomUUID())}),doc:path=>{const[c,i]=path.split("/");return docRef(c,i)}};
 }
