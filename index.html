@@ -261,8 +261,8 @@ input[type=range]::-moz-range-track{background:transparent}
 .vb{flex:none;align-self:flex-start;background:var(--gd);color:#fff;font-weight:800;font-size:12px;padding:3px 10px;border-radius:10px;min-width:48px;text-align:center}.vf{display:grid;grid-template-columns:130px 150px 1fr;gap:8px;margin:12px 0 18px}.vf textarea{grid-column:1/-1;resize:vertical;font:inherit;min-height:80px}.vf .btn{grid-column:1/-1;justify-self:end}.vi{align-items:center}.vi .vd{flex:none;color:var(--ink2);font-size:12px;width:56px;text-align:right}@media(max-width:560px){.vf{grid-template-columns:1fr 1fr}.vf #vVer{grid-column:1/-1}}@media(max-width:820px){.jitem.vi{flex-wrap:wrap;row-gap:8px}.jitem.vi p{order:9;flex:1 1 100%;min-width:0;word-break:keep-all;overflow-wrap:anywhere}.jitem.vi .vd{width:auto;margin-left:auto}}
 .jitem p{margin:0;flex:1;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px}
 .pill.sm{font-size:13px;font-weight:600;margin-left:12px;vertical-align:middle}
-#login{position:fixed;inset:0;z-index:100;background:var(--bg);display:grid;place-items:center;padding:20px;overflow:auto}#login[hidden]{display:none}
-.lcard{width:min(400px,100%);background:var(--surf);border:1px solid var(--line);border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:14px;box-shadow:0 20px 50px -20px rgba(20,40,10,.25)}
+#login{position:fixed;inset:0;z-index:100;background:#eef0f2;display:grid;place-items:center;padding:20px;overflow:auto}#login[hidden]{display:none}
+.lcard{width:min(430px,100%);background:#fff;border-radius:34px;padding:40px 34px 34px;display:flex;flex-direction:column;gap:12px;box-shadow:0 24px 60px -24px rgba(20,30,40,.22)}
 .lcard p{margin:4px 0 0;color:var(--ink2);font-size:13px}
 .lnk{border:0;background:none;color:var(--gd);font-weight:600;font-size:12px;padding:6px 0;text-align:left}
 .create b svg{width:20px;height:20px}
@@ -271,7 +271,11 @@ input[type=range]::-moz-range-track{background:transparent}
 .tiles>.tile.car{flex:0 0 280px;width:280px;display:flex;flex-direction:row;align-items:center;gap:10px;padding:6px 14px}.tile.car .carimg{flex:none;width:76px;height:auto;display:block;align-self:center}.tile .cr{width:100%;min-width:0}.tile .cr strong{font-size:14px;color:var(--gd)}.tile .cr em{font-style:normal;font-size:11px;color:var(--ink2);margin-left:6px;font-weight:600}.tile.car small{margin-bottom:0;font-size:10px}.bat{height:5px;border-radius:4px;background:var(--line);margin-top:4px;overflow:hidden}.bat i{display:block;height:100%;background:var(--g);border-radius:5px}
 .tile small{display:block;color:var(--ink2);font-size:11px;margin-bottom:2px}.tile strong{font-size:15px;overflow-wrap:anywhere}
 .fab svg{display:block;margin:auto}
-.lcard>*{align-self:stretch}.lcard>img{align-self:center}.lcard p{text-align:center}.lcard .lnk{text-align:center}
+.lcard>*{align-self:stretch}.lcard>img{align-self:flex-start}.lcard h2{margin:14px 0 0;font-size:28px;font-weight:800;letter-spacing:-.02em}.lcard p{text-align:left;font-size:14px;line-height:1.55;margin:0 0 26px}.lcard .lnk{text-align:center}
+.lkk{position:relative;display:flex;align-items:center;justify-content:center;gap:0;height:50px;border:0;border-radius:12px;background:#fee500;color:#191919;font-size:14.5px;font-weight:700;margin-top:18px;width:100%}.lkk svg{position:absolute;left:16px}.lkk:hover{filter:brightness(.97)}.lkk:disabled{opacity:.6}
+.lbub{position:absolute;left:50%;top:-12px;transform:translateX(-50%);background:#3b4a7a;color:#fff;font-size:10.5px;font-weight:700;padding:3px 10px;border-radius:999px;white-space:nowrap;pointer-events:none}.lbub::after{content:"";position:absolute;left:50%;bottom:-3px;width:7px;height:7px;background:inherit;transform:translateX(-50%) rotate(45deg)}
+.lor{display:flex;align-items:center;gap:12px;color:#9aa1ab;font-size:12px;margin:10px 0 2px}.lor::before,.lor::after{content:"";flex:1;height:1px;background:#e6e9ed}
+.lcard .in{border-radius:12px;height:46px;background:#fff}.lcard .btn{height:46px;border-radius:12px}
 .split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0}
 .split .half{min-width:0}.split .half+.half{border-left:1px solid var(--line);padding-left:18px;margin-left:18px;display:flex;flex-direction:column}
 .split .sg{grid-template-columns:1fr}.split .evl{max-height:240px}
@@ -1179,13 +1183,14 @@ async function logout(){const c=sbCfg(),s=getSession();clearSession();if(c&&s){t
 function showLogin(cfg){
  let mode="in";const L=$("#login");L.hidden=false;
  const draw=(msg,ok)=>{
-  L.innerHTML=`<form class="lcard" id="lform" novalidate><img src="${$(".logo img").src}" alt="SID" style="height:44px;align-self:center"><p>프로젝트 관리 시스템에 접속하려면 로그인이 필요합니다.</p>
-  ${cfg?"":`<label>Supabase Project URL<input class="in" id="lUrl" placeholder="https://xxxx.supabase.co" autocomplete="off"></label><label>anon public key<input class="in" id="lKey" type="password" autocomplete="off"></label>`}
+  L.innerHTML=`<form class="lcard" id="lform" novalidate><img src="${$(".logo img").src}" alt="SID" style="height:38px"><h2>로그인</h2><p>프로젝트 관리 시스템에 접속하려면<br>로그인이 필요합니다.</p>
+  ${cfg?`<button class="lkk" id="lKakao" type="button"><span class="lbub">⚡ 3초만에 빠른 시작</span><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="#191919" d="M12 3.5c-5.2 0-9.4 3.3-9.4 7.4 0 2.6 1.7 4.9 4.3 6.2l-1 3.6c-.1.3.3.6.6.4l4.3-2.8c.4 0 .8.1 1.2.1 5.2 0 9.4-3.3 9.4-7.5S17.2 3.5 12 3.5z"/></svg>카카오로 계속하기</button><div class="lor">또는 이메일로</div>`:`<label>Supabase Project URL<input class="in" id="lUrl" placeholder="https://xxxx.supabase.co" autocomplete="off"></label><label>anon public key<input class="in" id="lKey" type="password" autocomplete="off"></label>`}
   <label>이메일<input class="in" id="lMail" type="email" autocomplete="username" required></label>
   <label>비밀번호<input class="in" id="lPw" type="password" autocomplete="${mode==="in"?"current-password":"new-password"}" minlength="6" required></label>
   <div class="err" id="lErr" role="alert" style="${ok?"color:var(--gd)":""}">${msg||""}</div>
   <button class="btn" id="lGo" type="submit">${mode==="in"?"로그인":"가입하기"}</button>
   <button class="lnk" id="lSw" type="button">${mode==="in"?"계정이 없으신가요? 회원가입":"이미 계정이 있습니다. 로그인"}</button></form>`;
+  if($("#lKakao"))$("#lKakao").onclick=()=>{$("#lKakao").disabled=true;location.href=cfg.url+"/auth/v1/authorize?provider=kakao&redirect_to="+encodeURIComponent(location.origin+location.pathname)};
   $("#lSw").onclick=()=>{mode=mode==="in"?"up":"in";draw()};
   $("#lform").onsubmit=async e=>{
    e.preventDefault();const em=$("#lMail").value.trim(),pw=$("#lPw").value,er=$("#lErr");
@@ -1217,7 +1222,15 @@ async function startCloud(){
 }
 (async()=>{
  const cfg=sbCfg();
- if(cfg){if(await freshToken(cfg))startCloud();else showLogin(cfg)}
+ let oerr="";
+ if(cfg&&/access_token=|error_description=/.test(location.hash)){
+  const q=new URLSearchParams(location.hash.replace(/^#/,""));
+  if(q.get("access_token")){setSession({access_token:q.get("access_token"),refresh_token:q.get("refresh_token"),expires_in:q.get("expires_in")});
+   const t=q.get("access_token");fetch(cfg.url+"/auth/v1/user",{headers:{apikey:cfg.key,Authorization:"Bearer "+t}}).then(r=>r.json()).then(u=>{const s=getSession();if(s&&u&&u.email){s.email=u.email;localStorage.setItem(SS,JSON.stringify(s))}}).catch(()=>{})}
+  else oerr=q.get("error_description")||"카카오 로그인에 실패했습니다.";
+  history.replaceState(null,"",location.pathname+location.search+"#dashboard");
+ }
+ if(cfg){if(await freshToken(cfg))startCloud();else{showLogin(cfg);if(oerr)$("#lErr").textContent=oerr.replace(/\+/g," ")}}
  else if(window.claude)startCloud();
  else showLogin(null);
 })();
