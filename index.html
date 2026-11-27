@@ -422,9 +422,9 @@ function projectsView(){
  const FOLD='<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>',FLAG='<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"><path d="M5 21V4h11l-2 4 2 4H5"/></svg>';
  const stOf=p=>{if(isO(p)){const m=p.mstate||"진행중";return [m,m==="일시멈춤"?"hold":m==="완료"?"done":"act"]}const g=pg(p),t=dayKey(0);return g>=100?["완료","done"]:p.start&&p.start>t?["예정","plan"]:p.end&&p.end<t?["지연","late"]:["진행중","act"]};
  const cardOf=p=>{const c=PAL[(p.color||0)%PAL.length],m=isO(p),dd=m?"":ddOf(p),[st,tp]=stOf(p),g=pg(p),pc={act:"#0f8a63",plan:"#6b7480",hold:"#e8710a",done:"#2250d6",late:"#c0392b"}[tp];const left=m?(isK(p)?((+p.budget||0)>0?`집행 ${(+p.spent||0).toLocaleString()} / ${(+p.budget).toLocaleString()}`:""):`업데이트 ${(p.updates||[]).length}건`):`<span class="pie" style="--v:${g};--pc:${pc}"></span>${g}%`;return `<button class="pitem" data-id="${esc(p.id)}" style="--p:${c[0]}"><div class="pt">${FOLD}<span class="sp" data-t="${tp}"><i></i>${st}</span></div><strong class="pn">${esc(p.name)}</strong><div class="pm ${m?"":dd[1]}">${FLAG}<span>${m?`${fmt(p.start)} 시작`:dd[0]}</span></div><div class="pb"><div class="pf">${left}</div>${avOf(p)}</div></button>`};
- const NEWC='<button class="pnew" data-new><b>+</b>Create new project</button>';
- const sec=(t,arr,hint)=>`<section class="psec"><div class="psh"><h3>${t}</h3><span>${arr.length}</span></div>${arr.length?`<div class="plist">${arr.map(cardOf).join("")}${t==="일반 프로젝트"?NEWC:""}</div>`:`<div class="pshint">${hint}</div>`}</section>`;
- return L.length?sec("일반 프로젝트",L.filter(p=>!isM(p)&&!isK(p)),"등록된 일반 프로젝트가 없습니다.")+sec("관리형 프로젝트",L.filter(isM),"등록된 관리형 프로젝트가 없습니다.")+sec("마케팅 프로젝트",L.filter(isK),"등록된 마케팅 프로젝트가 없습니다."):`<div class="empty">아직 프로젝트가 없습니다. 왼쪽의 Create new project 버튼으로 추가해 보세요.</div>`;
+ const NEWC=k=>`<button class="pnew" data-newt="${k}"><b>+</b>Create new project</button>`;
+ const sec=(t,arr,hint,k)=>`<section class="psec"><div class="psh"><h3>${t}</h3><span>${arr.length}</span></div><div class="plist">${arr.map(cardOf).join("")}${NEWC(k)}</div></section>`;
+ return L.length?sec("일반 프로젝트",L.filter(p=>!isM(p)&&!isK(p)),"",'general')+sec("관리형 프로젝트",L.filter(isM),"",'maintenance')+sec("마케팅 프로젝트",L.filter(isK),"",'marketing'):`<div class="empty">아직 프로젝트가 없습니다. 왼쪽의 Create new project 버튼으로 추가해 보세요.</div>`;
 }
 let dateEdit=null,dcal=null,evDay=null,evEdit=null,jEdit=null,vEdit=null;
 const wk=["일","월","화","수","목","금","토"];
@@ -1035,10 +1035,10 @@ let pSub="software";
 function setSub(v){pSub=v;document.querySelectorAll("[data-psub]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.psub===v)));const dev=pType==="maintenance"&&v==="general";$("#sNote").style.display=dev?"block":"none";$("#save").disabled=dev}
 function setType(t){pType=t;$("#sWrap").hidden=t!=="maintenance";setSub(pSub);document.querySelectorAll("[data-ptype]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.ptype===t)));$("#eWrap").style.display=t!=="general"?"none":"";$("#dRow").style.gridTemplateColumns=t!=="general"?"1fr":""}
 document.addEventListener("click",e=>{const sb=e.target.closest("[data-psub]");if(sb){setSub(sb.dataset.psub);return}const b=e.target.closest("[data-ptype]");if(b){setType(b.dataset.ptype);if(b.dataset.ptype==="general"&&!$("#fEnd").value&&$("#fStart").value){const t=$("#fStart").value;$("#fEnd").value=iso(new Date(+t.slice(0,4),+t.slice(5,7)-1,+t.slice(8)+13))}}});
-function openDlg(date,id){
+function openDlg(date,id,nt){
  editId=id||null;const p=editId&&projects.find(x=>x.id===editId);$("#dErr").textContent="";
  $("#dTitle").textContent=p?"프로젝트 수정":"새 프로젝트 만들기";$("#save").textContent=p?"변경사항 저장":"프로젝트 만들기";$("#del").hidden=!p;
- pSub=p&&p.sub||"software";setType(p?(p.type==="maintenance"||p.type==="marketing"?p.type:"general"):"general");
+ pSub=p&&p.sub||"software";setType(p?(p.type==="maintenance"||p.type==="marketing"?p.type:"general"):nt||"general");
  const s=p?p.start:date||iso(new Date());
  $("#fName").value=p?p.name:"";selColor=p&&p.color!=null?p.color:null;drawColors();$("#fStart").value=s;$("#fEnd").value=p&&p.end?p.end:iso(new Date(+s.slice(0,4),+s.slice(5,7)-1,+s.slice(8)+13));
  $("#dlg").showModal();$("#fName").focus();
@@ -1102,6 +1102,7 @@ document.addEventListener("click",async e=>{
  if(e.target.id==="back"){detailId=null;render();return}
  if(e.target.id==="editP"){openDlg(null,detailId);return}
  const ths=e.target.closest("[data-t]");if(ths){settings.theme=+ths.dataset.t;applyTheme();render();try{if(db)await db.doc("settings/main").set(settings)}catch(x){toast("테마를 저장하지 못했습니다.")}return}
+ const nt=e.target.closest("[data-newt]");if(nt)return openDlg(null,null,nt.dataset.newt);
  if(e.target.closest("[data-new]"))return openDlg();
  const b=e.target.closest(".bar,.pitem,.tbar,.who");if(b)return openDetail(b.dataset.id);
  const c=e.target.closest(".cell");if(c)return openDlg(c.dataset.d);
