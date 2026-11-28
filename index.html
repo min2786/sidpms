@@ -770,7 +770,7 @@ const mmPrev=t=>{const u=mmUrl(t);if(!u)return null;let h;try{h=new URL(u)}catch
  return {u,yt:false,host,img:`https://s0.wp.com/mshots/v1/${encodeURIComponent(u)}?w=240&h=180`}};
 const mmPrevH=n=>{const v=mmPrev(n.t);return v?`<a class="mnlk" href="${esc(v.u)}" target="_blank" rel="noopener noreferrer" title="${esc(v.u)}"><img src="${esc(v.img)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'"><span>${v.yt?"▶ ":""}${esc(v.host)}</span></a>`:""};
 const mmPar=n=>n.pids||(n.pid?[n.pid]:[]);
-const mmClone=p=>mmNodes(p).map(n=>{const q={...n,pids:mmPar(n)};delete q.pid;return q});
+const mmClone=p=>mmNodes(p).map(n=>{const q={...n,pids:mmPar(n)};delete q.pid;const t=document.querySelector(`#mmin [data-nid="${n.id}"] textarea.mni`);if(t&&!t.readOnly)q.t=t.value.replace(/\s*\n\s*/g," ").trim();return q});
 const mmCol=c=>MMC[(c||0)%MMC.length];
 const mmDepth=N=>{const d={},root=N.find(n=>n.id==="r")||N[0];if(!root)return d;d[root.id]=0;let q=[root];while(q.length){const nx=[];q.forEach(a=>N.forEach(n=>{if(d[n.id]==null&&mmPar(n).includes(a.id)){d[n.id]=d[a.id]+1;nx.push(n)}}));q=nx}N.forEach(n=>{if(d[n.id]==null)d[n.id]=1});return d};
 const mmBranch=(N,n)=>{let c=n,g=0;while(c&&c.id!=="r"&&g++<60){const pa=mmPar(c)[0];if(!pa||pa==="r")return c.id;c=N.find(x=>x.id===pa)}return n.id};
