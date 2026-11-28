@@ -45,7 +45,7 @@ main{padding:22px 28px 28px;min-width:0;display:flex;flex-direction:column;heigh
 .ctl{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap}
 .ctl h2{margin:0 8px 0 0;font-size:18px;min-width:150px}
 .cnav{display:contents}.ys{display:none}
-@media(max-width:560px){.ctl{gap:10px}.ctl .seg{max-width:100%}.csp{display:none}.cnav{display:flex;align-items:center;gap:6px;width:100%}.cnav h2{flex:1;min-width:0!important;margin:0!important;font-size:17px;text-align:left!important;white-space:nowrap}.cnav .yl{display:none}.cnav .ys{display:inline}.cnav .ib{width:30px;height:30px;border-radius:10px;font-size:16px}.cnav .pill{padding:5px 11px;font-size:13px;border-radius:10px}.cnav .btn{width:34px;height:34px;padding:0;font-size:20px;line-height:1;border-radius:10px;display:grid;place-items:center}.cnav .bl{display:none}}
+@media(max-width:560px){.ctl{gap:10px}.ctl .seg{max-width:100%}.csp{display:none}.cnav{display:flex;align-items:center;justify-content:center;gap:6px;width:100%}.cnav h2{flex:0 1 auto;order:1;min-width:0!important;margin:0 4px!important;font-size:17px;text-align:center!important}#planwrap .cnav h2{white-space:nowrap}.cnav [data-m="-1"],.cnav [data-pm="-1"]{order:0}.cnav [data-m="1"],.cnav [data-pm="1"]{order:2}.cnav [data-m="0"],.cnav [data-pm="0"]{order:3}.cnav .btn{order:4}.ctl>.seg{order:1}.ctl>.cnav{order:2}.ctl .csp{display:none}.ctl>.seg{flex:none}.cnav .yl{display:none}.cnav .ys{display:inline}.cnav .ib{width:30px;height:30px;border-radius:10px;font-size:16px}.cnav .pill{padding:5px 11px;font-size:13px;border-radius:10px}.cnav .btn{width:34px;height:34px;padding:0;font-size:20px;line-height:1;border-radius:10px;display:grid;place-items:center}.cnav .bl{display:none}}
 .ib{width:36px;height:36px;border-radius:12px;border:1px solid var(--line);background:var(--surf);font-size:18px;line-height:1}
 .pill{border:1px solid var(--line);background:var(--surf);border-radius:12px;padding:8px 16px;font-weight:600}
 .ib:hover,.pill:hover{border-color:var(--g)}
@@ -391,11 +391,12 @@ const KN=["일","월","화","수","목","금","토"],dcls=k=>k===0?"sun":k===6?"
 const ws0=()=>new Date(mon.getFullYear(),mon.getMonth(),mon.getDate()-(mon.getDay()-settings.weekStart+7)%7);
 function ctl(){
  const Y=mon.getFullYear(),M=mon.getMonth()+1;let t;
- if(scope==="month")t=`${Y}년 ${M}월`;
- else if(scope==="week"){const a=ws0(),b=new Date(a.getFullYear(),a.getMonth(),a.getDate()+6);t=`${a.getFullYear()}년 ${a.getMonth()+1}월 ${a.getDate()}일 – ${b.getMonth()+1}월 ${b.getDate()}일`}
- else t=`${Y}년 ${M}월 ${mon.getDate()}일 (${KN[mon.getDay()]})`;
+ const yr=y=>`<span class="yl">${y}</span><span class="ys">${String(y).slice(2)}</span>`;
+ if(scope==="month")t=`${yr(Y)}년 ${M}월`;
+ else if(scope==="week"){const a=ws0(),b=new Date(a.getFullYear(),a.getMonth(),a.getDate()+6);t=`${yr(a.getFullYear())}년 ${a.getMonth()+1}월 ${a.getDate()}일 – ${b.getMonth()+1}월 ${b.getDate()}일`}
+ else t=`${yr(Y)}년 ${M}월 ${mon.getDate()}일 (${KN[mon.getDay()]})`;
  const seg=(a,items,cur)=>`<div class="seg">${items.map(([v,l])=>`<button data-${a}="${v}" aria-pressed="${cur===v}">${l}</button>`).join("")}</div>`;
- return `<div class="ctl"><h2>${t}</h2><button class="ib" data-m="-1" aria-label="이전">‹</button><button class="ib" data-m="1" aria-label="다음">›</button><button class="pill" data-m="0">오늘</button><span style="flex:1"></span>${seg("ly",[["tl","타임라인"],["grid","캘린더"]],layout)}${seg("sc",[["month","월간"],["week","주간"],["day","일간"]],scope)}</div>`;
+ return `<div class="ctl"><div class="cnav"><h2>${t}</h2><button class="ib" data-m="-1" aria-label="이전">‹</button><button class="ib" data-m="1" aria-label="다음">›</button><button class="pill" data-m="0">오늘</button></div><span class="csp" style="flex:1"></span>${seg("ly",[["tl","타임라인"],["grid","캘린더"]],layout)}${seg("sc",[["month","월간"],["week","주간"],["day","일간"]],scope)}</div>`;
 }
 function calendar(){
  const ws=settings.weekStart,today=dn(new Date()),cols=scope==="day"?1:7,y=mon.getFullYear(),m=mon.getMonth(),bases=[];
