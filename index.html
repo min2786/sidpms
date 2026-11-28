@@ -860,7 +860,7 @@ document.addEventListener("keydown",e=>{if(!(e.target.classList&&e.target.classL
 (()=>{let dr=null,cd=null,mq=null;
  const inR=()=>$("#mmin").getBoundingClientRect();
  const under=e=>{const el=document.elementFromPoint(e.clientX,e.clientY);return {node:el&&el.closest&&el.closest("#mmin .mn"),port:el&&el.closest&&el.closest("#mmin .mp")}};
- document.addEventListener("pointerdown",e=>{mmAct0=!!(e.target.closest&&e.target.closest(".mmcard"));mmSup=false;if(!mmAct0)return;
+ document.addEventListener("pointerdown",e=>{mmAct0=!!(e.target.closest&&e.target.closest(".mmcard"));mmSup=false;if(!mmAct0)return;const ae=document.activeElement;if(ae&&ae.classList&&ae.classList.contains("mni")&&!ae.readOnly&&e.target!==ae)ae.blur();
   const pt=e.target.closest&&e.target.closest("#mmin .mp");
   if(pt){const el=pt.closest(".mn");cd={id:el.dataset.nid,pt};pt.setPointerCapture(e.pointerId);mmSelect(cd.id);e.preventDefault();return}
   const nd=e.target.closest&&e.target.closest("#mmin .mn");
