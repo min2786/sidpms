@@ -223,6 +223,12 @@ html{touch-action:pan-x pan-y;-webkit-text-size-adjust:100%}
  .ibars{height:84px}
 }
 .sch{margin-bottom:16px}.uhead{display:flex;align-items:baseline;justify-content:space-between;gap:8px}.uhead small{color:var(--ink2)}
+.mmcard{padding-bottom:12px}.mmh{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}.mmh h3{margin:0}.mmt{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.mmt button.mb{border:1px solid var(--line);background:var(--surf);border-radius:10px;padding:6px 11px;font-size:12.5px;font-weight:700;color:var(--ink)}.mmt button.mb:hover{border-color:var(--g);color:var(--gd)}.mmt button.mb.dg{color:#b3402a}.mmt .sw{width:20px;height:20px;border-radius:50%;border:2px solid var(--surf);box-shadow:0 0 0 1px var(--line);padding:0}.mmt .sep{width:1px;height:20px;background:var(--line);margin:0 2px}
+.mm{position:relative;height:420px;overflow:auto;border:1px solid var(--line);border-radius:14px;background:#fbfcfb radial-gradient(circle,#dfe3e0 1px,transparent 1.2px) 0 0/22px 22px;-webkit-overflow-scrolling:touch}.mmin{position:relative}.mml{position:absolute;left:0;top:0;pointer-events:none;overflow:visible}
+.mn{position:absolute;width:176px;display:flex;align-items:flex-start;gap:2px;background:var(--surf);border:2px solid var(--nc);border-radius:14px;padding:4px 8px 4px 2px;box-shadow:0 2px 8px rgba(20,24,30,.07)}.mn.sel{box-shadow:0 0 0 3px color-mix(in srgb,var(--nc) 28%,transparent),0 4px 12px rgba(20,24,30,.12)}.mn.root{width:196px;background:var(--nc);border-color:var(--nc)}.mn.root .mni{color:#fff;font-weight:800}.mn.root .mg{color:rgba(255,255,255,.75)}
+.mn .mg{flex:none;width:20px;align-self:stretch;display:grid;place-items:center;color:var(--ink2);cursor:grab;touch-action:none;font-size:14px;user-select:none;opacity:.7}.mn .mni{flex:1;min-width:0;border:0;background:transparent;padding:6px 0;font:inherit;font-size:14px;line-height:1.35;resize:none;overflow:hidden;color:var(--ink);outline:0;height:30px}
+.mmhint{display:block;margin-top:8px;color:var(--ink2);font-size:12px}
+@media(max-width:560px){.mm{height:360px}.mmt button.mb{padding:6px 9px}}
 .jcard{margin-top:16px}.jcard .jform textarea{min-height:90px}
 .top h1 .ib{width:34px;height:34px;font-size:18px;flex:none}
 .mh{display:flex;justify-content:space-between;align-items:center}.ib.sm{width:28px;height:28px;font-size:15px;border-radius:9px;margin-left:6px}
@@ -609,7 +615,7 @@ function detailView(p){
    <input type="range" id="pgR" min="0" max="100" step="5" value="${P}" style="--v:${P}%" aria-label="진행도">
    <div class="kvs">${row("유형",M?"관리형":"일반")}${row("멤버",mbrRow(p))}${row("시작일",dtv("start",p.start))}${M?"":row("마감일",dtv("end",p.end))+row("전체 기간",`${e-s+1}일`)+row("남은 기간",dd)}${row("진행 일지",`${J.length}건`)}</div></section>
   ${schedCard(p)}`}
-  </div>${M?(C?"":versionCard(p))+`<div class="sch" style="margin-top:16px">${schedCard(p)}</div>`:`<section class="card jcard"><h3>일일 진행일지</h3>
+  </div>${M?nodeCard(p)+(C?"":versionCard(p))+`<div class="sch" style="margin-top:16px">${schedCard(p)}</div>`:`<section class="card jcard"><h3>일일 진행일지</h3>
    <div class="jform"><input class="in" id="jDay" type="date" value="${t}" aria-label="날짜"><textarea class="in" id="jText" rows="3" maxlength="1000" placeholder="이날 진행한 내용을 기록하세요 (Ctrl+Enter로 저장)"></textarea><button class="btn" id="jAdd">기록 추가</button></div>
    ${days.length?days.map(k=>`<div class="jday"><h4>${lab(k)}<button class="kk" data-kk="${k}" title="카카오톡 나에게 보내기">카톡 전송</button></h4>${J.filter(x=>x.day===k).map(x=>x.id===jEdit?`<div class="jitem edit"><input class="in" id="jEditD" type="date" value="${x.day}"><textarea class="in" id="jEditT" rows="3" maxlength="1000">${esc(x.t)}</textarea><div class="jeb"><button class="btn sec sm" data-jcancel>취소</button><button class="btn sm" data-jsave="${x.id}">저장</button></div></div>`:`<div class="jitem"><p>${esc(x.t)}</p><button class="x ed" data-je="${x.id}" aria-label="수정" title="수정">✎</button><button class="x" data-jd="${x.id}" aria-label="삭제" title="삭제">×</button></div>`).join("")}</div>`).join(""):'<div class="empty">아직 기록이 없습니다. 오늘의 진행 상황을 남겨 보세요.</div>'}
   </section>`}`;
@@ -734,6 +740,36 @@ async function mtClick(e){
  return false;
 }
 
+/* node mindmap */
+const MMC=["#2f9e5a","#2b7de9","#e5484d","#f5a524","#9b5de5","#e84a9a"];
+let mmSel=null,mmScr={l:0,t:0};
+const mmNodes=p=>p.nodes&&p.nodes.length?p.nodes:[{id:"r",t:p.name||"중심 주제",x:30,y:150,c:0}];
+const mmNodeH=n=>`<div class="mn ${n.id==="r"?"root":""} ${n.id===mmSel?"sel":""}" data-nid="${esc(n.id)}" style="left:${n.x}px;top:${n.y}px;--nc:${MMC[(n.c||0)%MMC.length]}"><span class="mg" title="끌어서 이동">⠿</span><textarea class="mni" rows="1" maxlength="80" placeholder="내용" aria-label="노드 내용">${esc(n.t||"")}</textarea></div>`;
+function nodeCard(p){const N=mmNodes(p);return `<section class="card jcard mmcard"><div class="mmh"><h3>노드</h3><div class="mmt"><button class="mb" data-mma="child" type="button">+ 하위 노드</button><button class="mb" data-mma="sib" type="button">+ 같은 단계</button><button class="mb dg" data-mma="del" type="button">삭제</button><span class="sep"></span>${MMC.map((c,i)=>`<button class="sw" data-mma="c${i}" style="background:${c}" aria-label="색상 ${i+1}" type="button"></button>`).join("")}<span class="sep"></span><button class="mb" data-mma="auto" type="button">자동 정렬</button></div></div><div class="mm" id="mm"><div class="mmin" id="mmin"><svg class="mml" id="mml"></svg>${N.map(mmNodeH).join("")}</div></div><small class="mmhint">노드를 눌러 선택하고 글을 쓰세요. Tab = 하위 노드 추가, Enter = 입력 완료, ⠿ 를 끌어 위치 이동.</small></section>`}
+function mmInit(){const m=$("#mm");if(!m)return;const p=cur();if(!p)return;const N=mmNodes(p),inn=$("#mmin");
+ inn.querySelectorAll(".mni").forEach(t=>{t.style.height="auto";t.style.height=Math.max(30,t.scrollHeight)+"px"});
+ let w=m.clientWidth,h=m.clientHeight;N.forEach(n=>{w=Math.max(w,n.x+240);h=Math.max(h,n.y+140)});inn.style.width=w+"px";inn.style.height=h+"px";const sv=$("#mml");sv.setAttribute("width",w);sv.setAttribute("height",h);
+ mmDraw();m.scrollLeft=mmScr.l;m.scrollTop=mmScr.t;m.onscroll=()=>{mmScr={l:m.scrollLeft,t:m.scrollTop}}}
+function mmDraw(){const p=cur();if(!p)return;const N=mmNodes(p),sv=$("#mml");if(!sv)return;const el=id=>$(`#mmin [data-nid="${id}"]`);let d="";
+ N.forEach(n=>{if(!n.pid)return;const a=N.find(x=>x.id===n.pid),ea=a&&el(a.id),eb=el(n.id);if(!ea||!eb)return;const x1=a.x+ea.offsetWidth,y1=a.y+ea.offsetHeight/2,x2=n.x,y2=n.y+eb.offsetHeight/2,k=Math.max(40,(x2-x1)/2);d+=`<path d="M${x1} ${y1} C${x1+k} ${y1},${x2-k} ${y2},${x2} ${y2}" fill="none" stroke="${MMC[(n.c||0)%MMC.length]}" stroke-width="2.5" stroke-linecap="round" opacity=".85"/>`});sv.innerHTML=d}
+function mmSelect(id){mmSel=id;document.querySelectorAll("#mmin .mn").forEach(e=>e.classList.toggle("sel",e.dataset.nid===id))}
+function mmKeep(){const m=$("#mm");if(m)mmScr={l:m.scrollLeft,t:m.scrollTop}}
+async function mmAct(a){const p=cur();if(!p)return;p.nodes=mmNodes(p).map(n=>({...n}));const N=p.nodes;let sel=N.find(n=>n.id===mmSel)||N[0],nid=null;
+ const add=par=>{const kids=N.filter(n=>n.pid===par.id);nid=rid();N.push({id:nid,t:"",x:par.x+230,y:kids.length?Math.max(...kids.map(k=>k.y))+70:par.y,pid:par.id,c:par.id==="r"?kids.length%MMC.length:par.c||0})};
+ if(a==="child")add(sel);
+ else if(a==="sib"){if(sel.id==="r"||!sel.pid)return toast("중심 노드에는 같은 단계를 추가할 수 없습니다");add(N.find(n=>n.id===sel.pid))}
+ else if(a==="del"){if(sel.id==="r")return toast("중심 노드는 삭제할 수 없습니다");const gone=new Set([sel.id]);let ch=true;while(ch){ch=false;N.forEach(n=>{if(n.pid&&gone.has(n.pid)&&!gone.has(n.id)){gone.add(n.id);ch=true}})}p.nodes=N.filter(n=>!gone.has(n.id));mmSel=sel.pid}
+ else if(a==="auto"){let row=0;const lay=(n,dep)=>{const kids=N.filter(k=>k.pid===n.id);n.x=30+dep*230;if(!kids.length){n.y=30+row*70;row++;return}kids.forEach(k=>lay(k,dep+1));n.y=(kids[0].y+kids[kids.length-1].y)/2};lay(N.find(n=>!n.pid)||N[0],0)}
+ else if(a[0]==="c"){sel.c=+a.slice(1)}
+ if(nid)mmSel=nid;mmKeep();render();await persist(p);if(nid)setTimeout(()=>{const t=$(`#mmin [data-nid="${nid}"] textarea`);if(t){t.focus();const m=$("#mm"),e=t.closest(".mn");if(m&&e){if(e.offsetLeft+e.offsetWidth>m.scrollLeft+m.clientWidth)m.scrollLeft=e.offsetLeft+e.offsetWidth-m.clientWidth+30;if(e.offsetTop+e.offsetHeight>m.scrollTop+m.clientHeight)m.scrollTop=e.offsetTop+e.offsetHeight-m.clientHeight+30;mmKeep()}}},60)}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-mma]");if(b){mmAct(b.dataset.mma);return}const n=e.target.closest("#mmin .mn");if(n)mmSelect(n.dataset.nid)});
+document.addEventListener("focusin",e=>{const n=e.target.closest&&e.target.closest("#mmin .mn");if(n)mmSelect(n.dataset.nid)});
+document.addEventListener("input",e=>{if(e.target.classList&&e.target.classList.contains("mni")){e.target.style.height="auto";e.target.style.height=Math.max(30,e.target.scrollHeight)+"px";mmDraw()}});
+document.addEventListener("change",e=>{if(!(e.target.classList&&e.target.classList.contains("mni")))return;const p=cur();if(!p)return;const id=e.target.closest(".mn").dataset.nid;p.nodes=mmNodes(p).map(n=>n.id===id?{...n,t:e.target.value.replace(/\s*\n\s*/g," ").trim()}:n);persist(p)});
+document.addEventListener("keydown",e=>{if(!(e.target.classList&&e.target.classList.contains("mni")))return;if(e.key==="Enter"){e.preventDefault();e.target.blur()}else if(e.key==="Tab"&&!e.shiftKey){e.preventDefault();const t=e.target;const p=cur();if(p){const id=t.closest(".mn").dataset.nid;p.nodes=mmNodes(p).map(n=>n.id===id?{...n,t:t.value.trim()}:n)}mmSelect(t.closest(".mn").dataset.nid);mmAct("child")}});
+(()=>{let dr=null;document.addEventListener("pointerdown",e=>{const g=e.target.closest&&e.target.closest("#mmin .mg");if(!g)return;const p=cur();if(!p)return;const el=g.closest(".mn"),id=el.dataset.nid,n=mmNodes(p).find(x=>x.id===id);p.nodes=mmNodes(p).map(x=>({...x}));dr={id,el,x0:e.clientX,y0:e.clientY,nx:n.x,ny:n.y,p};g.setPointerCapture(e.pointerId);mmSelect(id);e.preventDefault()});
+document.addEventListener("pointermove",e=>{if(!dr)return;const n=dr.p.nodes.find(x=>x.id===dr.id);n.x=Math.max(0,Math.round(dr.nx+e.clientX-dr.x0));n.y=Math.max(0,Math.round(dr.ny+e.clientY-dr.y0));dr.el.style.left=n.x+"px";dr.el.style.top=n.y+"px";mmDraw()});
+const up=()=>{if(!dr)return;const p=dr.p;dr=null;mmKeep();render();persist(p)};document.addEventListener("pointerup",up);document.addEventListener("pointercancel",up)})();
 /* meeting recording -> Gemini */
 const mtStale=m=>m.st==="processing"&&Date.now()-(m.updatedAt||0)>15*60e3;
 const mtBusy=m=>m.st==="processing"&&!mtStale(m);
@@ -1064,7 +1100,7 @@ function render(){
  $("#main").innerHTML=head(t)+(view==="dashboard"?dashboardView():view==="projects"?projectsView():view==="plan"?planView():view==="meeting"?meetingView():view==="admin"?adminView():settingsView());
  {const m=$("#main"),pr=view==="projects"&&detailId&&cur();["--g","--gd","--gt"].forEach(v=>m.style.removeProperty(v));if(pr){const c=PAL[(pr.color||0)%PAL.length][0];m.style.setProperty("--g",c);m.style.setProperty("--gd",`color-mix(in srgb,${c} 72%,#000)`);m.style.setProperty("--gt",`color-mix(in srgb,${c} 16%,#fff)`)}}
  const g=$("#gantt");if(g&&scope==="month"){const o=dn(new Date())-dn(new Date(mon.getFullYear(),mon.getMonth(),1));g.scrollLeft=o>=0?Math.max(0,o*52-120):0}
- hydrateImgs();if(view==="settings")pushInit();if(view==="meeting")recInit();if(view==="admin"&&adm.st==="idle")admLoad();
+ hydrateImgs();mmInit();if(view==="settings")pushInit();if(view==="meeting")recInit();if(view==="admin"&&adm.st==="idle")admLoad();
 }
 function route(){const h=location.hash.slice(1);view=["dashboard","projects","plan","meeting","admin","settings"].includes(h)?h:"dashboard";if(view!=="projects"){detailId=null;jEdit=vEdit=null}dateEdit=null;render()}
 addEventListener("hashchange",route);
